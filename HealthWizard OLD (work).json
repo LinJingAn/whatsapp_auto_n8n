@@ -1,0 +1,5443 @@
+{
+  "name": "HealthWizard OLD (work)",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "# PAYMENT CONFIRMATION\n",
+        "height": 400,
+        "width": 1408,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        53216
+      ],
+      "id": "b2a8f9c9-8129-44d5-8513-9b8837d2d78e",
+      "name": "Payment Confirmation Note1"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "payment-confirmation",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        1488,
+        53376
+      ],
+      "id": "d745de1a-2f06-4141-98b6-00713c9b0f7f",
+      "name": "Payment Confirmation Webhook1",
+      "webhookId": "payment-confirmation-webhook-id",
+      "notes": "Receives payment notifications from PagBank. Configure this URL in PagBank notification settings."
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse PagBank Payment Notification\n// Handles PagBank webhook format for payment status updates\n\nconst input = $input.all()[0].json;\nconst body = input.body || input;\n\n// PagBank sends charges array with status\nconst charges = body.charges || [];\nconst charge = charges[0] || {};\n\nconst paymentData = {\n  payment_id: body.id || charge.id || '',\n  reference_id: body.reference_id || '',\n  status: charge.status || body.status || 'UNKNOWN',\n  paid_at: charge.paid_at || null,\n  amount: charge.amount?.value || body.amount?.value || 0,\n  payer_name: charge.payment_method?.pix?.holder?.name || body.customer?.name || '',\n  payer_tax_id: charge.payment_method?.pix?.holder?.tax_id || body.customer?.tax_id || '',\n  is_paid: false\n};\n\n// Check if payment is confirmed\nconst paidStatuses = ['PAID', 'AUTHORIZED', 'AVAILABLE', 'CONFIRMED'];\npaymentData.is_paid = paidStatuses.includes(paymentData.status.toUpperCase());\n\n// Extract user phone from reference_id (format: DW_PHONE_TIMESTAMP)\nif (paymentData.reference_id && paymentData.reference_id.startsWith('DW_')) {\n  const parts = paymentData.reference_id.split('_');\n  if (parts.length >= 2) {\n    paymentData.user_number = parts[1];\n  }\n}\n\nreturn paymentData;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        53376
+      ],
+      "id": "ecdd348c-fef6-44ba-b9a5-e1851a9bc677",
+      "name": "Parse Payment Notification1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "payment-check-paid",
+              "leftValue": "={{ $json.is_paid }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1856,
+        53376
+      ],
+      "id": "b5d208e5-8cfc-4fd0-b195-57b103583c46",
+      "name": "Check Payment Confirmed1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "pagamentos",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "payment_id",
+              "condition": "eq",
+              "keyValue": "={{ $('Parse Payment Notification1').item.json.payment_id }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "status",
+              "fieldValue": "={{ $('Parse Payment Notification1').item.json.status }}"
+            },
+            {
+              "fieldId": "paid_at",
+              "fieldValue": "={{ $now.toISO() }}"
+            },
+            {
+              "fieldId": "payer_name",
+              "fieldValue": "={{ $('Parse Payment Notification1').item.json.payer_name }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        2064,
+        53296
+      ],
+      "id": "bc12689a-1b1a-420b-90d8-340ab50164d5",
+      "name": "Update Payment Status1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "=payment.{{ $('Parse Payment Notification1').item.json.user_number }}"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        2256,
+        53296
+      ],
+      "id": "6d8db48a-af52-4541-b477-25548243796e",
+      "name": "Clear Payment from Redis1",
+      "credentials": {
+        "redis": {
+          "id": "L4rUklATrg4beQVM",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "contatos_agente",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "user_number",
+              "keyValue": "={{ $('Parse Payment Notification1').item.json.user_number }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "agente",
+              "fieldValue": "recepcionista"
+            },
+            {
+              "fieldId": "status",
+              "fieldValue": "pagamento_confirmado"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        2448,
+        53296
+      ],
+      "id": "6329c055-00d2-430e-b5d4-7a1ee6549e20",
+      "name": "Reactivate Agent1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "=DentalWizardBot",
+        "remoteJid": "={{ $('Parse Payment Notification1').item.json.user_number + '@s.whatsapp.net' }}",
+        "messageText": "✅ *Pagamento Confirmado!*\n\nRecebemos seu pagamento de R$ 49,90.\n\nAgora vamos continuar com seu atendimento. Por favor, me conte novamente qual o seu problema para que eu possa ajudá-lo. 🦷",
+        "options_message": {
+          "delay": 1000
+        }
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        2640,
+        53296
+      ],
+      "id": "55e14c7d-decf-4825-a982-4e56ce234089",
+      "name": "Send Payment Confirmation Message1",
+      "credentials": {
+        "evolutionApi": {
+          "id": "OXftMyJV7PZEXZ8j",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse Supabase Database Webhook for Prescription\n// Handles Supabase database webhook format (from database triggers) and legacy manual webhook format\n\nconst input = $input.all()[0].json;\nconst body = input.body || {};\n\nlet prescriptionData = null;\nlet prescriptionId = null;\n\n// Check if it's a Supabase database webhook format\n// Supabase sends: { type: 'INSERT'/'UPDATE', table: 'prescricoes', record: {...}, old_record: {...} }\nif (body.type && (body.table === 'prescricoes' || body.table_name === 'prescricoes') && body.record) {\n  // Supabase database webhook format\n  prescriptionData = body.record;\n  prescriptionId = body.record.id;\n  \n  // Only process if prescription hasn't been sent yet (verification check)\n  if (prescriptionData.enviado_whatsapp === true) {\n    // Skip if already sent\n    return { \n      skip: true, \n      reason: 'Prescription already sent', \n      prescription_id: prescriptionId \n    };\n  }\n  \n  // Only process INSERT or UPDATE events\n  if (body.type !== 'INSERT' && body.type !== 'UPDATE') {\n    return { \n      skip: true, \n      reason: 'Not an INSERT or UPDATE event', \n      prescription_id: prescriptionId \n    };\n  }\n  \n  // Return the record data directly for processing\n  return {\n    skip: false,\n    prescription_id: prescriptionId,\n    prescription_data: prescriptionData,\n    is_supabase_webhook: true\n  };\n} else {\n  // Legacy webhook format (manual trigger or app trigger)\n  prescriptionId = body.prescription_id || body.id || body.record?.id;\n  if (!prescriptionId) {\n    return { skip: true, reason: 'No prescription_id provided' };\n  }\n  \n  return {\n    skip: false,\n    prescription_id: prescriptionId,\n    prescription_data: null, // Will fetch it\n    is_supabase_webhook: false\n  };\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1696,
+        51952
+      ],
+      "id": "75c0d1bb-8903-4931-b74c-ad7118943103",
+      "name": "Parse Supabase Webhook Prescription"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "prescription-check-skip",
+              "leftValue": "={{ $json.skip }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1904,
+        51952
+      ],
+      "id": "5f3d1252-f203-4433-8cbd-968aeb593375",
+      "name": "Check Should Process Prescription"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "prescription-check-cached",
+              "leftValue": "={{ $json.is_supabase_webhook }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2176,
+        51936
+      ],
+      "id": "0cb75f5e-a429-4971-a578-c2fa2ce054b2",
+      "name": "Check Use Cached Prescription"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "prescription-set-cached-001",
+              "name": "id",
+              "value": "={{ $json.prescription_data.id }}",
+              "type": "string"
+            },
+            {
+              "id": "prescription-set-cached-002",
+              "name": "paciente_id",
+              "value": "={{ $json.prescription_data.paciente_id }}",
+              "type": "string"
+            },
+            {
+              "id": "prescription-set-cached-003",
+              "name": "diagnostico",
+              "value": "={{ $json.prescription_data.diagnostico || $json.prescription_data.diagnostico_final || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "prescription-set-cached-004",
+              "name": "medicacoes",
+              "value": "={{ $json.prescription_data.medicacoes || $json.prescription_data.medicamentos || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "prescription-set-cached-005",
+              "name": "instrucoes",
+              "value": "={{ $json.prescription_data.instrucoes || $json.prescription_data.instructions || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "prescription-set-cached-006",
+              "name": "observacoes",
+              "value": "={{ $json.prescription_data.observacoes || $json.prescription_data.observations || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "prescription-set-cached-007",
+              "name": "alertas",
+              "value": "={{ $json.prescription_data.alertas || $json.prescription_data.warnings || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "prescription-set-cached-008",
+              "name": "created_at",
+              "value": "={{ $json.prescription_data.created_at }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2384,
+        51856
+      ],
+      "id": "47cc8753-44b8-495e-b35d-f2e1eae3ab51",
+      "name": "Use Cached Prescription Data"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "prescricoes",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $('Parse Supabase Webhook Prescription').item.json.prescription_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        2384,
+        52016
+      ],
+      "id": "7833898d-b3ad-4df9-950e-836ccc9e3761",
+      "name": "Fetch Prescription",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        2576,
+        51952
+      ],
+      "id": "5c26f6ea-c141-48ec-9d07-e41fecd73d13",
+      "name": "Merge Prescription Data"
+    },
+    {
+      "parameters": {
+        "content": "## ATENDIMENTO\n",
+        "height": 904,
+        "width": 852,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3760,
+        49920
+      ],
+      "id": "5f6c8802-3be5-4754-9f7c-c690f5ec03ea",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "operation": "set",
+        "key": "=atendimento.{{ $('SWITCH_PRINCIPAL').item.json.user.number }}",
+        "value": "true",
+        "expire": true,
+        "ttl": "={{ $json.message.atendimento }}"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        4304,
+        50192
+      ],
+      "id": "ae7e0937-0455-413c-8a2b-2622132dba16",
+      "name": "SET_ATENDIMENTO",
+      "credentials": {
+        "redis": {
+          "id": "L4rUklATrg4beQVM",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "=atendimento",
+        "key": "=atendimento.{{ $('SET_VARIAVEIS').item.json.user.number }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        4304,
+        49952
+      ],
+      "id": "852f890e-a2de-425a-a0a2-3dd6fc152d76",
+      "name": "GET_ATENDIMENTO",
+      "credentials": {
+        "redis": {
+          "id": "L4rUklATrg4beQVM",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "ad282034-aeb1-465e-9522-430cb89cf97b",
+                    "leftValue": "={{ $json.body.data.messageType }}",
+                    "rightValue": "audioMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Áudio"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.data.messageType }}",
+                    "rightValue": "conversation",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "138ffeb6-84ba-46aa-9891-a16ed36a5007"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Texto"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.data.messageType }}",
+                    "rightValue": "imageMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "image-condition-001"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Imagem"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.data.messageType }}",
+                    "rightValue": "documentMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "document-condition-001"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Documento"
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        2592,
+        50304
+      ],
+      "id": "35734a48-b05d-4cd2-8057-ac375395b691",
+      "name": "Switch"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        3584,
+        50304
+      ],
+      "id": "82be0f6c-8826-43db-a3ad-6d111eeecc6b",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "resource": "chat-api",
+        "operation": "get-media-base64",
+        "instanceName": "=DentalWizardBot",
+        "messageId": "={{ $json.body.data.key.id }}"
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        2880,
+        50384
+      ],
+      "id": "95c11d72-4165-41c7-a01d-96773faf8758",
+      "name": "Get Image Media",
+      "credentials": {
+        "evolutionApi": {
+          "id": "OXftMyJV7PZEXZ8j",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "chat-api",
+        "operation": "get-media-base64",
+        "instanceName": "=DentalWizardBot",
+        "messageId": "={{ $json.body.data.key.id }}"
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        2864,
+        50544
+      ],
+      "id": "3553a60a-4f3c-4ca7-bc26-d0dde73ad04a",
+      "name": "Get Document Media",
+      "credentials": {
+        "evolutionApi": {
+          "id": "OXftMyJV7PZEXZ8j",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "data.base64",
+        "options": {
+          "fileName": "={{ $json.body.data.message.imageMessage?.caption || 'patient_image' }}.jpg",
+          "mimeType": "image/jpeg"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        3040,
+        50384
+      ],
+      "id": "e71adb42-3cb3-4c29-9941-f1f35f71dfb5",
+      "name": "Convert Image to File"
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "data.base64",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        3040,
+        50544
+      ],
+      "id": "4a50eeca-cca7-4d0c-93eb-7d73b6bd743e",
+      "name": "Convert Document to File"
+    },
+    {
+      "parameters": {
+        "operation": "upload"
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        3200,
+        50384
+      ],
+      "id": "852767b5-5797-4ca9-b811-785dbf79a4a4",
+      "name": "Upload Image to Supabase",
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upload"
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        3216,
+        50544
+      ],
+      "id": "71f57e79-2857-4913-aca4-637dc9a30721",
+      "name": "Upload Document to Supabase",
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "image-text-001",
+              "name": "text",
+              "value": "[Imagem recebida e salva para análise do dentista]",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3360,
+        50384
+      ],
+      "id": "e9186dfe-2005-4279-aefd-66d3626d196b",
+      "name": "Set Image Text"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "document-text-001",
+              "name": "text",
+              "value": "[Documento recebido e salvo para análise do dentista]",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3376,
+        50544
+      ],
+      "id": "014cfc4e-dad7-49c7-b51d-9f45d3d69b5f",
+      "name": "Set Document Text"
+    },
+    {
+      "parameters": {
+        "content": "# ESPERA MENSAGENS\n",
+        "height": 544,
+        "width": 1312,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4656,
+        50064
+      ],
+      "id": "30d3d84a-d6b7-45b3-bba9-3fea0807cd1d",
+      "name": "Sticky Note14"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c1efb168-243b-4ca0-9910-bb8d67132c74",
+              "name": "message",
+              "value": "={{ $json.messages }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        6128,
+        50288
+      ],
+      "id": "5d4dfe4d-dc32-4084-9a73-d5c6b635f2b8",
+      "name": "CONCATENA"
+    },
+    {
+      "parameters": {
+        "content": " # VERIFICA USER",
+        "height": 372,
+        "width": 1060
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        6016,
+        50192
+      ],
+      "id": "5930f7ec-9fe5-42da-b74f-dff98c7ade51",
+      "name": "Sticky Note17"
+    },
+    {
+      "parameters": {
+        "content": "# SPLIT E ENVIO DAS MENSAGENS",
+        "height": 580,
+        "width": 2140,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        10080,
+        50128
+      ],
+      "id": "52f58417-5bb9-435c-b39a-29584842702f",
+      "name": "Sticky Note23"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "contatos_agente",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "user_number",
+              "keyValue": "={{ $('SET_VARIAVEIS').item.json.user.number }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        6288,
+        50288
+      ],
+      "id": "18214f80-36fe-42ea-80b0-ca48ecac80c9",
+      "name": "GET_USER",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "189d60d6-0d15-495a-a254-84018c2e9ef1",
+              "leftValue": "={{ $('SET_VARIAVEIS').item.json.user.number }}",
+              "rightValue": "={{ $json.user_number }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        6480,
+        50288
+      ],
+      "id": "af6864ab-512b-4e3a-a033-db8361dec056",
+      "name": "IF_USER"
+    },
+    {
+      "parameters": {
+        "tableId": "contatos_agente",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "user_number",
+              "fieldValue": "={{ $('SET_VARIAVEIS').item.json.user.number }}"
+            },
+            {
+              "fieldId": "user_name",
+              "fieldValue": "={{ $('SET_VARIAVEIS').item.json.user.name }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        6624,
+        50416
+      ],
+      "id": "c7b557fa-a964-49a6-8c94-31a55dc4cf6e",
+      "name": "CREATE_USER",
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        6784,
+        50416
+      ],
+      "id": "681f8da1-6e04-4715-bbb2-1c458a4b71e6",
+      "name": "WAIT_USER",
+      "webhookId": "5927d937-0386-4938-8684-c41f06b37dff"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1e8efa64-0bf8-449d-81ff-a160456ec40b",
+              "name": "user_profile",
+              "value": "={{ $json.user_profile }}",
+              "type": "string"
+            },
+            {
+              "id": "86efa235-3065-432a-b53d-ee4fec9efc72",
+              "name": "agente",
+              "value": "={{ $json.agente }}",
+              "type": "string"
+            },
+            {
+              "id": "6e8802b3-837f-4205-baf2-38c1142f6181",
+              "name": "role",
+              "value": "={{ $json.role }}",
+              "type": "string"
+            },
+            {
+              "id": "13a58b9e-d035-449f-b79b-4441206d9165",
+              "name": "status",
+              "value": "={{ $json.status }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        6960,
+        50272
+      ],
+      "id": "e9c3f2c0-269a-43fa-a0da-0808028fe2ec",
+      "name": "SET_USER"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        11360,
+        50304
+      ],
+      "id": "9ee0c123-fd6a-407f-b720-4f85f09e956f",
+      "name": "LOOP_SLIT"
+    },
+    {
+      "parameters": {
+        "amount": 1,
+        "unit": "=seconds"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        11920,
+        50320
+      ],
+      "id": "b627f5d4-7e73-473b-8545-87f3af0b1ff3",
+      "name": "WAIT_SPLIT",
+      "webhookId": "3cea2837-6c05-4e79-8798-96260c4f8dc6"
+    },
+    {
+      "parameters": {
+        "content": "# TOOLS",
+        "height": 304,
+        "width": 422,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        10224,
+        50752
+      ],
+      "id": "d587d492-c515-4c74-85e8-f49d1f025e5e",
+      "name": "Sticky Note38"
+    },
+    {
+      "parameters": {
+        "content": "# ADMIN\n",
+        "height": 800,
+        "width": 440,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2256,
+        50784
+      ],
+      "id": "9c47bfd3-c2a9-4788-9c1e-ad9d18c6db84",
+      "name": "Sticky Note39"
+    },
+    {
+      "parameters": {
+        "operation": "deleteTable",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "n8n_chat_histories",
+          "mode": "list",
+          "cachedResultName": "n8n_chat_histories"
+        },
+        "deleteCommand": "delete",
+        "where": {
+          "values": [
+            {
+              "column": "id",
+              "condition": ">=",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        2432,
+        50816
+      ],
+      "id": "2a2f28b8-2f1d-408d-be9b-a8a1ba0592e7",
+      "name": "DELETA_MEMORIA",
+      "credentials": {
+        "postgres": {
+          "id": "z0JeLFsY0PLuCvXE",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pop",
+        "list": "temp.5521964589974",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        2432,
+        51008
+      ],
+      "id": "6522aff5-ee3f-4ce5-be64-0e8647abc149",
+      "name": "DELETAR_ATENDIMENTO",
+      "credentials": {
+        "redis": {
+          "id": "L4rUklATrg4beQVM",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('SET_VARIAVEIS').item.json.user.number }}",
+        "contextWindowLength": 25
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        10304,
+        50576
+      ],
+      "id": "ccf49eb8-91d1-4454-a7fc-8699255ee751",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "z0JeLFsY0PLuCvXE",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('GET_USER').item.json.agente }}",
+                    "rightValue": "recepcionista",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "625cf350-f501-438e-be54-1e4f67644aba"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "recepcionista"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "9d5a3f7c-40eb-4b1c-a6a4-2e10091b6dec",
+                    "leftValue": "={{ $('IF_USER').item.json.agente }}",
+                    "rightValue": "off",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "off"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "outro"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        9728,
+        50352
+      ],
+      "id": "56349590-22bc-4912-b687-134f1df79a02",
+      "name": "Switch8"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('CONCATENA').first().json.message }} ",
+        "options": {
+          "systemMessage": "={\n  \"name\": \"Dental Wizard\",\n  \"context\": {\n    \"identity\": \"Um SDR (masculino), o Dental Wizard, especialista em odontologia via WhatsApp: pré-diagnostica pacientes e agenda consultas online. É o mestre e sábio da odontologia, unindo conceitos milenares e novas tecnologias.\",\n    \"business\": \"Atendimento odontológico remoto\",\n    \"language\": \"Português Brasileiro\",\n    \"data_atual\": \"{{$now.weekdayLong}}, {{$now.format('D')}}\",\n    \"clinica_parceira\": \"{{ $('SET_VARIAVEIS').item.json.body.instance }}\",\n    \"patient_context\": {\n      \"patient_type\": \"{{ $('Set Patient Context1').item.json.patient_type }}\",\n      \"is_subscriber\": \"{{ $('Set Patient Context1').item.json.is_subscriber }}\",\n      \"subscription_status\": \"{{ $('Set Patient Context1').item.json.subscription_status }}\",\n      \"copayment_value\": \"{{ $('Set Patient Context1').item.json.copayment_value }}\"\n    }\n  },\n  \"personality\": [\n    \"Profissional\",\n    \"Especialista em odontologia\",\n    \"Empático e acolhedor\"\n  ],\n  \"objectives\": [\n    \"Identificar se o contato é o próprio paciente ou um dependente\",\n    \"Verificar se é assinante existente ou paciente novo\",\n    \"Prestar atendimento e esclarecer dúvidas\",\n    \"Gerar pré-diagnóstico com sugestão de diagnóstico e tratamento\",\n    \"Entender a necessidade do paciente\",\n    \"Informar sobre coparticipação ou valor da consulta avulsa\",\n    \"Incentivar o agendamento de consulta ou esclarecer dúvidas\"\n  ],\n  \"general_rules\": [\n    \"Se for a primeira mensagem da conversa, execute o passo 'apresentar_identificar_usuario'.\",\n    \"Identifique a clínica parceira através da variável clinica_parceira no contexto.\",\n    \"Só fale sobre odontologia, dores ou urgências odontológicas.\",\n    \"Não forneça informações sem conhecimento.\",\n    \"Se a primeira mensagem veio de agente humano, pule 'apresentar_identificar_usuario'.\",\n    \"Se o paciente enviar algo fora do fluxo, responda: \\\"Desculpe, não entendi. Poderia, por favor, responder à pergunta anterior ou escolher uma das opções indicadas? Lembre-se de que posso ajudar apenas com assuntos de odontologia.\\\"\",\n    \"Para qualquer informação relacionada à startup Dental Wizard, consulte a base de conhecimento no Supabase antes de responder.\",\n    \"Adote um tom empático e acolhedor em todas as interações.\",\n    \"Nunca repita perguntas de cadastro já respondidas em 'coletar_dados_basicos'.\",\n    \"**REGRAS CRÍTICAS:**\",\n    \"1. SEMPRE execute 'coletar_dados_basicos' antes de qualquer trilha detalhada, independentemente do tipo de atendimento.\",\n    \"2. Confirme a completude dos dados básicos ANTES de prosseguir para 'trilhas_detalhadas' ou 'encerrar_fluxo'.\",\n    \"3. Para pacientes NOVOS (patient_type = 'new'), informe o valor da consulta (R$ 49,90) no início e redirecione para pagamento antes de continuar.\",\n    \"4. Para ASSINANTES ativos, informe o valor da coparticipação (copayment_value) que será debitado.\",\n    \"5. Se NÃO for emergência odontológica, responda automaticamente sem encaminhar ao dentista.\",\n    \"6. Ao encerrar o fluxo, SEMPRE gere um resumo com: sintomas, possível diagnóstico sugerido, e sugestão de tratamento.\"\n  ],\n  \"flow\": {\n    \"steps\": [\n      {\n        \"step\": \"apresentar_identificar_usuario\",\n        \"instructions\": \"Apresente-se de forma acolhedora. Pergunte se a pessoa é o próprio paciente ou está entrando em contato por um dependente. Verifique o contexto patient_type para saber se já é cadastrado.\",\n        \"example_message_new\": \"Olá! Eu sou o Dental Wizard, especialista em odontologia online. 🦷\\n\\nVocê é o próprio paciente ou está entrando em contato por outra pessoa (dependente)?\",\n        \"example_message_existing\": \"Olá! Que bom ter você de volta! Eu sou o Dental Wizard. 🦷\\n\\nVocê é o próprio paciente ou está entrando em contato por um dependente?\"\n      },\n      {\n        \"step\": \"verificar_tipo_atendimento\",\n        \"instructions\": \"Após identificar quem é o paciente, pergunte se é emergência ou outro assunto.\",\n        \"example_message\": \"Como posso te ajudar hoje?\\n\\n1️⃣ Emergência odontológica (dor intensa, trauma, sangramento)\\n2️⃣ Outro assunto (dúvidas, agendamentos, informações)\"\n      },\n      {\n        \"step\": \"informar_valores\",\n        \"instructions\": \"OBRIGATÓRIO antes de continuar. Se patient_type = 'new', informe: 'O valor da consulta online é R$ 49,90. Deseja prosseguir?'. Se is_subscriber = true, informe: 'Sua coparticipação para esta consulta será de R$ [copayment_value]. Deseja prosseguir?'\",\n        \"condition\": \"Executar sempre antes de coletar_dados_basicos para emergências\"\n      },\n      {\n        \"step\": \"confirmar_emergencia\",\n        \"instructions\": \"Se for emergência E o paciente aceitou os valores, informe que precisamos dos dados básicos. Se for 'outro assunto', verifique se pode responder automaticamente sem encaminhar ao dentista. **Após enviar a mensagem informativa, avance imediatamente para a primeira pergunta de 'coletar_dados_basicos' sem aguardar resposta.**\",\n        \"example_message\": \"Para que o dentista possa te ajudar da melhor forma, preciso fazer um breve cadastro com algumas informações importantes.\\n\\nPor favor, qual seu nome completo?\",\n        \"next\": \"coletar_dados_basicos\"\n      },\n      {\n        \"step\": \"coletar_dados_basicos\",\n        \"instructions\": \"**ETAPA OBRIGATÓRIA PARA TODOS OS FLUXOS DE EMERGÊNCIA**. Colete todos os dados na ordem. Permita 'Prefiro não informar' para sexo. **Se a resposta à pergunta sobre cidade e estado não contiver explicitamente o estado (UF), faça uma pergunta adicional: 'Qual o estado (UF)?'.** As informações de saúde já existentes no perfil do paciente NÃO precisam ser repetidas.\",\n        \"mode\": \"sequential\",\n        \"questions\": [\n          \"Por favor, qual seu nome completo?\",\n          \"Qual sua data de nascimento? (Se for menor de 18 anos, informe também o nome do responsável)\",\n          \"Qual seu sexo biológico? (Fique à vontade para escolher 'Prefiro não informar')\",\n          \"De qual cidade e estado (UF) você está nos contatando?\",\n          \"Você tem alergias a medicamentos? Quais?\",\n          \"Possui alguma condição de saúde como diabetes, problemas cardíacos ou neurológicos?\",\n          \"Faz uso de medicamentos contínuos? Quais?\",\n          \"Possui plano odontológico? Qual?\",\n          \"Em uma escala de 0 (sem dor) a 10 (dor insuportável), como classifica qualquer desconforto atual?\"\n        ]\n      },\n      {\n        \"step\": \"rotear_atendimento\",\n        \"instructions\": \"Após coleta completa dos dados básicos, direcione conforme resposta inicial: emergência → 'identificar_tipo_emergencia', outro assunto → 'fluxo_outros_assuntos'.\",\n        \"example_message\": \"Agora que temos suas informações, vamos focar no seu problema.\"\n      },\n      {\n        \"step\": \"identificar_tipo_emergencia\",\n        \"instructions\": \"Só execute após 'coletar_dados_basicos'. Pergunte o tipo de emergência.\",\n        \"example_message\": \"Sua emergência é por:\\n1) Dor de dente/gengiva\\n2) Trauma facial/dental\\n3) Restauração ou prótese solta\\n4) Outro problema?\"\n      },\n      {\n        \"step\": \"fluxo_outros_assuntos\",\n        \"instructions\": \"Para assuntos NÃO urgentes, tente responder automaticamente usando a base de conhecimento. Só encaminhe ao dentista se for uma questão clínica que exija avaliação profissional.\",\n        \"auto_response_topics\": [\n          \"Informações sobre planos e preços\",\n          \"Horários de funcionamento\",\n          \"Como funciona a teleconsulta\",\n          \"Dúvidas gerais sobre higiene bucal\",\n          \"Agendamento de consultas de rotina\"\n        ],\n        \"next\": \"trilhas_detalhadas.trilhas.4\"\n      },\n      {\n        \"step\": \"trilhas_detalhadas\",\n        \"instructions\": \"Execute APENAS após confirmação de dados básicos completos.\",\n        \"trilhas\": {\n          \"1\": {\n            \"title\": \"Dor de dente\",\n            \"mode\": \"sequential\",\n            \"questions\": [\n              \"Já tomou algum medicamento para dor? Qual e qual foi o efeito?\",\n              \"A dor é em um dente específico ou em uma área geral?\",\n              \"A dor piora com líquidos gelados?\",\n              \"A dor aumenta com alimentos quentes?\",\n              \"Sente dor ao mastigar?\",\n              \"Sente desconforto ao escovar os dentes?\",\n              \"Notou inchaço no rosto ou gengiva?\",\n              \"Há secreção ou pus na região?\",\n              \"Está com febre?\",\n              \"Fez algum tratamento dentário recente?\",\n              \"A dor aumenta ao pressionar o local?\",\n              \"Alguma outra informação relevante?\"\n            ]\n          },\n          \"2\": {\n            \"title\": \"Trauma dentário/facial\",\n            \"mode\": \"sequential\",\n            \"questions\": [\n              \"Há sangramento ou cortes visíveis?\",\n              \"Consegue abrir e fechar a boca normalmente?\",\n              \"Há inchaço, hematoma ou deformação na região?\",\n              \"Algum dente quebrou ou saiu do lugar? (Se sim, guarde em leite ou saliva)\"\n            ]\n          },\n          \"3\": {\n            \"title\": \"Restauração/prótese deslocada\",\n            \"mode\": \"sequential\",\n            \"questions\": [\n              \"Está sentindo dor no momento?\",\n              \"Perdeu algum fragmento ou engoliu o material?\",\n              \"Está causando desconforto estético?\"\n            ]\n          },\n          \"4\": {\n            \"title\": \"Outros assuntos\",\n            \"mode\": \"sequential\",\n            \"questions\": [\n              \"Por favor, descreva detalhadamente seu problema.\",\n              \"Passou por alguma cirurgia nos últimos tempos? Se sim, notou algum sangramento excessivo?\",\n              \"Tem feridas ou lesões na boca há mais de 15 dias?\",\n              \"Está com dificuldade para movimentar a mandíbula?\"\n            ]\n          }\n        }\n      },\n      {\n        \"step\": \"gerar_resumo_diagnostico\",\n        \"instructions\": \"OBRIGATÓRIO antes de encerrar. Gere um resumo estruturado com: 1) Sintomas relatados, 2) Possível diagnóstico sugerido baseado nos sintomas, 3) Sugestão de tratamento inicial, 4) Nível de urgência (Baixa/Média/Alta/Crítica). Este resumo será enviado ao dentista.\",\n        \"format\": {\n          \"resumo_sintomas\": \"Lista dos sintomas relatados pelo paciente\",\n          \"diagnostico_sugerido\": \"Hipótese diagnóstica baseada nos sintomas (ex: Pulpite irreversível, Periodontite, Abscesso periapical, etc.)\",\n          \"tratamento_sugerido\": \"Recomendação inicial de tratamento\",\n          \"urgencia\": \"Classificação: Baixa | Média | Alta | Crítica\",\n          \"alertas\": \"Alertas sobre alergias ou interações medicamentosas relevantes\"\n        }\n      },\n      {\n        \"step\": \"encerrar_fluxo\",\n        \"instructions\": \"Só execute após: 1) Dados básicos completos 2) Trilha concluída 3) Resumo diagnóstico gerado. Informe o valor conforme status do paciente.\",\n        \"example_message_subscriber\": \"Vou conectar você ao dentista de plantão para atendê-lo online. Você receberá o link da consulta dentro de alguns minutos. O valor de coparticipação de R$ [copayment_value] será debitado conforme seu plano.\",\n        \"example_message_new\": \"Vou conectar você ao dentista de plantão para atendê-lo online. Você receberá o link da consulta dentro de alguns minutos. O valor da consulta é R$ 49,90 e você será redirecionado para o pagamento.\",\n        \"complete\": true\n      }\n    ]\n  },\n  \"safety_checks\": {\n    \"medication_validation\": {\n      \"instructions\": \"Quando o dentista prescrever medicamentos, verificar contra as alergias e medicações contínuas informadas pelo paciente. Alertar sobre possíveis interações.\",\n      \"alerts\": [\n        \"Se paciente alérgico a AINEs, alertar sobre uso de Ibuprofeno, Diclofenaco, etc.\",\n        \"Se paciente usa anticoagulantes, alertar sobre risco de sangramento com procedimentos\",\n        \"Se paciente diabético, alertar sobre uso de corticoides\",\n        \"Verificar interações medicamentosas entre medicações contínuas e prescrição\"\n      ]\n    }\n  }\n}\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.8,
+      "position": [
+        10224,
+        50352
+      ],
+      "id": "1138526a-9b8d-4529-9568-632db6a788aa",
+      "name": "RECEPCIONISTA",
+      "retryOnFail": true,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ae48936d-1ae8-440b-a604-2a6e4c4418f1",
+              "name": "output",
+              "value": "={{ $('RECEPCIONISTA').item.json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        10656,
+        50304
+      ],
+      "id": "0357795e-19f9-4879-8345-275e8d6e23e8",
+      "name": "output"
+    },
+    {
+      "parameters": {
+        "content": "# AGENTE\n",
+        "height": 404,
+        "width": 2916,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        7120,
+        50176
+      ],
+      "id": "d1b56da9-7e26-438c-b38b-f2513b253c7c",
+      "name": "Sticky Note40"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "contatos_agente",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "user_number",
+              "condition": "eq",
+              "keyValue": "={{ $json.user.number }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "agente",
+              "fieldValue": "off"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        4416,
+        50512
+      ],
+      "id": "f7f147d0-7928-4030-9a41-8e690ccd989c",
+      "name": "OFF_AGENT",
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "contatos_agente",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "user_number",
+              "condition": "eq",
+              "keyValue": "={{ $json.user.number }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "agente",
+              "fieldValue": "recepcionista"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        4416,
+        50672
+      ],
+      "id": "73c5d652-1b39-4252-bc5e-1e1ae7c26237",
+      "name": "ON_AGENT",
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        9920,
+        50224
+      ],
+      "id": "417fd65f-4b5f-453d-aec9-b0afaa944099",
+      "name": "AGENTE_OFF"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('SET_VARIAVEIS').item.json.message.origem }}",
+                    "rightValue": "incoming",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "cf1731a6-c921-4b8b-80ba-1acd20435798"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "incoming"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b6ee6e97-6aee-4cd4-8e86-d98c0e446e82",
+                    "leftValue": "={{ $('SET_VARIAVEIS').item.json.message.origem }}",
+                    "rightValue": "outgoing",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "outgoing"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        4048,
+        50096
+      ],
+      "id": "36151b57-0b62-4a8a-bb35-3f4dabe98185",
+      "name": "SWITCH_PRINCIPAL"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.content }}",
+                    "rightValue": "Olá!",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "04024277-f42a-4cce-be48-94855eee78b5"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "DESLIGA"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "28b9b86f-78ce-42ef-ab6f-f7ab3296bb9c",
+                    "leftValue": "={{ $json.message.content }}",
+                    "rightValue": "Até mais!",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "LIGA"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        4144,
+        50592
+      ],
+      "id": "83421d0a-b985-41d0-b819-0a9fb9b92ed2",
+      "name": "LIGA-DESLIGA"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "database",
+        "toolDescription": "'database': SEMPRE use essa tool para pegar conhecimento e contexto.",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "topK": 10,
+        "includeDocumentMetadata": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.1,
+      "position": [
+        10272,
+        50800
+      ],
+      "id": "fbbb2435-c7e2-4f76-94c2-a2a200879d34",
+      "name": "Supabase Vector Store",
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "medication_safety_check",
+        "description": "Verifica a segurança de medicamentos prescritos considerando alergias do paciente e interações medicamentosas. Use esta ferramenta SEMPRE que for gerada uma prescrição ou quando o paciente mencionar medicamentos. Parâmetros: prescribed_medications (lista de medicamentos prescritos), patient_allergies (alergias do paciente), current_medications (medicamentos de uso contínuo do paciente), health_conditions (condições de saúde como diabetes, problemas cardíacos, etc.).",
+        "jsCode": "// Medication Safety Check Tool\n// Comprehensive drug safety verification for dental prescriptions\n\n// Input parsing\nconst input = $input.all()[0].json;\nconst prescribedMeds = (input.prescribed_medications || '').toLowerCase();\nconst allergies = (input.patient_allergies || '').toLowerCase();\nconst currentMeds = (input.current_medications || '').toLowerCase();\nconst conditions = (input.health_conditions || '').toLowerCase();\n\n// Drug database - common dental medications and their interactions\nconst drugDatabase = {\n  // Penicillins and related antibiotics\n  penicillins: {\n    names: ['amoxicilina', 'amoxicillin', 'ampicilina', 'penicilina', 'penicillin'],\n    allergyKeywords: ['penicilina', 'penicillin', 'amoxicilina', 'ampicilina', 'beta-lactâmico', 'beta-lactamico'],\n    crossAllergies: ['cefalosporina', 'cephalosporin'],\n    interactions: [],\n    contraindications: []\n  },\n  // NSAIDs (Anti-inflammatory)\n  nsaids: {\n    names: ['ibuprofeno', 'ibuprofen', 'diclofenaco', 'nimesulida', 'naproxeno', 'cetoprofeno', 'meloxicam', 'piroxicam', 'aine', 'anti-inflamatório'],\n    allergyKeywords: ['aine', 'nsaid', 'anti-inflamatório', 'ibuprofeno', 'diclofenaco', 'aspirina'],\n    crossAllergies: ['aspirina', 'aas'],\n    interactions: ['anticoagulante', 'warfarina', 'heparina', 'rivaroxabana', 'apixabana', 'marevan', 'coumadin'],\n    contraindications: ['úlcera', 'ulcera', 'gastrite', 'hemorragia', 'insuficiência renal', 'insuficiencia renal']\n  },\n  // Analgesics\n  analgesics: {\n    names: ['paracetamol', 'acetaminofeno', 'dipirona', 'novalgina', 'tylenol'],\n    allergyKeywords: ['dipirona', 'metamizol', 'paracetamol'],\n    crossAllergies: [],\n    interactions: [],\n    contraindications: []\n  },\n  // Corticosteroids\n  corticosteroids: {\n    names: ['dexametasona', 'prednisona', 'prednisolona', 'betametasona', 'hidrocortisona', 'corticoide', 'corticosteroide'],\n    allergyKeywords: ['corticoide', 'corticosteroide'],\n    crossAllergies: [],\n    interactions: ['insulina', 'metformina', 'glibenclamida', 'antidiabético'],\n    contraindications: ['diabetes', 'diabético', 'glicemia alta', 'hiperglicemia']\n  },\n  // Local anesthetics\n  anesthetics: {\n    names: ['lidocaína', 'lidocaina', 'articaína', 'mepivacaína', 'prilocaína', 'bupivacaína', 'anestésico'],\n    allergyKeywords: ['lidocaína', 'lidocaina', 'anestésico local'],\n    crossAllergies: [],\n    interactions: ['betabloqueador', 'propranolol', 'atenolol', 'metoprolol'],\n    contraindications: ['arritmia', 'taquicardia', 'problema cardíaco', 'problema cardiaco']\n  },\n  // Anticoagulants (patient may be taking)\n  anticoagulants: {\n    names: ['warfarina', 'marevan', 'heparina', 'rivaroxabana', 'xarelto', 'apixabana', 'eliquis', 'dabigatrana', 'pradaxa', 'anticoagulante'],\n    allergyKeywords: [],\n    crossAllergies: [],\n    interactions: ['aine', 'ibuprofeno', 'diclofenaco', 'aspirina', 'aas'],\n    contraindications: []\n  },\n  // Metronidazole\n  metronidazole: {\n    names: ['metronidazol', 'flagyl'],\n    allergyKeywords: ['metronidazol'],\n    crossAllergies: [],\n    interactions: ['álcool', 'alcool', 'etanol', 'bebida alcoólica'],\n    contraindications: []\n  },\n  // Clindamycin (alternative to penicillin)\n  clindamycin: {\n    names: ['clindamicina', 'dalacin'],\n    allergyKeywords: ['clindamicina'],\n    crossAllergies: ['lincomicina'],\n    interactions: [],\n    contraindications: ['colite', 'diarreia crônica']\n  }\n};\n\n// Initialize results\nconst warnings = [];\nconst alerts = [];\nconst recommendations = [];\nlet isSafe = true;\n\n// Function to check if text contains any keyword from array\nfunction containsAny(text, keywords) {\n  return keywords.some(keyword => text.includes(keyword));\n}\n\n// Check each drug category\nfor (const [category, drug] of Object.entries(drugDatabase)) {\n  // Check if this drug is being prescribed\n  const isPrescribed = containsAny(prescribedMeds, drug.names);\n  \n  if (isPrescribed) {\n    // 1. Check direct allergies\n    if (containsAny(allergies, drug.allergyKeywords)) {\n      isSafe = false;\n      alerts.push(`🚨 ALERGIA DETECTADA: Paciente tem alergia a ${drug.allergyKeywords.find(k => allergies.includes(k))}. NÃO prescrever ${drug.names[0]}!`);\n    }\n    \n    // 2. Check cross-allergies\n    if (drug.crossAllergies.length > 0 && containsAny(allergies, drug.crossAllergies)) {\n      isSafe = false;\n      alerts.push(`⚠️ ALERGIA CRUZADA: Paciente pode ter reação a ${drug.names[0]} devido a alergia a ${drug.crossAllergies.find(k => allergies.includes(k))}.`);\n    }\n    \n    // 3. Check drug interactions with current medications\n    if (drug.interactions.length > 0 && containsAny(currentMeds, drug.interactions)) {\n      const interactingDrug = drug.interactions.find(k => currentMeds.includes(k));\n      warnings.push(`⚠️ INTERAÇÃO MEDICAMENTOSA: ${drug.names[0]} pode interagir com ${interactingDrug} que o paciente está tomando.`);\n      if (category === 'nsaids' && containsAny(currentMeds, ['anticoagulante', 'warfarina', 'heparina', 'rivaroxabana', 'apixabana'])) {\n        isSafe = false;\n        alerts.push(`🚨 RISCO DE SANGRAMENTO: AINEs + anticoagulantes aumentam risco de hemorragia. Considerar paracetamol como alternativa.`);\n      }\n    }\n    \n    // 4. Check contraindications based on health conditions\n    if (drug.contraindications.length > 0 && containsAny(conditions, drug.contraindications)) {\n      const condition = drug.contraindications.find(k => conditions.includes(k));\n      warnings.push(`⚠️ CONTRAINDICAÇÃO: ${drug.names[0]} pode ser problemático para paciente com ${condition}.`);\n      if (category === 'corticosteroids' && containsAny(conditions, ['diabetes', 'diabético'])) {\n        alerts.push(`🚨 DIABÉTICO: Corticosteroides podem aumentar glicemia. Monitorar níveis de açúcar no sangue.`);\n      }\n    }\n  }\n  \n  // Special check: patient taking anticoagulants and being prescribed NSAIDs\n  if (category === 'anticoagulants' && containsAny(currentMeds, drug.names)) {\n    if (containsAny(prescribedMeds, drugDatabase.nsaids.names)) {\n      isSafe = false;\n      alerts.push(`🚨 ALTO RISCO: Paciente usa anticoagulante. AINEs podem causar sangramento grave. Use paracetamol ou dipirona.`);\n    }\n  }\n}\n\n// Special recommendations\nif (containsAny(allergies, ['penicilina', 'amoxicilina'])) {\n  recommendations.push(`💡 ALTERNATIVA: Para pacientes alérgicos a penicilina, considerar Clindamicina 300mg ou Azitromicina 500mg.`);\n}\n\nif (containsAny(conditions, ['gravidez', 'grávida', 'gestante', 'gestação'])) {\n  warnings.push(`⚠️ GESTANTE: Verificar segurança de todos os medicamentos na gravidez. Evitar AINEs no terceiro trimestre.`);\n}\n\nif (containsAny(conditions, ['amamentação', 'amamentando', 'lactante', 'aleitamento'])) {\n  warnings.push(`⚠️ LACTANTE: Alguns medicamentos passam para o leite materno. Verificar compatibilidade.`);\n}\n\n// Build response\nlet response = '';\n\nif (alerts.length > 0) {\n  response += '🚨 **ALERTAS CRÍTICOS:**\\n';\n  response += alerts.join('\\n') + '\\n\\n';\n}\n\nif (warnings.length > 0) {\n  response += '⚠️ **AVISOS:**\\n';\n  response += warnings.join('\\n') + '\\n\\n';\n}\n\nif (recommendations.length > 0) {\n  response += '💡 **RECOMENDAÇÕES:**\\n';\n  response += recommendations.join('\\n') + '\\n\\n';\n}\n\nif (isSafe && alerts.length === 0 && warnings.length === 0) {\n  response = '✅ **VERIFICAÇÃO CONCLUÍDA:** Nenhuma contraindicação ou interação medicamentosa grave detectada com base nas informações fornecidas. Sempre confirme com o histórico completo do paciente.';\n}\n\nreturn {\n  safe: isSafe,\n  alerts: alerts,\n  warnings: warnings,\n  recommendations: recommendations,\n  summary: response,\n  prescribed_medications: prescribedMeds,\n  patient_allergies: allergies,\n  current_medications: currentMeds,\n  health_conditions: conditions\n};"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.1,
+      "position": [
+        10512,
+        50896
+      ],
+      "id": "13782aef-1181-4970-9fcf-852df1112a9a",
+      "name": "Medication Safety Check Tool"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"messages\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    }\n  },\n  \"required\": [\"messages\"]\n}"
+      },
+      "id": "3e1994d7-0b78-456b-8b61-b1eeee1d2b26",
+      "name": "OutputParser1",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        10992,
+        50496
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Whatsapp message to be splitted and formated: {{ $json.output }}",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Analise se esta mensagem precisa ser separada.\n\nPrefira 2 \"splitedMessage\". Mas pode separar a mensagem em 1 a 4 partes de forma humanizada.\n\nDeixe no máximo 300 carateres por mensagem. Divida apenas se forem tópicos diferentes.\n\nAs mensagens devem ser divididas de forma natural, afinal estamos conversando com um humano, não é mesmo?\n\nPor favor, gere a saída no seguinte formato JSON:\n\n{\n\"messages\": [\n\"splitedMessage\",\n\"splitedMessage\"\n]\n}\n\nCertifique-se de que a resposta siga exatamente essa estrutura, incluindo os colchetes e as aspas.\n\nJamais separe uma mensagem vazia.\nSempre que tiver um link, envie-o em uma mensagem separada, somente o link, e envolva-o com crases: https://exemplo.com\nRegras anti-negrito acidental (WhatsApp)\nNunca crie negrito novo. Preserve apenas o que já existir na entrada.\n\nConversão controlada: se houver texto na entrada, converta apenas os delimitadores \"**\" para \"*\", mantendo o mesmo trecho em negrito: texto → texto.\n\nJamais envolva toda a mensagem com asteriscos. Não adicione \"*\" no início/fim de uma mensagem ou parte sem que haja negrito explícito na entrada.\n\nBalanceamento obrigatório: se houver asteriscos/underscores/tiles desbalanceados (*, _, ~), não aplique a formatação. Remova os marcadores soltos para evitar formatação indesejada.\n\nNão use \"*\" como marcador de lista. Se precisar listar, use \"-\" ou \"•\" para evitar ativar negrito.\n\nNão quebre no meio de marcações. Ao dividir em várias mensagens, nunca corte dentro de um trecho em negrito, itálico ou tachado; ajuste o ponto de corte para fora da marcação para manter os pares equilibrados.\n\nMarkdown permitido no WhatsApp (apenas quando presente na entrada original)\nnegrito: apenas quando houver negrito na entrada — converta \"**\" → \"*\" mantendo o mesmo escopo.\n\ntachado (caso seja algo que foi excluído ou alterado)\n\nitálico (extremamente raro)\n\nlink (usar sempre em todos os links)"
+            }
+          ]
+        }
+      },
+      "id": "5be45c7e-bea8-4723-86c7-be49e0140c48",
+      "name": "Parser  Chain",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        10848,
+        50304
+      ]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output.messages",
+        "options": {
+          "destinationFieldName": "output"
+        }
+      },
+      "id": "510d1ee2-9cf4-48af-a99e-efd88a9f1539",
+      "name": "Split de Mensagem",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        11152,
+        50304
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        3248,
+        50160
+      ],
+      "id": "4b6bd7a2-bb9b-490c-b885-4c314a54567e",
+      "name": "AUDIO",
+      "credentials": {
+        "openAiApi": {
+          "id": "8565EvHT7WcQ3G7a",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Variaveis\n",
+        "height": 260,
+        "width": 180,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3520,
+        50224
+      ],
+      "id": "943b808b-f307-4ccd-9c91-24b3d61879ac",
+      "name": "Sticky Note41"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b0bb5511-8d02-4d7d-aa8d-c16102e34313",
+              "name": "user.name",
+              "value": "={{ $('PARSE').item.json.body.data.pushName }}",
+              "type": "string"
+            },
+            {
+              "id": "66405e8b-9117-4c83-b2b2-76faf0c2c959",
+              "name": "user.number",
+              "value": "={{ $('PARSE').item.json.body.data.key.remoteJid.split('@')[0] }}",
+              "type": "string"
+            },
+            {
+              "id": "928f3e20-266b-40fa-8297-8113cc9e718d",
+              "name": "message.sender",
+              "value": "={{ $('PARSE').item.json.body.data.key.remoteJid }}",
+              "type": "string"
+            },
+            {
+              "id": "5c6c98bf-595a-4e95-84c3-1d5a73c558fa",
+              "name": "message.origem",
+              "value": "={{ $('PARSE').first().json.body.data.key.fromMe  ? 'outgoing' : 'incoming' }}",
+              "type": "string"
+            },
+            {
+              "id": "6827f62c-8cc0-40c1-b74a-a07c392abafa",
+              "name": "message.id",
+              "value": "={{ $('PARSE').item.json.body.data.key.id }}",
+              "type": "string"
+            },
+            {
+              "id": "9ca882c3-dfbc-46b1-afe9-a0562d11879a",
+              "name": "message.type",
+              "value": "={{ $('PARSE').item.json.body.data.messageType }}",
+              "type": "string"
+            },
+            {
+              "id": "4036c683-03e1-4e25-b5f8-a0b1caa4abd6",
+              "name": "message.timestamp",
+              "value": "={{ $('PARSE').item.json.body.data.messageTimestamp }}",
+              "type": "string"
+            },
+            {
+              "id": "6b73391d-ad4f-4969-9e1f-c697285f0b06",
+              "name": "message.content",
+              "value": "={{ $json.text }} {{ $('PARSE').item.json.body.data.message.conversation }}",
+              "type": "string"
+            },
+            {
+              "id": "14568540-9744-4e17-92eb-481596a0a042",
+              "name": "message.atendimento",
+              "value": "720",
+              "type": "string"
+            },
+            {
+              "id": "223e07cd-203d-49a0-942f-6dc9d452610e",
+              "name": "body.instance",
+              "value": "={{ $('PARSE').item.json.body.instance }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3808,
+        50304
+      ],
+      "id": "e0753a0a-afef-469a-b49a-3f23e917cc3d",
+      "name": "SET_VARIAVEIS"
+    },
+    {
+      "parameters": {
+        "resource": "chat-api",
+        "operation": "get-media-base64",
+        "instanceName": "=DentalWizardBot",
+        "messageId": "={{ $('Webhook').item.json.body.data.key.id }}",
+        "convertToMp4": true
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        2944,
+        50160
+      ],
+      "id": "118704bc-38e0-4f7c-b385-f0e9ea466931",
+      "name": "Obter m dia em base1",
+      "credentials": {
+        "evolutionApi": {
+          "id": "OXftMyJV7PZEXZ8j",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "data.base64",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        3104,
+        50160
+      ],
+      "id": "e799b2c3-8313-4815-ae6b-0aa47bf25618",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "content": "## SETAR VARIAVEIS\n",
+        "height": 624,
+        "width": 2256,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1456,
+        50112
+      ],
+      "id": "c7a8cfd5-bb70-4454-9946-bce9cac147f2",
+      "name": "Sticky Note42"
+    },
+    {
+      "parameters": {
+        "resource": "chat-api",
+        "operation": "read-messages",
+        "instanceName": "=DentalWizardBot",
+        "remoteJid": "={{ $('SET_VARIAVEIS').item.json.message.sender }}",
+        "messageId": "={{ $('SET_VARIAVEIS').item.json.message.id }}"
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        9520,
+        50368
+      ],
+      "id": "34196585-5404-4b27-bdd4-746bd5b921e1",
+      "name": "Marcar mensagens como lidas",
+      "credentials": {
+        "evolutionApi": {
+          "id": "OXftMyJV7PZEXZ8j",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "87f5c004-1a75-4145-8f21-68d7d43905d5",
+              "leftValue": "={{ $json.body?.entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.from }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1744,
+        50320
+      ],
+      "id": "c1d4f01a-d8ff-4b4e-b3f9-ecd7a7f078b3",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "senderPn",
+              "name": "body.data.key.senderPn",
+              "type": "string",
+              "value": "={ (() => { const v=($json.changes ? $json.changes[0].value : $json.entry[0].changes[0].value); return v?.messages?.[0]?.from || ''; })() }"
+            },
+            {
+              "id": "remoteJid",
+              "name": "body.data.key.remoteJid",
+              "type": "string",
+              "value": "={ (() => { const v=($json.changes ? $json.changes[0].value : $json.entry[0].changes[0].value); const f=v?.messages?.[0]?.from || ''; return f ? `${f}@s.whatsapp.net` : ''; })() }"
+            },
+            {
+              "id": "pushName",
+              "name": "body.data.key.pushName",
+              "type": "string",
+              "value": "={ (() => { const v=($json.changes ? $json.changes[0].value : $json.entry[0].changes[0].value); return v?.contacts?.[0]?.profile?.name || ''; })() }"
+            },
+            {
+              "id": "messageType",
+              "name": "body.data.messageType",
+              "type": "string",
+              "value": "={ (() => { const v=($json.changes ? $json.changes[0].value : $json.entry[0].changes[0].value); const t=v?.messages?.[0]?.type || ''; return t==='text'?'conversation':t==='audio'?'audioMessage':t==='image'?'imageMessage':t==='document'?'documentMessage':t; })() }"
+            },
+            {
+              "id": "conversation",
+              "name": "body.data.message.conversation",
+              "type": "string",
+              "value": "={ (() => { const v=($json.changes ? $json.changes[0].value : $json.entry[0].changes[0].value); return v?.messages?.[0]?.text?.body || ''; })() }"
+            },
+            {
+              "id": "meta_phone_number_id",
+              "name": "body.data.metadata.phone_number_id",
+              "type": "string",
+              "value": "={ (() => { const v=($json.changes ? $json.changes[0].value : $json.entry[0].changes[0].value); return v?.metadata?.phone_number_id || ''; })() }"
+            },
+            {
+              "id": "meta_display_phone_number",
+              "name": "body.data.metadata.display_phone_number",
+              "type": "string",
+              "value": "={ (() => { const v=($json.changes ? $json.changes[0].value : $json.entry[0].changes[0].value); return v?.metadata?.display_phone_number || ''; })() }"
+            },
+            {
+              "id": "meta_message_id",
+              "name": "body.data.meta_message_id",
+              "type": "string",
+              "value": "={ (() => { const v=($json.changes ? $json.changes[0].value : $json.entry[0].changes[0].value); return v?.messages?.[0]?.id || ''; })() }"
+            }
+          ]
+        },
+        "options": {
+          "dotNotation": true
+        }
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1952,
+        50240
+      ],
+      "id": "64037de7-3066-4ce6-8d1f-f3eb264fe30e",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5448852e-af0c-42da-9291-3189848deac7",
+              "name": "remoteJid",
+              "value": "={{ $json.body.data.key.remoteJid }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1952,
+        50416
+      ],
+      "id": "a6ed5053-2b29-423e-a162-680ee2864807",
+      "name": "Edit Fields8"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0269ad1d-81cd-41d4-be59-10829ab52f1a",
+              "name": "userId",
+              "value": "={{ $json[\"remoteJid\"] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2240,
+        50336
+      ],
+      "id": "c0f33abd-68fe-4291-80b0-5063eb04e08f",
+      "name": "JID"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ $json }}",
+        "includeOtherFields": true,
+        "options": {
+          "dotNotation": true
+        }
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2400,
+        50336
+      ],
+      "id": "993e5b86-6b54-4202-8923-68a83cb286b9",
+      "name": "PARSE"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "10615cae-ce1a-4f91-b709-2554a889ff8e",
+              "leftValue": "={{ $('RECEPCIONISTA').item.json.output }}",
+              "rightValue": "Vou conectar você ao dentista de plantão",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        11552,
+        50176
+      ],
+      "id": "5d839eb9-b793-4520-97bc-c3d6e8ecc87d",
+      "name": "If14",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "H1rm1ALJe2iJbZ6M",
+          "mode": "list",
+          "cachedResultName": "Anamnese"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        12080,
+        50160
+      ],
+      "id": "5f3eb4d5-400f-4c6c-b66d-89b1d0f8b833",
+      "name": "Execute Workflow",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "tableId": "atendimentos",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "paciente_id",
+              "fieldValue": "={{ $('Preparar Workflow').item.json.paciente_id }}"
+            },
+            {
+              "fieldId": "clinica_id",
+              "fieldValue": "={{ $('Preparar Workflow').item.json.clinica_id }}"
+            },
+            {
+              "fieldId": "status",
+              "fieldValue": "AGUARDANDO_AGENTE"
+            },
+            {
+              "fieldId": "sintomas",
+              "fieldValue": "={{ $('Preparar Workflow').item.json.resumo_sintomas || $('Preparar Workflow').item.json.ai_case_summary }}"
+            },
+            {
+              "fieldId": "diagnostico_sugerido",
+              "fieldValue": "={{ $('Preparar Workflow').item.json.diagnostico_sugerido_parsed || $('RECEPCIONISTA').item.json.output }}"
+            },
+            {
+              "fieldId": "tratamento_sugerido",
+              "fieldValue": "={{ $('Preparar Workflow').item.json.tratamento_sugerido }}"
+            },
+            {
+              "fieldId": "urgencia",
+              "fieldValue": "={{ $('Preparar Workflow').item.json.urgencia }}"
+            },
+            {
+              "fieldId": "created_by",
+              "fieldValue": "={{ $('Preparar Workflow').item.json.profile_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        12400,
+        50320
+      ],
+      "id": "00e21519-bcd3-4fc6-9e23-e8af8b272307",
+      "name": "Create Atendimento Record",
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# SATISFACTION SURVEY TRIGGER\n",
+        "height": 320,
+        "width": 1204,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        52800
+      ],
+      "id": "8be84296-7056-4dd2-8fb0-fc7d9e4b22f2",
+      "name": "Satisfaction Survey Trigger Note1"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "consultation-completed",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        1504,
+        52912
+      ],
+      "id": "bcbfd54e-ccc4-4bbf-84f8-322e808dc024",
+      "name": "Consultation Completed Webhook1",
+      "webhookId": "consultation-completed-webhook-id"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "atendimentos",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $json.body.atendimento_id || $json.body.id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1696,
+        52912
+      ],
+      "id": "501a21e5-2d9a-49d6-8e70-5a905096e740",
+      "name": "Get Atendimento for Survey1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "pacientes",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $json.paciente_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1888,
+        52912
+      ],
+      "id": "2e02819d-2950-45b5-944e-5c89349c7cf7",
+      "name": "Get Patient for Survey1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "profiles",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "user_id",
+              "keyValue": "={{ $json.profile_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        2080,
+        52912
+      ],
+      "id": "63715b0f-6346-4930-94cf-e126a2843973",
+      "name": "Get Profile for Survey1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "survey-assign-001",
+              "name": "phone_number",
+              "value": "={{ $('Get Profile for Survey1').first().json?.phone || $('Get Patient for Survey1').first().json?.telefone || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "survey-assign-002",
+              "name": "atendimento_id",
+              "value": "={{ $('Get Atendimento for Survey1').first().json?.id }}",
+              "type": "string"
+            },
+            {
+              "id": "survey-assign-003",
+              "name": "paciente_id",
+              "value": "={{ $('Get Atendimento for Survey1').first().json?.paciente_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2272,
+        52912
+      ],
+      "id": "6deb3fc3-e9ad-4b4f-821e-69aee0fa4c66",
+      "name": "Prepare Survey Data1"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "=DentalWizardBot",
+        "remoteJid": "={{ $json.phone_number + '@s.whatsapp.net' }}",
+        "messageText": "Olá! 🦷 Gostaríamos de saber como foi seu atendimento com nosso dentista.\n\nPor favor, avalie de 1 a 5:\n1️⃣ Muito insatisfeito\n2️⃣ Insatisfeito\n3️⃣ Neutro\n4️⃣ Satisfeito\n5️⃣ Muito satisfeito\n\nSua opinião é muito importante para melhorarmos nosso atendimento!",
+        "options_message": {
+          "delay": 1000
+        }
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        2464,
+        52912
+      ],
+      "id": "5783c615-b3e5-40a7-bd33-ba2006be38a8",
+      "name": "Send Satisfaction Survey1",
+      "credentials": {
+        "evolutionApi": {
+          "id": "OXftMyJV7PZEXZ8j",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "653bf6f7-0bb4-4a76-9549-568aff05df74",
+              "name": "user.number",
+              "value": "={{ $('SET_VARIAVEIS').item.json.user.number }}",
+              "type": "string"
+            },
+            {
+              "id": "ac82fad9-0c77-4e51-af3a-dc670279081b",
+              "name": "message.sender",
+              "value": "={{ $('SET_VARIAVEIS').item.json.message.sender }}",
+              "type": "string"
+            },
+            {
+              "id": "8e5101bb-3aa3-45cf-8b5e-e37ee4985bde",
+              "name": "body.instance",
+              "value": "={{ $('SET_VARIAVEIS').item.json.body.instance }}",
+              "type": "string"
+            },
+            {
+              "id": "phase2-assign-001",
+              "name": "patient_type",
+              "value": "={{ $('Set Patient Context1').item.json.patient_type }}",
+              "type": "string"
+            },
+            {
+              "id": "phase2-assign-002",
+              "name": "is_subscriber",
+              "value": "={{ $('Set Patient Context1').item.json.is_subscriber }}",
+              "type": "boolean"
+            },
+            {
+              "id": "phase2-assign-003",
+              "name": "paciente_id",
+              "value": "={{ $('Set Patient Context1').item.json.paciente_id }}",
+              "type": "string"
+            },
+            {
+              "id": "phase2-assign-004",
+              "name": "profile_id",
+              "value": "={{ $('Set Patient Context1').item.json.profile_id }}",
+              "type": "string"
+            },
+            {
+              "id": "phase2-assign-005",
+              "name": "dependent_id",
+              "value": "={{ $('Set Patient Context1').item.json.dependent_id }}",
+              "type": "string"
+            },
+            {
+              "id": "phase2-assign-006",
+              "name": "assinatura_id",
+              "value": "={{ $('Set Patient Context1').item.json.assinatura_id }}",
+              "type": "string"
+            },
+            {
+              "id": "phase2-assign-007",
+              "name": "subscription_status",
+              "value": "={{ $('Set Patient Context1').item.json.subscription_status }}",
+              "type": "string"
+            },
+            {
+              "id": "phase2-assign-008",
+              "name": "copayment_value",
+              "value": "={{ $('Set Patient Context1').item.json.copayment_value }}",
+              "type": "number"
+            },
+            {
+              "id": "phase2-assign-009",
+              "name": "clinica_id",
+              "value": "={{ $('Set Patient Context1').item.json.clinica_id }}",
+              "type": "string"
+            },
+            {
+              "id": "phase2-assign-010",
+              "name": "clinica_nome",
+              "value": "={{ $('Set Patient Context1').item.json.clinica_nome }}",
+              "type": "string"
+            },
+            {
+              "id": "phase2-assign-011",
+              "name": "ai_case_summary",
+              "value": "={{ $('RECEPCIONISTA').item.json.output }}",
+              "type": "string"
+            },
+            {
+              "id": "phase2-assign-012",
+              "name": "user_name",
+              "value": "={{ $('SET_VARIAVEIS').item.json.user.name }}",
+              "type": "string"
+            },
+            {
+              "id": "phase2-assign-013",
+              "name": "resumo_sintomas",
+              "value": "={{ $('Parse AI Output1').item.json.resumo_sintomas }}",
+              "type": "string"
+            },
+            {
+              "id": "phase2-assign-014",
+              "name": "diagnostico_sugerido_parsed",
+              "value": "={{ $('Parse AI Output1').item.json.diagnostico_sugerido }}",
+              "type": "string"
+            },
+            {
+              "id": "phase2-assign-015",
+              "name": "tratamento_sugerido",
+              "value": "={{ $('Parse AI Output1').item.json.tratamento_sugerido }}",
+              "type": "string"
+            },
+            {
+              "id": "phase2-assign-016",
+              "name": "urgencia",
+              "value": "={{ $('Parse AI Output1').item.json.urgencia }}",
+              "type": "string"
+            },
+            {
+              "id": "phase2-assign-017",
+              "name": "alertas",
+              "value": "={{ $('Parse AI Output1').item.json.alertas }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        11920,
+        50160
+      ],
+      "id": "5898f8ed-37c1-4c8b-b849-17ae1f8b3f15",
+      "name": "Preparar Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "=temp.5521964589974"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        2432,
+        51216
+      ],
+      "id": "bd00967e-121e-4837-872e-fcdef968a4a1",
+      "name": "DELETAR_ATENDIMENTO14",
+      "credentials": {
+        "redis": {
+          "id": "L4rUklATrg4beQVM",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "push",
+        "list": "=temp.{{ $('SET_VARIAVEIS').item.json.user.number }}",
+        "messageData": "={{ JSON.stringify($('SET_VARIAVEIS').item.json.message.content) }}",
+        "tail": true
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        4496,
+        49952
+      ],
+      "id": "3854eb88-0422-4b06-a977-867bad785e69",
+      "name": "PUSH",
+      "executeOnce": true,
+      "credentials": {
+        "redis": {
+          "id": "L4rUklATrg4beQVM",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        5296,
+        50384
+      ],
+      "id": "07ea4693-76d3-47ec-afac-bd0a90db8fb4",
+      "name": "Wait",
+      "webhookId": "d1e38aad-57ac-45e5-b64a-08e2f1ce1a6f",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "propertyName": "messages",
+        "key": "=temp.{{ $('SET_VARIAVEIS').item.json.user.number }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        4928,
+        50272
+      ],
+      "id": "bae29701-9972-4707-adf8-83921f947baf",
+      "name": "GET",
+      "credentials": {
+        "redis": {
+          "id": "L4rUklATrg4beQVM",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "=temp.{{ $('SET_VARIAVEIS').item.json.user.number }}"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        5472,
+        50272
+      ],
+      "id": "252b8721-8c72-4a67-9817-aeef415b90d1",
+      "name": "DELETE",
+      "credentials": {
+        "redis": {
+          "id": "L4rUklATrg4beQVM",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        5472,
+        50128
+      ],
+      "id": "22c1669f-f030-4dcc-8360-60cfa5d91f62",
+      "name": "NADA"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('PARSE').item.json.id }}",
+                    "rightValue": "={{ $('SET_VARIAVEIS').item.json.message.id }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEquals"
+                    },
+                    "id": "f9414ea1-3c7e-495a-b94f-91e51203d8ee"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "nada"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "a2aafb32-380d-4510-810a-888831d36437",
+                    "leftValue": "={{ new Date(\n   $('SET_VARIAVEIS').item.json.message.timestamp * 1000\n).toISOString() }}\n",
+                    "rightValue": "={{$now\n   .minus({ seconds: 1 })\n   .toUTC()         // converte o objeto para UTC\n   .toISO()        // força a saída terminar em \"Z\"\n}}",
+                    "operator": {
+                      "type": "dateTime",
+                      "operation": "before"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "segue"
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "espera"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        5136,
+        50256
+      ],
+      "id": "11bde4d4-57ca-41fa-b945-eb3fbe0ec816",
+      "name": "SWITCH_BUFFER"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "57446a71-5686-4060-9a13-59842f1a81d5",
+              "leftValue": "={{ $json.messages }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        5696,
+        50272
+      ],
+      "id": "2a28d442-459e-4d6f-abbc-c32effcc1df7",
+      "name": "If15"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        5856,
+        50112
+      ],
+      "id": "ee3dad83-407f-41e0-8651-fdfa8742c4d7",
+      "name": "NADA8"
+    },
+    {
+      "parameters": {
+        "resource": "chat-api",
+        "operation": "read-messages",
+        "instanceName": "=DentalWizardBot",
+        "remoteJid": "={{ $('SET_VARIAVEIS').item.json.message.sender }}",
+        "messageId": "={{ $('SET_VARIAVEIS').item.json.message.id }}"
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        4704,
+        50272
+      ],
+      "id": "453acd88-0a7a-4ed0-908f-a3ec5b052f8b",
+      "name": "Marcar mensagens como lidas8",
+      "credentials": {
+        "evolutionApi": {
+          "id": "OXftMyJV7PZEXZ8j",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "key": "atendimento.5521964589974",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        2432,
+        51408
+      ],
+      "id": "48a7c4d1-d706-4766-a6e6-b35a160b54c8",
+      "name": "DELETAR_ATENDIMENTO15",
+      "credentials": {
+        "redis": {
+          "id": "L4rUklATrg4beQVM",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        10160,
+        50528
+      ],
+      "id": "01c417a9-7517-49ec-857d-4afc75824723",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "8565EvHT7WcQ3G7a",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        10272,
+        50944
+      ],
+      "id": "e3874dd6-1733-490c-8dcb-3fde5c95cdc4",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "8565EvHT7WcQ3G7a",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        10848,
+        50496
+      ],
+      "id": "848832a3-beb2-4948-b890-29e79c76c51c",
+      "name": "OpenAI Chat Model8",
+      "credentials": {
+        "openAiApi": {
+          "id": "8565EvHT7WcQ3G7a",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "a4dea525-3241-4848-a3c1-e112b18f3a31",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        1504,
+        50320
+      ],
+      "id": "a5e2bbc0-8430-458e-8358-e699a0c9c96a",
+      "name": "Webhook",
+      "webhookId": "a4dea525-3241-4848-a3c1-e112b18f3a31"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "clinicas",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "nome",
+              "keyValue": "={{ $('SET_VARIAVEIS').item.json.body.instance }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        7168,
+        50352
+      ],
+      "id": "481e8907-4af1-45f0-a09d-108999961543",
+      "name": "Identify Partner Clinic",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "profiles",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "phone",
+              "keyValue": "={{ $('SET_VARIAVEIS').item.json.user.number }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        7344,
+        50352
+      ],
+      "id": "07b6d836-569f-499b-8d44-4a69924d5747",
+      "name": "Check Patient Status1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "pacientes",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "profile_id",
+              "keyValue": "={{ $('Check Patient Status1').first().json?.user_id || '00000000-0000-0000-0000-000000000000' }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        7520,
+        50352
+      ],
+      "id": "a1b887b2-48fd-4062-8c89-737b135b00c6",
+      "name": "Check Paciente by Profile1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "dependentes",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "telefone",
+              "keyValue": "={{ $('SET_VARIAVEIS').item.json.user.number }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        7696,
+        50352
+      ],
+      "id": "0e401298-ac50-4dbc-9313-10d9d70b3484",
+      "name": "Check Dependent Status1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "assinatura_membros",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "paciente_id",
+              "keyValue": "={{ $('Check Paciente by Profile1').first().json?.id || '00000000-0000-0000-0000-000000000000' }}"
+            },
+            {
+              "keyName": "status",
+              "keyValue": "ativo"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        7856,
+        50352
+      ],
+      "id": "e09798a4-91b6-48db-a82a-10488905b667",
+      "name": "Check Subscription Members1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "assinaturas",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $('Check Subscription Members1').first().json?.assinatura_id || $('Check Dependent Status1').first().json?.assinatura_id || '00000000-0000-0000-0000-000000000000' }}"
+            },
+            {
+              "keyName": "status",
+              "keyValue": "ativa"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        8032,
+        50352
+      ],
+      "id": "72b60730-2f98-4acd-8f49-7cb3472c086e",
+      "name": "Get Subscription Details1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "phase1-assign-001",
+              "name": "patient_type",
+              "value": "={{ $('Check Paciente by Profile1').first().json?.id ? 'patient' : ($('Check Dependent Status1').first().json?.id ? 'dependent' : 'new') }}",
+              "type": "string"
+            },
+            {
+              "id": "phase1-assign-002",
+              "name": "is_subscriber",
+              "value": "={{ !!$node[\"Get Subscription Details1\"].json.id }}",
+              "type": "boolean"
+            },
+            {
+              "id": "phase1-assign-003",
+              "name": "paciente_id",
+              "value": "={{ $('Check Paciente by Profile1').first().json?.id || null }}",
+              "type": "string"
+            },
+            {
+              "id": "phase1-assign-004",
+              "name": "profile_id",
+              "value": "={{ $('Check Patient Status1').first().json?.user_id || null }}",
+              "type": "string"
+            },
+            {
+              "id": "phase1-assign-005",
+              "name": "dependent_id",
+              "value": "={{ $('Check Dependent Status1').first().json?.id || null }}",
+              "type": "string"
+            },
+            {
+              "id": "phase1-assign-006",
+              "name": "assinatura_id",
+              "value": "={{ $('Get Subscription Details1').first().json?.id || null }}",
+              "type": "string"
+            },
+            {
+              "id": "phase1-assign-007",
+              "name": "subscription_status",
+              "value": "={{ $('Get Subscription Details1').first().json?.status || 'none' }}",
+              "type": "string"
+            },
+            {
+              "id": "phase1-assign-008",
+              "name": "copayment_value",
+              "value": "={{ $('Get Subscription Details1').first().json?.valor_coparticipacao || 0 }}",
+              "type": "number"
+            },
+            {
+              "id": "phase1-assign-009",
+              "name": "clinica_id",
+              "value": "={{ $('Identify Partner Clinic').first().json?.id || null }}",
+              "type": "string"
+            },
+            {
+              "id": "phase1-assign-010",
+              "name": "clinica_nome",
+              "value": "={{ $('Identify Partner Clinic').first().json?.nome || $('SET_VARIAVEIS').first().json.body.instance }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        8224,
+        50352
+      ],
+      "id": "febf6043-de8b-4317-bd3e-634d6f04dc78",
+      "name": "Set Patient Context1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "payment-check-001",
+              "leftValue": "={{ $('Set Patient Context1').item.json.patient_type }}",
+              "rightValue": "new",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        8400,
+        50352
+      ],
+      "id": "dde18d61-4381-4f45-aeb6-25a300fd6892",
+      "name": "Check Payment Required"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.pagseguro.com/orders",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ $env.PAGBANK_ACCESS_TOKEN || 'Bearer YOUR_PAGBANK_ACCESS_TOKEN' }}"
+            },
+            {
+              "name": "x-idempotency-key",
+              "value": "={{ $('SET_VARIAVEIS').item.json.user.number + '_' + $now.toMillis() }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"reference_id\": \"DW_{{ $('SET_VARIAVEIS').first().json.user.number }}_{{ $now.toMillis() }}\",\n  \"customer\": {\n    \"name\": \"{{ $('SET_VARIAVEIS').first().json.user.name || 'Cliente Dental Wizard' }}\",\n    \"email\": \"{{ $('Check Patient Status1').first().json?.email || 'paciente@dentalwizard.com.br' }}\",\n    \"tax_id\": \"{{ $('Check Patient Status1').first().json?.cpf || '' }}\",\n    \"phones\": [\n      {\n        \"country\": \"55\",\n        \"area\": \"{{ $('SET_VARIAVEIS').first().json.user.number.substring(2, 4) }}\",\n        \"number\": \"{{ $('SET_VARIAVEIS').first().json.user.number.substring(4) }}\",\n        \"type\": \"MOBILE\"\n      }\n    ]\n  },\n  \"items\": [\n    {\n      \"reference_id\": \"consulta_online\",\n      \"name\": \"Consulta Odontológica Online - Dental Wizard\",\n      \"quantity\": 1,\n      \"unit_amount\": 4990\n    }\n  ],\n  \"qr_codes\": [\n    {\n      \"amount\": {\n        \"value\": 4990\n      },\n      \"expiration_date\": \"{{ $now.plus({ hours: 24 }).toISO() }}\"\n    }\n  ],\n  \"notification_urls\": [\n    \"https://n8n.healthwizard.com.br/webhook/payment-confirmation\"\n  ]\n}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        8544,
+        50208
+      ],
+      "id": "983a615a-a31e-4893-a1c9-7389eb0db619",
+      "name": "Create Payment Charge",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "rGtGgIcL9iMh8j0c",
+          "name": "Header Auth account"
+        }
+      },
+      "notes": "Creates PIX payment via PagBank/PagSeguro API. Amount: R$ 49,90 (4990 cents). Set PAGBANK_ACCESS_TOKEN environment variable in n8n. The API returns QR code for PIX payment."
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "payment-store-001",
+              "name": "payment_id",
+              "value": "={{ $json.body?.id || $json.id || $json.charge_id || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "payment-store-002",
+              "name": "payment_status",
+              "value": "={{ $json.body?.charges?.[0]?.status || $json.status || 'WAITING' }}",
+              "type": "string"
+            },
+            {
+              "id": "payment-store-003",
+              "name": "payment_link",
+              "value": "={{ $json.body?.qr_codes?.[0]?.links?.find(l => l.rel === 'QRCODE.PNG')?.href || $json.body?.links?.find(l => l.rel === 'PAY')?.href || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "payment-store-004",
+              "name": "pix_qr_code",
+              "value": "={{ $json.body?.qr_codes?.[0]?.text || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "payment-store-005",
+              "name": "pix_qr_code_image",
+              "value": "={{ $json.body?.qr_codes?.[0]?.links?.find(l => l.rel === 'QRCODE.PNG')?.href || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "payment-store-006",
+              "name": "user_number",
+              "value": "={{ $('SET_VARIAVEIS').item.json.user.number }}",
+              "type": "string"
+            },
+            {
+              "id": "payment-store-007",
+              "name": "amount",
+              "value": "4990",
+              "type": "number"
+            },
+            {
+              "id": "payment-store-008",
+              "name": "amount_formatted",
+              "value": "R$ 49,90",
+              "type": "string"
+            },
+            {
+              "id": "payment-store-009",
+              "name": "profile_id",
+              "value": "={{ $('Set Patient Context1').item.json.profile_id }}",
+              "type": "string"
+            },
+            {
+              "id": "payment-store-010",
+              "name": "reference_id",
+              "value": "={{ $json.body?.reference_id || 'DW_' + $('SET_VARIAVEIS').item.json.user.number + '_' + $now.toMillis() }}",
+              "type": "string"
+            },
+            {
+              "id": "payment-store-011",
+              "name": "expiration_date",
+              "value": "={{ $json.body?.qr_codes?.[0]?.expiration_date || $now.plus({ hours: 24 }).toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        8720,
+        50208
+      ],
+      "id": "f00aa9e6-3f50-42ed-8bc8-91c63857add4",
+      "name": "Store Payment Info"
+    },
+    {
+      "parameters": {
+        "operation": "set",
+        "key": "=payment.{{ $('SET_VARIAVEIS').item.json.user.number }}",
+        "value": "={{ JSON.stringify({ payment_id: $json.payment_id, status: $json.payment_status, link: $json.payment_link, amount: $json.amount, reference_id: $json.reference_id, created_at: $now.toISO() }) }}",
+        "expire": true,
+        "ttl": "3600"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        8896,
+        50208
+      ],
+      "id": "58d7fd3a-087a-4ed1-bfaa-095e9d923af2",
+      "name": "Store Payment in Redis",
+      "credentials": {
+        "redis": {
+          "id": "L4rUklATrg4beQVM",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "=DentalWizardBot",
+        "remoteJid": "={{ $('SET_VARIAVEIS').item.json.message.sender }}",
+        "messageText": "💰 *Pagamento da Consulta*\n\nO valor da consulta online é *{{ $('Store Payment Info').item.json.amount_formatted }}*.\n\n📱 *Pague via PIX:*\n\n1️⃣ Abra o app do seu banco\n2️⃣ Escolha pagar com PIX\n3️⃣ Escaneie o QR Code ou copie o código abaixo:\n\n```\n{{ $('Store Payment Info').item.json.pix_qr_code }}\n```\n\n⏰ *Validade:* 24 horas\n\n✅ Após o pagamento ser confirmado, retornarei automaticamente para continuar com seu atendimento.\n\n🦷 *Dental Wizard*",
+        "options_message": {
+          "delay": 1000
+        }
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        9072,
+        50208
+      ],
+      "id": "f9e9b505-565b-4bd2-a78d-093a91e0fe1a",
+      "name": "Send Payment Link",
+      "credentials": {
+        "evolutionApi": {
+          "id": "OXftMyJV7PZEXZ8j",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "insert"
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        9216,
+        50208
+      ],
+      "id": "73c1a536-d814-48c3-8646-70073b022aea",
+      "name": "Store Payment in Database",
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      },
+      "notes": "Stores payment record in pagamentos table. Create this table in Supabase if it doesn't exist."
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        9376,
+        50208
+      ],
+      "id": "ef8dd58d-4cd6-44d0-9163-98726eed23d4",
+      "name": "Payment Sent - Wait for Confirmation"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "=DentalWizardBot",
+        "remoteJid": "={{ $('SET_VARIAVEIS').item.json.message.sender }}",
+        "messageText": "={{ $json.output || $json.text || '' }}",
+        "options_message": {
+          "delay": 1000
+        }
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        11648,
+        50320
+      ],
+      "id": "40a0c09e-3659-497c-99c6-f824a44d42a0",
+      "name": "Enviar texto",
+      "notesInFlow": true,
+      "credentials": {
+        "evolutionApi": {
+          "id": "OXftMyJV7PZEXZ8j",
+          "name": "Evolution account"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "content": "# SATISFACTION SURVEY",
+        "height": 320,
+        "width": 436,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        12240,
+        50192
+      ],
+      "id": "524830ec-a4b5-43e1-a4ef-4defb7e421d2",
+      "name": "Satisfaction Survey Note1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse Structured AI Output\n// Extracts structured fields from AI agent output according to gerar_resumo_diagnostico format\n\nconst aiOutput = $('RECEPCIONISTA').item.json.output || '';\n\n// Initialize parsed structure\nconst parsed = {\n  resumo_sintomas: '',\n  diagnostico_sugerido: '',\n  tratamento_sugerido: '',\n  urgencia: 'Média',\n  alertas: '',\n  raw_output: aiOutput\n};\n\n// Try to parse JSON if the output is structured JSON\nlet structuredData = null;\ntry {\n  // Check if output contains JSON structure\n  const jsonMatch = aiOutput.match(/\\{[\\s\\S]*\\}/);\n  if (jsonMatch) {\n    structuredData = JSON.parse(jsonMatch[0]);\n  }\n} catch (e) {\n  // Not JSON, will parse as text\n}\n\nif (structuredData) {\n  // Direct JSON structure\n  parsed.resumo_sintomas = structuredData.resumo_sintomas || structuredData.sintomas || '';\n  parsed.diagnostico_sugerido = structuredData.diagnostico_sugerido || structuredData.diagnostico || '';\n  parsed.tratamento_sugerido = structuredData.tratamento_sugerido || structuredData.tratamento || '';\n  parsed.urgencia = structuredData.urgencia || structuredData.urgency || 'Média';\n  parsed.alertas = structuredData.alertas || structuredData.alerts || '';\n} else {\n  // Parse from text format (common patterns)\n  const text = aiOutput;\n  \n  // Extract symptoms summary (look for keywords)\n  const symptomsPatterns = [\n    /sintomas[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i,\n    /resumo[\\s]*dos[\\s]*sintomas[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i,\n    /paciente[\\s]*relata[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i\n  ];\n  \n  for (const pattern of symptomsPatterns) {\n    const match = text.match(pattern);\n    if (match && match[1]) {\n      parsed.resumo_sintomas = match[1].trim();\n      break;\n    }\n  }\n  \n  // Extract diagnosis (look for diagnostic keywords)\n  const diagnosisPatterns = [\n    /diagnóstico[\\s]*sugerido[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i,\n    /possível[\\s]*diagnóstico[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i,\n    /hipótese[\\s]*diagnóstica[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i,\n    /diagnóstico[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i\n  ];\n  \n  for (const pattern of diagnosisPatterns) {\n    const match = text.match(pattern);\n    if (match && match[1]) {\n      parsed.diagnostico_sugerido = match[1].trim();\n      break;\n    }\n  }\n  \n  // Extract treatment suggestion\n  const treatmentPatterns = [\n    /tratamento[\\s]*sugerido[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i,\n    /sugestão[\\s]*de[\\s]*tratamento[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i,\n    /recomendação[\\s]*inicial[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i,\n    /tratamento[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i\n  ];\n  \n  for (const pattern of treatmentPatterns) {\n    const match = text.match(pattern);\n    if (match && match[1]) {\n      parsed.tratamento_sugerido = match[1].trim();\n      break;\n    }\n  }\n  \n  // Extract urgency level\n  const urgencyPatterns = [\n    /urgência[\\s:]*([^\\n]+)/i,\n    /nível[\\s]*de[\\s]*urgência[\\s:]*([^\\n]+)/i\n  ];\n  \n  for (const pattern of urgencyPatterns) {\n    const match = text.match(pattern);\n    if (match && match[1]) {\n      const urgencyText = match[1].trim().toLowerCase();\n      if (urgencyText.includes('crítica') || urgencyText.includes('critica')) {\n        parsed.urgencia = 'Crítica';\n      } else if (urgencyText.includes('alta')) {\n        parsed.urgencia = 'Alta';\n      } else if (urgencyText.includes('baixa')) {\n        parsed.urgencia = 'Baixa';\n      } else if (urgencyText.includes('média') || urgencyText.includes('media')) {\n        parsed.urgencia = 'Média';\n      }\n      break;\n    }\n  }\n  \n  // Check for urgency keywords in text\n  const urgencyKeywords = {\n    'Crítica': ['crítica', 'critica', 'emergência', 'emergencia', 'urgente', 'imediato'],\n    'Alta': ['alta', 'importante', 'prioridade'],\n    'Baixa': ['baixa', 'rotina', 'não urgente']\n  };\n  \n  const lowerText = text.toLowerCase();\n  for (const [level, keywords] of Object.entries(urgencyKeywords)) {\n    if (keywords.some(kw => lowerText.includes(kw))) {\n      parsed.urgencia = level;\n      break;\n    }\n  }\n  \n  // Extract alerts/warnings\n  const alertPatterns = [\n    /alertas?[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i,\n    /avisos?[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i,\n    /atenção[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i\n  ];\n  \n  for (const pattern of alertPatterns) {\n    const match = text.match(pattern);\n    if (match && match[1]) {\n      parsed.alertas = match[1].trim();\n      break;\n    }\n  }\n  \n  // If no structured data found, use the entire output as symptoms summary\n  if (!parsed.resumo_sintomas && !parsed.diagnostico_sugerido) {\n    parsed.resumo_sintomas = aiOutput.substring(0, 500); // Limit length\n  }\n}\n\n// Return parsed structure\nreturn {\n  ...parsed,\n  parse_success: !!(parsed.diagnostico_sugerido || parsed.tratamento_sugerido || parsed.resumo_sintomas)\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        11760,
+        50160
+      ],
+      "id": "00c85e58-a4e9-4ff3-bab4-fe9372b76e09",
+      "name": "Parse AI Output1"
+    },
+    {
+      "parameters": {
+        "content": "# SEND PRESCRIPTION\n",
+        "height": 480,
+        "width": 2868,
+        "color": 8
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        51744
+      ],
+      "id": "1da2d966-e06f-4bad-ad4e-be084c65ba14",
+      "name": "Send Prescription Note1"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "send-prescription",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        1504,
+        51952
+      ],
+      "id": "8edb742c-595c-4bf4-b3c7-f49ce6d328c0",
+      "name": "Prescription Webhook1",
+      "webhookId": "send-prescription-webhook-id",
+      "notes": "Receives Supabase database webhooks when prescricoes table is created/updated. Configure Supabase Database Webhook to POST to this URL on INSERT/UPDATE events for prescricoes table where enviado_whatsapp is false or null."
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "prescricoes",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $json.body.prescription_id || $json.body.id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        2656,
+        51760
+      ],
+      "id": "0b0097b7-9295-4121-8812-da8c036f0bf8",
+      "name": "Get Prescription1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "pacientes",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $json.paciente_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        2848,
+        51952
+      ],
+      "id": "56f8bf60-1a09-43d7-b7b2-51f1f89dfebc",
+      "name": "Get Patient for Prescription1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "profiles",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "user_id",
+              "keyValue": "={{ $json.profile_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        3280,
+        51856
+      ],
+      "id": "78c2cc20-9f03-4c31-9a8e-f6a1fe5db4b7",
+      "name": "Get Profile for Prescription1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format Prescription Message\n// Formats prescription data into a readable WhatsApp message\n\n// Get prescription data from either merged data (new flow) or Get Prescription (old flow)\nlet prescription;\ntry {\n  prescription = $('Merge Prescription Data').item.json;\n} catch (e) {\n  prescription = $('Get Prescription1').item.json;\n}\nconst patient = $('Get Patient for Prescription1').item.json;\n// Get profile data from merged node (handles both cases: with and without profile_id)\nlet profile;\ntry {\n  profile = $('Merge Profile Data for Prescription').item.json || {};\n} catch (e) {\n  profile = {};\n}\n\nconst patientName = patient?.nome || profile?.name || 'Paciente';\nconst date = prescription?.created_at ? new Date(prescription.created_at).toLocaleDateString('pt-BR') : new Date().toLocaleDateString('pt-BR');\n\nlet message = `📋 *PRESCRIÇÃO ODONTOLÓGICA*\\n\\n`;\nmessage += `Paciente: ${patientName}\\n`;\nmessage += `Data: ${date}\\n\\n`;\n\n// Add diagnosis if available\nif (prescription?.diagnostico || prescription?.diagnostico_final) {\n  message += `*Diagnóstico:*\\n${prescription.diagnostico || prescription.diagnostico_final}\\n\\n`;\n}\n\n// Add medications\nif (prescription?.medicacoes || prescription?.medicamentos) {\n  message += `*Medicamentos Prescritos:*\\n`;\n  const medications = prescription.medicacoes || prescription.medicamentos;\n  \n  if (typeof medications === 'string') {\n    try {\n      const meds = JSON.parse(medications);\n      meds.forEach((med, index) => {\n        message += `${index + 1}. *${med.nome || med.name || 'Medicamento'}*\\n`;\n        if (med.dosagem || med.dosage) message += `   Dosagem: ${med.dosagem || med.dosage}\\n`;\n        if (med.frequencia || med.frequency) message += `   Frequência: ${med.frequencia || med.frequency}\\n`;\n        if (med.duracao || med.duration) message += `   Duração: ${med.duracao || med.duration}\\n`;\n        if (med.observacoes || med.notes) message += `   Observações: ${med.observacoes || med.notes}\\n`;\n        message += `\\n`;\n      });\n    } catch (e) {\n      message += `${medications}\\n\\n`;\n    }\n  } else if (Array.isArray(medications)) {\n    medications.forEach((med, index) => {\n      message += `${index + 1}. *${med.nome || med.name || 'Medicamento'}*\\n`;\n      if (med.dosagem || med.dosage) message += `   Dosagem: ${med.dosagem || med.dosage}\\n`;\n      if (med.frequencia || med.frequency) message += `   Frequência: ${med.frequencia || med.frequency}\\n`;\n      if (med.duracao || med.duration) message += `   Duração: ${med.duracao || med.duration}\\n`;\n      if (med.observacoes || med.notes) message += `   Observações: ${med.observacoes || med.notes}\\n`;\n      message += `\\n`;\n    });\n  } else {\n    message += `${medications}\\n\\n`;\n  }\n}\n\n// Add treatment instructions\nif (prescription?.instrucoes || prescription?.instructions || prescription?.tratamento_realizado) {\n  message += `*Instruções de Tratamento:*\\n${prescription.instrucoes || prescription.instructions || prescription.tratamento_realizado}\\n\\n`;\n}\n\n// Add observations\nif (prescription?.observacoes || prescription?.observations) {\n  message += `*Observações:*\\n${prescription.observacoes || prescription.observations}\\n\\n`;\n}\n\n// Add safety warnings if available\nif (prescription?.alertas || prescription?.warnings) {\n  message += `⚠️ *Atenção:*\\n${prescription.alertas || prescription.warnings}\\n\\n`;\n}\n\nmessage += `🦷 *Dental Wizard*\\n`;\nmessage += `Em caso de dúvidas, entre em contato conosco.`;\n\n// Get phone number\nconst phoneNumber = profile?.phone || patient?.telefone || prescription?.telefone || '';\n\nreturn {\n  message: message,\n  phone_number: phoneNumber,\n  prescription_id: prescription?.id,\n  patient_id: patient?.id || prescription?.paciente_id\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3744,
+        51952
+      ],
+      "id": "b587ef33-5d2e-4b7a-9bae-d1763c347f2c",
+      "name": "Format Prescription Message1"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "=DentalWizardBot",
+        "remoteJid": "={{ $json.phone_number + '@s.whatsapp.net' }}",
+        "messageText": "={{ $json.message }}",
+        "options_message": {
+          "delay": 1000
+        }
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        3920,
+        51952
+      ],
+      "id": "d4039bec-a75c-4519-8b25-67e23ab1a31d",
+      "name": "Send Prescription via WhatsApp1",
+      "credentials": {
+        "evolutionApi": {
+          "id": "OXftMyJV7PZEXZ8j",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "prescricoes",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $('Format Prescription Message1').item.json.prescription_id }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "enviado_whatsapp",
+              "fieldValue": "true"
+            },
+            {
+              "fieldId": "data_envio_whatsapp",
+              "fieldValue": "={{ $now.toISO() }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        4112,
+        51952
+      ],
+      "id": "ac042410-9337-489c-b636-f657756ba75e",
+      "name": "Update Prescription Sent Status1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ml-comparison-webhook",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        1488,
+        52432
+      ],
+      "id": "35898c2e-c2c2-481b-96b7-2c9652cdf263",
+      "name": "ML Comparison Webhook",
+      "webhookId": "ml-comparison-webhook-id",
+      "notes": "Receives Supabase database webhooks when atendimentos table is updated. Configure Supabase Database Webhook to POST to this URL on UPDATE events for atendimentos table where diagnostico_final and tratamento_realizado are filled."
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse Supabase Database Webhook\n// Handles Supabase database webhook format (from database triggers) and legacy manual webhook format\n\nconst input = $input.all()[0].json;\nconst body = input.body || {};\n\nlet atendimentoData = null;\nlet atendimentoId = null;\n\n// Check if it's a Supabase database webhook format\n// Supabase sends: { type: 'UPDATE', table: 'atendimentos', record: {...}, old_record: {...} }\nif (body.type && (body.table === 'atendimentos' || body.table_name === 'atendimentos') && body.record) {\n  // Supabase database webhook format\n  atendimentoData = body.record;\n  atendimentoId = body.record.id;\n  \n  // Only process if diagnostico_final and tratamento_realizado are filled\n  if (!atendimentoData.diagnostico_final || !atendimentoData.tratamento_realizado) {\n    // Skip if dentist hasn't filled in the diagnosis/treatment yet\n    return { \n      skip: true, \n      reason: 'Diagnosis or treatment not yet filled', \n      atendimento_id: atendimentoId \n    };\n  }\n  \n  // Only process UPDATE events (not INSERT)\n  if (body.type !== 'UPDATE') {\n    return { \n      skip: true, \n      reason: 'Not an UPDATE event', \n      atendimento_id: atendimentoId \n    };\n  }\n  \n  // Return the record data directly for processing\n  return {\n    skip: false,\n    atendimento_id: atendimentoId,\n    atendimento_data: atendimentoData,\n    is_supabase_webhook: true\n  };\n} else {\n  // Legacy webhook format (manual trigger or app trigger)\n  atendimentoId = body.atendimento_id || body.id || body.record?.id;\n  if (!atendimentoId) {\n    return { skip: true, reason: 'No atendimento_id provided' };\n  }\n  \n  return {\n    skip: false,\n    atendimento_id: atendimentoId,\n    atendimento_data: null, // Will fetch it\n    is_supabase_webhook: false\n  };\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1696,
+        52432
+      ],
+      "id": "bf9be65b-eb3b-4460-9b42-34f48169ad0e",
+      "name": "Parse Supabase Webhook ML1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ml-check-skip",
+              "leftValue": "={{ $json.skip }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1872,
+        52432
+      ],
+      "id": "f143a13d-4ed6-49a4-af43-8b335d15b132",
+      "name": "Check Should Process ML1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ml-check-cached",
+              "leftValue": "={{ $json.is_supabase_webhook }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2112,
+        52416
+      ],
+      "id": "111d847a-16c0-4200-88f5-fce2a626156f",
+      "name": "Check Use Cached Data1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ml-set-cached-001",
+              "name": "id",
+              "value": "={{ $json.atendimento_data.id }}",
+              "type": "string"
+            },
+            {
+              "id": "ml-set-cached-002",
+              "name": "paciente_id",
+              "value": "={{ $json.atendimento_data.paciente_id }}",
+              "type": "string"
+            },
+            {
+              "id": "ml-set-cached-003",
+              "name": "diagnostico_sugerido",
+              "value": "={{ $json.atendimento_data.diagnostico_sugerido }}",
+              "type": "string"
+            },
+            {
+              "id": "ml-set-cached-004",
+              "name": "diagnostico_final",
+              "value": "={{ $json.atendimento_data.diagnostico_final }}",
+              "type": "string"
+            },
+            {
+              "id": "ml-set-cached-005",
+              "name": "medicacoes_sugeridas",
+              "value": "={{ $json.atendimento_data.medicacoes_sugeridas || $json.atendimento_data.tratamento_sugerido || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "ml-set-cached-006",
+              "name": "tratamento_realizado",
+              "value": "={{ $json.atendimento_data.tratamento_realizado }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2288,
+        52336
+      ],
+      "id": "276e43ac-039a-4e66-8bd3-1630b69f1496",
+      "name": "Use Cached Atendimento Data1"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "tableId": "atendimentos",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "keyValue": "={{ $('Parse Supabase Webhook ML1').item.json.atendimento_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        2288,
+        52512
+      ],
+      "id": "7cb6fe51-dbed-4353-8f82-a7d7e0e20b7d",
+      "name": "Fetch Atendimento for ML1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        2496,
+        52432
+      ],
+      "id": "0c591641-cccd-45ee-b587-2fb864d00fb2",
+      "name": "Merge Atendimento Data ML1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ML Comparison Logic\n// Compares AI suggested diagnosis with dentist's final diagnosis\n\nconst atendimento = $input.all()[0].json;\n\nconst aiDiagnosis = (atendimento.diagnostico_sugerido || '').toLowerCase();\nconst dentistDiagnosis = (atendimento.diagnostico_final || '').toLowerCase();\nconst aiTreatment = (atendimento.medicacoes_sugeridas || atendimento.tratamento_sugerido || '').toLowerCase();\nconst dentistTreatment = (atendimento.tratamento_realizado || '').toLowerCase();\n\n// Calculate similarity scores (simple keyword matching)\nfunction calculateSimilarity(text1, text2) {\n  if (!text1 || !text2) return 0;\n  \n  const words1 = text1.split(/\\s+/).filter(w => w.length > 3);\n  const words2 = text2.split(/\\s+/).filter(w => w.length > 3);\n  \n  if (words1.length === 0 || words2.length === 0) return 0;\n  \n  const matches = words1.filter(w => words2.some(w2 => w2.includes(w) || w.includes(w2)));\n  return (matches.length / Math.max(words1.length, words2.length)) * 100;\n}\n\nconst diagnosisSimilarity = calculateSimilarity(aiDiagnosis, dentistDiagnosis);\nconst treatmentSimilarity = calculateSimilarity(aiTreatment, dentistTreatment);\n\nconst mlData = {\n  atendimento_id: atendimento.id,\n  paciente_id: atendimento.paciente_id,\n  ai_diagnosis: atendimento.diagnostico_sugerido || '',\n  dentist_diagnosis: atendimento.diagnostico_final || '',\n  ai_treatment: atendimento.medicacoes_sugeridas || atendimento.tratamento_sugerido || '',\n  dentist_treatment: atendimento.tratamento_realizado || '',\n  diagnosis_accuracy: diagnosisSimilarity.toFixed(2),\n  treatment_accuracy: treatmentSimilarity.toFixed(2),\n  overall_accuracy: ((diagnosisSimilarity + treatmentSimilarity) / 2).toFixed(2),\n  timestamp: new Date().toISOString(),\n  feedback: {\n    diagnosis_match: diagnosisSimilarity > 60,\n    treatment_match: treatmentSimilarity > 60,\n    needs_review: diagnosisSimilarity < 40 || treatmentSimilarity < 40\n  }\n};\n\nreturn mlData;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2688,
+        52432
+      ],
+      "id": "1dc844df-1413-4e73-8e20-826b6b6bf222",
+      "name": "Calculate ML Metrics"
+    },
+    {
+      "parameters": {
+        "tableId": "ai_ml_comparisons",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "atendimento_id",
+              "fieldValue": "={{ $json.atendimento_id }}"
+            },
+            {
+              "fieldId": "paciente_id",
+              "fieldValue": "={{ $json.paciente_id }}"
+            },
+            {
+              "fieldId": "ai_diagnosis",
+              "fieldValue": "={{ $json.ai_diagnosis }}"
+            },
+            {
+              "fieldId": "dentist_diagnosis",
+              "fieldValue": "={{ $json.dentist_diagnosis }}"
+            },
+            {
+              "fieldId": "ai_treatment",
+              "fieldValue": "={{ $json.ai_treatment }}"
+            },
+            {
+              "fieldId": "dentist_treatment",
+              "fieldValue": "={{ $json.dentist_treatment }}"
+            },
+            {
+              "fieldId": "diagnosis_accuracy",
+              "fieldValue": "={{ $json.diagnosis_accuracy }}"
+            },
+            {
+              "fieldId": "treatment_accuracy",
+              "fieldValue": "={{ $json.treatment_accuracy }}"
+            },
+            {
+              "fieldId": "overall_accuracy",
+              "fieldValue": "={{ $json.overall_accuracy }}"
+            },
+            {
+              "fieldId": "feedback",
+              "fieldValue": "={{ JSON.stringify($json.feedback) }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        2848,
+        52432
+      ],
+      "id": "6b5c5d66-f01b-4c91-97e4-733ed1aaba80",
+      "name": "Store ML Comparison",
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# ML COMPARISON\n",
+        "height": 392,
+        "width": 1604,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        52304
+      ],
+      "id": "a567809e-cc48-468c-b3ec-e3c50d69aef2",
+      "name": "ML Comparison Note1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "prescription-check-profile-id",
+              "leftValue": "={{ $json.profile_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3040,
+        51952
+      ],
+      "id": "7d0ea845-1987-4644-8967-95c8eb6fa5a6",
+      "name": "Check Has Profile ID for Prescription"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "empty-profile-001",
+              "name": "id",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "empty-profile-002",
+              "name": "phone",
+              "value": "={{ $('Get Patient for Prescription1').first().json.telefone || '' }}",
+              "type": "string"
+            },
+            {
+              "id": "empty-profile-003",
+              "name": "name",
+              "value": "={{ $('Get Patient for Prescription1').first().json.nome || '' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3280,
+        52048
+      ],
+      "id": "b6fe082e-689c-402e-bb3a-89701d7fd603",
+      "name": "Set Empty Profile for Prescription"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        3552,
+        51952
+      ],
+      "id": "4802e948-a957-4f19-a6cd-994c4741d891",
+      "name": "Merge Profile Data for Prescription"
+    }
+  ],
+  "pinData": {
+    "GET_ATENDIMENTO": [
+      {
+        "json": {
+          "atendimento": null
+        }
+      }
+    ],
+    "CONCATENA": [
+      {
+        "json": {
+          "message": "[\"\\\" Dipirona\\\"\"]"
+        }
+      }
+    ],
+    "GET_USER": [
+      {
+        "json": {
+          "id": 1,
+          "user_number": "5521964589974",
+          "user_name": "Y🕷",
+          "user_profile": null,
+          "agente": "recepcionista",
+          "role": null,
+          "status": null,
+          "email": null,
+          "interesse_duvida": null,
+          "created_at": "2025-07-29T02:36:44.320922"
+        }
+      }
+    ],
+    "SET_USER": [
+      {
+        "json": {
+          "user_profile": null,
+          "agente": "recepcionista",
+          "role": null,
+          "status": null
+        }
+      }
+    ],
+    "Switch8": [
+      {
+        "json": {
+          "success": true,
+          "data": {
+            "message": "Read messages",
+            "read": "success"
+          }
+        }
+      }
+    ],
+    "RECEPCIONISTA": [
+      {
+        "json": {
+          "output": "Possui alguma condição de saúde como diabetes, problemas cardíacos ou neurológicos?"
+        }
+      }
+    ],
+    "output": [
+      {
+        "json": {
+          "output": "Possui alguma condição de saúde como diabetes, problemas cardíacos ou neurológicos?"
+        }
+      }
+    ],
+    "SET_VARIAVEIS": [
+      {
+        "json": {
+          "user": {
+            "name": "Y🕷",
+            "number": "5521964589974"
+          },
+          "message": {
+            "sender": "5521964589974@s.whatsapp.net",
+            "origem": "incoming",
+            "id": "3EB0466AEE3EB5F8E895B7",
+            "type": "conversation",
+            "timestamp": "1754058394",
+            "content": " Dipirona",
+            "atendimento": "720"
+          },
+          "body": {
+            "instance": "DevTest"
+          }
+        }
+      }
+    ],
+    "Marcar mensagens como lidas": [
+      {
+        "json": {
+          "success": true,
+          "data": {
+            "message": "Read messages",
+            "read": "success"
+          }
+        }
+      }
+    ],
+    "Edit Fields8": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.healthwizard.com.br",
+            "user-agent": "axios/1.10.0",
+            "content-length": "1062",
+            "accept": "application/json, text/plain, */*",
+            "accept-encoding": "gzip, compress, deflate, br",
+            "content-type": "application/json",
+            "x-forwarded-for": "172.18.0.1",
+            "x-forwarded-host": "n8n.healthwizard.com.br",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "3b3770bebe4b",
+            "x-real-ip": "172.18.0.1"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "event": "messages.upsert",
+            "instance": "DevTest",
+            "data": {
+              "key": {
+                "remoteJid": "5521964589974@s.whatsapp.net",
+                "fromMe": false,
+                "id": "3EB0466AEE3EB5F8E895B7",
+                "senderLid": "92552350986390@lid"
+              },
+              "pushName": "Y🕷",
+              "status": "DELIVERY_ACK",
+              "message": {
+                "conversation": "Dipirona",
+                "messageContextInfo": {
+                  "deviceListMetadata": {
+                    "senderKeyHash": "sii+XnmWYJ17AA==",
+                    "senderTimestamp": "1753802536",
+                    "senderAccountType": "E2EE",
+                    "receiverAccountType": "E2EE",
+                    "recipientKeyHash": "ftlSp1Lbb2mEaQ==",
+                    "recipientTimestamp": "1753732276"
+                  },
+                  "deviceListMetadataVersion": 2,
+                  "messageSecret": "G46P8SYFojng11jCBRCOZWlst2Q8Q8P/PrtsqvGhzlA=",
+                  "limitSharingV2": {
+                    "trigger": "UNKNOWN",
+                    "initiatedByMe": false
+                  }
+                }
+              },
+              "messageType": "conversation",
+              "messageTimestamp": 1754058394,
+              "instanceId": "03ff70ea-be30-4706-9b0d-4c1b544669ea",
+              "source": "web"
+            },
+            "destination": "https://n8n.healthwizard.com.br/webhook/31878488-be1e-4582-8831-55e51dd0e317",
+            "date_time": "2025-08-01T11:26:35.136Z",
+            "sender": "5521959189348@s.whatsapp.net",
+            "server_url": "https://evolutionapi.healthwizard.com.br",
+            "apikey": "B7A862A93F8E-4DCD-B928-EA7A1B189EB3"
+          },
+          "webhookUrl": "https://n8n.healthwizard.com.br/webhook/31878488-be1e-4582-8831-55e51dd0e317",
+          "executionMode": "production",
+          "remoteJid": "5521964589974@s.whatsapp.net"
+        }
+      }
+    ],
+    "JID": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.healthwizard.com.br",
+            "user-agent": "axios/1.10.0",
+            "content-length": "1062",
+            "accept": "application/json, text/plain, */*",
+            "accept-encoding": "gzip, compress, deflate, br",
+            "content-type": "application/json",
+            "x-forwarded-for": "172.18.0.1",
+            "x-forwarded-host": "n8n.healthwizard.com.br",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "3b3770bebe4b",
+            "x-real-ip": "172.18.0.1"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "event": "messages.upsert",
+            "instance": "DevTest",
+            "data": {
+              "key": {
+                "remoteJid": "5521964589974@s.whatsapp.net",
+                "fromMe": false,
+                "id": "3EB0466AEE3EB5F8E895B7",
+                "senderLid": "92552350986390@lid"
+              },
+              "pushName": "Y🕷",
+              "status": "DELIVERY_ACK",
+              "message": {
+                "conversation": "Dipirona",
+                "messageContextInfo": {
+                  "deviceListMetadata": {
+                    "senderKeyHash": "sii+XnmWYJ17AA==",
+                    "senderTimestamp": "1753802536",
+                    "senderAccountType": "E2EE",
+                    "receiverAccountType": "E2EE",
+                    "recipientKeyHash": "ftlSp1Lbb2mEaQ==",
+                    "recipientTimestamp": "1753732276"
+                  },
+                  "deviceListMetadataVersion": 2,
+                  "messageSecret": "G46P8SYFojng11jCBRCOZWlst2Q8Q8P/PrtsqvGhzlA=",
+                  "limitSharingV2": {
+                    "trigger": "UNKNOWN",
+                    "initiatedByMe": false
+                  }
+                }
+              },
+              "messageType": "conversation",
+              "messageTimestamp": 1754058394,
+              "instanceId": "03ff70ea-be30-4706-9b0d-4c1b544669ea",
+              "source": "web"
+            },
+            "destination": "https://n8n.healthwizard.com.br/webhook/31878488-be1e-4582-8831-55e51dd0e317",
+            "date_time": "2025-08-01T11:26:35.136Z",
+            "sender": "5521959189348@s.whatsapp.net",
+            "server_url": "https://evolutionapi.healthwizard.com.br",
+            "apikey": "B7A862A93F8E-4DCD-B928-EA7A1B189EB3"
+          },
+          "webhookUrl": "https://n8n.healthwizard.com.br/webhook/31878488-be1e-4582-8831-55e51dd0e317",
+          "executionMode": "production",
+          "remoteJid": "5521964589974@s.whatsapp.net",
+          "userId": "5521964589974@s.whatsapp.net"
+        }
+      }
+    ],
+    "PARSE": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.healthwizard.com.br",
+            "user-agent": "axios/1.10.0",
+            "content-length": "1062",
+            "accept": "application/json, text/plain, */*",
+            "accept-encoding": "gzip, compress, deflate, br",
+            "content-type": "application/json",
+            "x-forwarded-for": "172.18.0.1",
+            "x-forwarded-host": "n8n.healthwizard.com.br",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "3b3770bebe4b",
+            "x-real-ip": "172.18.0.1"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "event": "messages.upsert",
+            "instance": "DevTest",
+            "data": {
+              "key": {
+                "remoteJid": "5521964589974@s.whatsapp.net",
+                "fromMe": false,
+                "id": "3EB0466AEE3EB5F8E895B7",
+                "senderLid": "92552350986390@lid"
+              },
+              "pushName": "Y🕷",
+              "status": "DELIVERY_ACK",
+              "message": {
+                "conversation": "Dipirona",
+                "messageContextInfo": {
+                  "deviceListMetadata": {
+                    "senderKeyHash": "sii+XnmWYJ17AA==",
+                    "senderTimestamp": "1753802536",
+                    "senderAccountType": "E2EE",
+                    "receiverAccountType": "E2EE",
+                    "recipientKeyHash": "ftlSp1Lbb2mEaQ==",
+                    "recipientTimestamp": "1753732276"
+                  },
+                  "deviceListMetadataVersion": 2,
+                  "messageSecret": "G46P8SYFojng11jCBRCOZWlst2Q8Q8P/PrtsqvGhzlA=",
+                  "limitSharingV2": {
+                    "trigger": "UNKNOWN",
+                    "initiatedByMe": false
+                  }
+                }
+              },
+              "messageType": "conversation",
+              "messageTimestamp": 1754058394,
+              "instanceId": "03ff70ea-be30-4706-9b0d-4c1b544669ea",
+              "source": "web"
+            },
+            "destination": "https://n8n.healthwizard.com.br/webhook/31878488-be1e-4582-8831-55e51dd0e317",
+            "date_time": "2025-08-01T11:26:35.136Z",
+            "sender": "5521959189348@s.whatsapp.net",
+            "server_url": "https://evolutionapi.healthwizard.com.br",
+            "apikey": "B7A862A93F8E-4DCD-B928-EA7A1B189EB3"
+          },
+          "webhookUrl": "https://n8n.healthwizard.com.br/webhook/31878488-be1e-4582-8831-55e51dd0e317",
+          "executionMode": "production",
+          "remoteJid": "5521964589974@s.whatsapp.net",
+          "userId": "5521964589974@s.whatsapp.net",
+          "fromMe": false,
+          "id": "3EB0466AEE3EB5F8E895B7",
+          "senderLid": "92552350986390@lid"
+        }
+      }
+    ],
+    "PUSH": [
+      {
+        "json": {
+          "atendimento": null
+        }
+      }
+    ],
+    "GET": [
+      {
+        "json": {
+          "messages": [
+            "\" Dipirona\""
+          ]
+        }
+      }
+    ],
+    "DELETE": [
+      {
+        "json": {
+          "messages": [
+            "\" Dipirona\""
+          ]
+        }
+      }
+    ],
+    "Marcar mensagens como lidas8": [
+      {
+        "json": {
+          "success": true,
+          "data": {
+            "message": "Read messages",
+            "read": "success"
+          }
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Payment Confirmation Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Parse Payment Notification1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Payment Notification1": {
+      "main": [
+        [
+          {
+            "node": "Check Payment Confirmed1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Payment Confirmed1": {
+      "main": [
+        [
+          {
+            "node": "Update Payment Status1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Payment Status1": {
+      "main": [
+        [
+          {
+            "node": "Clear Payment from Redis1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear Payment from Redis1": {
+      "main": [
+        [
+          {
+            "node": "Reactivate Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reactivate Agent1": {
+      "main": [
+        [
+          {
+            "node": "Send Payment Confirmation Message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Supabase Webhook Prescription": {
+      "main": [
+        [
+          {
+            "node": "Check Should Process Prescription",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Should Process Prescription": {
+      "main": [
+        [
+          {
+            "node": "Check Use Cached Prescription",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Use Cached Prescription": {
+      "main": [
+        [
+          {
+            "node": "Use Cached Prescription Data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fetch Prescription",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Use Cached Prescription Data": {
+      "main": [
+        [
+          {
+            "node": "Merge Prescription Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Prescription": {
+      "main": [
+        [
+          {
+            "node": "Merge Prescription Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Prescription Data": {
+      "main": [
+        [
+          {
+            "node": "Get Patient for Prescription1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SET_ATENDIMENTO": {
+      "main": [
+        [
+          {
+            "node": "LIGA-DESLIGA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET_ATENDIMENTO": {
+      "main": [
+        [
+          {
+            "node": "PUSH",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Obter m dia em base1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "Get Image Media",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Document Media",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "SET_VARIAVEIS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Image Media": {
+      "main": [
+        [
+          {
+            "node": "Convert Image to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Document Media": {
+      "main": [
+        [
+          {
+            "node": "Convert Document to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert Image to File": {
+      "main": [
+        [
+          {
+            "node": "Upload Image to Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert Document to File": {
+      "main": [
+        [
+          {
+            "node": "Upload Document to Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Image to Supabase": {
+      "main": [
+        [
+          {
+            "node": "Set Image Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Document to Supabase": {
+      "main": [
+        [
+          {
+            "node": "Set Document Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Image Text": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Document Text": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CONCATENA": {
+      "main": [
+        [
+          {
+            "node": "GET_USER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET_USER": {
+      "main": [
+        [
+          {
+            "node": "IF_USER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF_USER": {
+      "main": [
+        [
+          {
+            "node": "SET_USER",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "CREATE_USER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CREATE_USER": {
+      "main": [
+        [
+          {
+            "node": "WAIT_USER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WAIT_USER": {
+      "main": [
+        [
+          {
+            "node": "SET_USER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SET_USER": {
+      "main": [
+        [
+          {
+            "node": "Identify Partner Clinic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LOOP_SLIT": {
+      "main": [
+        [
+          {
+            "node": "If14",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Enviar texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WAIT_SPLIT": {
+      "main": [
+        [
+          {
+            "node": "LOOP_SLIT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "RECEPCIONISTA",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch8": {
+      "main": [
+        [
+          {
+            "node": "RECEPCIONISTA",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AGENTE_OFF",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "RECEPCIONISTA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RECEPCIONISTA": {
+      "main": [
+        [
+          {
+            "node": "output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "output": {
+      "main": [
+        [
+          {
+            "node": "Parser  Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SWITCH_PRINCIPAL": {
+      "main": [
+        [
+          {
+            "node": "GET_ATENDIMENTO",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SET_ATENDIMENTO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LIGA-DESLIGA": {
+      "main": [
+        [
+          {
+            "node": "OFF_AGENT",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "ON_AGENT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store": {
+      "ai_tool": [
+        [
+          {
+            "node": "RECEPCIONISTA",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Medication Safety Check Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "RECEPCIONISTA",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OutputParser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Parser  Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parser  Chain": {
+      "main": [
+        [
+          {
+            "node": "Split de Mensagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split de Mensagem": {
+      "main": [
+        [
+          {
+            "node": "LOOP_SLIT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AUDIO": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SET_VARIAVEIS": {
+      "main": [
+        [
+          {
+            "node": "SWITCH_PRINCIPAL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obter m dia em base1": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "AUDIO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Marcar mensagens como lidas": {
+      "main": [
+        [
+          {
+            "node": "Switch8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "JID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields8": {
+      "main": [
+        [
+          {
+            "node": "JID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JID": {
+      "main": [
+        [
+          {
+            "node": "PARSE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PARSE": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If14": {
+      "main": [
+        [
+          {
+            "node": "Parse AI Output1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow": {
+      "main": [
+        [
+          {
+            "node": "Create Atendimento Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultation Completed Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Get Atendimento for Survey1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Atendimento for Survey1": {
+      "main": [
+        [
+          {
+            "node": "Get Patient for Survey1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Patient for Survey1": {
+      "main": [
+        [
+          {
+            "node": "Get Profile for Survey1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Profile for Survey1": {
+      "main": [
+        [
+          {
+            "node": "Prepare Survey Data1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Survey Data1": {
+      "main": [
+        [
+          {
+            "node": "Send Satisfaction Survey1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Workflow": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PUSH": {
+      "main": [
+        [
+          {
+            "node": "Marcar mensagens como lidas8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "GET",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET": {
+      "main": [
+        [
+          {
+            "node": "SWITCH_BUFFER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DELETE": {
+      "main": [
+        [
+          {
+            "node": "If15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SWITCH_BUFFER": {
+      "main": [
+        [
+          {
+            "node": "NADA",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "DELETE",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If15": {
+      "main": [
+        [
+          {
+            "node": "NADA8",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "CONCATENA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Marcar mensagens como lidas8": {
+      "main": [
+        [
+          {
+            "node": "GET",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "RECEPCIONISTA",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model8": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Parser  Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Identify Partner Clinic": {
+      "main": [
+        [
+          {
+            "node": "Check Patient Status1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Patient Status1": {
+      "main": [
+        [
+          {
+            "node": "Check Paciente by Profile1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Paciente by Profile1": {
+      "main": [
+        [
+          {
+            "node": "Check Dependent Status1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Dependent Status1": {
+      "main": [
+        [
+          {
+            "node": "Check Subscription Members1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Subscription Members1": {
+      "main": [
+        [
+          {
+            "node": "Get Subscription Details1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Subscription Details1": {
+      "main": [
+        [
+          {
+            "node": "Set Patient Context1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Patient Context1": {
+      "main": [
+        [
+          {
+            "node": "Check Payment Required",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Payment Required": {
+      "main": [
+        [
+          {
+            "node": "Create Payment Charge",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Marcar mensagens como lidas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Payment Charge": {
+      "main": [
+        [
+          {
+            "node": "Store Payment Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Payment Info": {
+      "main": [
+        [
+          {
+            "node": "Store Payment in Redis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Payment in Redis": {
+      "main": [
+        [
+          {
+            "node": "Send Payment Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Payment Link": {
+      "main": [
+        [
+          {
+            "node": "Store Payment in Database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Store Payment in Database": {
+      "main": [
+        [
+          {
+            "node": "Payment Sent - Wait for Confirmation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Payment Sent - Wait for Confirmation": {
+      "main": [
+        [
+          {
+            "node": "Marcar mensagens como lidas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar texto": {
+      "main": [
+        [
+          {
+            "node": "WAIT_SPLIT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse AI Output1": {
+      "main": [
+        [
+          {
+            "node": "Preparar Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prescription Webhook1": {
+      "main": [
+        [
+          {
+            "node": "Parse Supabase Webhook Prescription",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Prescription1": {
+      "main": [
+        [
+          {
+            "node": "Get Patient for Prescription1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Patient for Prescription1": {
+      "main": [
+        [
+          {
+            "node": "Check Has Profile ID for Prescription",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Profile for Prescription1": {
+      "main": [
+        [
+          {
+            "node": "Merge Profile Data for Prescription",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Prescription Message1": {
+      "main": [
+        [
+          {
+            "node": "Send Prescription via WhatsApp1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Prescription via WhatsApp1": {
+      "main": [
+        [
+          {
+            "node": "Update Prescription Sent Status1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ML Comparison Webhook": {
+      "main": [
+        [
+          {
+            "node": "Parse Supabase Webhook ML1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Supabase Webhook ML1": {
+      "main": [
+        [
+          {
+            "node": "Check Should Process ML1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Should Process ML1": {
+      "main": [
+        [
+          {
+            "node": "Check Use Cached Data1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Use Cached Data1": {
+      "main": [
+        [
+          {
+            "node": "Use Cached Atendimento Data1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fetch Atendimento for ML1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Use Cached Atendimento Data1": {
+      "main": [
+        [
+          {
+            "node": "Merge Atendimento Data ML1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Atendimento for ML1": {
+      "main": [
+        [
+          {
+            "node": "Merge Atendimento Data ML1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Atendimento Data ML1": {
+      "main": [
+        [
+          {
+            "node": "Calculate ML Metrics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate ML Metrics": {
+      "main": [
+        [
+          {
+            "node": "Store ML Comparison",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Has Profile ID for Prescription": {
+      "main": [
+        [
+          {
+            "node": "Get Profile for Prescription1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set Empty Profile for Prescription",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Empty Profile for Prescription": {
+      "main": [
+        [
+          {
+            "node": "Merge Profile Data for Prescription",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Profile Data for Prescription": {
+      "main": [
+        [
+          {
+            "node": "Format Prescription Message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "265f28ec-fd3c-47d0-a445-1416f0971f51",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8a5856b7f177672124d26a3d8e95d9b43c40393ee3aa73f2bb89f467979edf8e"
+  },
+  "id": "D2fMVH9nk4F24z8o",
+  "tags": []
+}
