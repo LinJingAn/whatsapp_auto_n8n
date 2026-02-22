@@ -11,10 +11,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1440,
-        53216
+        -3168,
+        160
       ],
-      "id": "b2a8f9c9-8129-44d5-8513-9b8837d2d78e",
+      "id": "adf51fee-dd79-49cb-bb9c-0dc8dd6b9d7f",
       "name": "Payment Confirmation Note1"
     },
     {
@@ -26,10 +26,10 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        1488,
-        53376
+        -3120,
+        320
       ],
-      "id": "d745de1a-2f06-4141-98b6-00713c9b0f7f",
+      "id": "972c6dfb-5b5d-4653-95a5-050af56d60f9",
       "name": "Payment Confirmation Webhook1",
       "webhookId": "payment-confirmation-webhook-id",
       "notes": "Receives payment notifications from PagBank. Configure this URL in PagBank notification settings."
@@ -41,10 +41,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1680,
-        53376
+        -2928,
+        320
       ],
-      "id": "ecdd348c-fef6-44ba-b9a5-e1851a9bc677",
+      "id": "74c2e195-6fae-48a5-84df-e90601c827a0",
       "name": "Parse Payment Notification1"
     },
     {
@@ -74,10 +74,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1856,
-        53376
+        -2752,
+        320
       ],
-      "id": "b5d208e5-8cfc-4fd0-b195-57b103583c46",
+      "id": "e36b1ca3-f719-4efa-8c00-f2e47b30f330",
       "name": "Check Payment Confirmed1"
     },
     {
@@ -113,10 +113,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        2064,
-        53296
+        -2544,
+        240
       ],
-      "id": "bc12689a-1b1a-420b-90d8-340ab50164d5",
+      "id": "7a56c828-35bf-4cdc-9e5c-a8e4bc8ce485",
       "name": "Update Payment Status1",
       "credentials": {
         "supabaseApi": {
@@ -133,10 +133,10 @@
       "type": "n8n-nodes-base.redis",
       "typeVersion": 1,
       "position": [
-        2256,
-        53296
+        -2352,
+        240
       ],
-      "id": "6d8db48a-af52-4541-b477-25548243796e",
+      "id": "b0529a23-2e7e-4e9b-b110-2051efbba827",
       "name": "Clear Payment from Redis1",
       "credentials": {
         "redis": {
@@ -173,10 +173,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        2448,
-        53296
+        -2160,
+        240
       ],
-      "id": "6329c055-00d2-430e-b5d4-7a1ee6549e20",
+      "id": "911cb7c6-7901-446f-a5c9-3bfa1e675c9b",
       "name": "Reactivate Agent1",
       "credentials": {
         "supabaseApi": {
@@ -198,10 +198,10 @@
       "type": "n8n-nodes-evolution-api.evolutionApi",
       "typeVersion": 1,
       "position": [
-        2640,
-        53296
+        -1968,
+        240
       ],
-      "id": "55e14c7d-decf-4825-a982-4e56ce234089",
+      "id": "c4a0b16f-b923-47a8-871c-176aa9e5ccae",
       "name": "Send Payment Confirmation Message1",
       "credentials": {
         "evolutionApi": {
@@ -217,10 +217,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1696,
-        51952
+        -2912,
+        -1136
       ],
-      "id": "75c0d1bb-8903-4931-b74c-ad7118943103",
+      "id": "7596b790-8e0f-4eb1-ac47-d500de069158",
       "name": "Parse Supabase Webhook Prescription"
     },
     {
@@ -250,10 +250,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1904,
-        51952
+        -2704,
+        -1136
       ],
-      "id": "5f3d1252-f203-4433-8cbd-968aeb593375",
+      "id": "3b4e3e03-c59f-40ef-ac1f-c3130cd05631",
       "name": "Check Should Process Prescription"
     },
     {
@@ -283,10 +283,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2176,
-        51936
+        -2432,
+        -1152
       ],
-      "id": "0cb75f5e-a429-4971-a578-c2fa2ce054b2",
+      "id": "f0f2f628-351a-41b3-a761-f75e073de584",
       "name": "Check Use Cached Prescription"
     },
     {
@@ -348,10 +348,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2384,
-        51856
+        -2224,
+        -1232
       ],
-      "id": "47cc8753-44b8-495e-b35d-f2e1eae3ab51",
+      "id": "e90221c8-db9c-400e-838d-2c0120b50031",
       "name": "Use Cached Prescription Data"
     },
     {
@@ -370,10 +370,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        2384,
-        52016
+        -2224,
+        -1072
       ],
-      "id": "7833898d-b3ad-4df9-950e-836ccc9e3761",
+      "id": "4c938c9c-23fe-4385-9577-7abe74a8e896",
       "name": "Fetch Prescription",
       "alwaysOutputData": true,
       "credentials": {
@@ -388,26 +388,26 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        2576,
-        51952
+        -2032,
+        -1136
       ],
-      "id": "5c26f6ea-c141-48ec-9d07-e41fecd73d13",
+      "id": "a2c74a0c-f8d3-4d9f-93a8-2f0cff72e72c",
       "name": "Merge Prescription Data"
     },
     {
       "parameters": {
         "content": "## ATENDIMENTO\n",
-        "height": 904,
-        "width": 852,
+        "height": 664,
+        "width": 1220,
         "color": 4
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        3760,
-        49920
+        -848,
+        -2992
       ],
-      "id": "5f6c8802-3be5-4754-9f7c-c690f5ec03ea",
+      "id": "9473bbbc-ed9a-4a5f-b8a6-b56ba78ea023",
       "name": "Sticky Note"
     },
     {
@@ -421,10 +421,10 @@
       "type": "n8n-nodes-base.redis",
       "typeVersion": 1,
       "position": [
-        4304,
-        50192
+        -448,
+        -2576
       ],
-      "id": "ae7e0937-0455-413c-8a2b-2622132dba16",
+      "id": "9bd22994-1e48-4ff0-a765-81f25bea1fea",
       "name": "SET_ATENDIMENTO",
       "credentials": {
         "redis": {
@@ -443,17 +443,104 @@
       "type": "n8n-nodes-base.redis",
       "typeVersion": 1,
       "position": [
-        4304,
-        49952
+        -448,
+        -2912
       ],
-      "id": "852f890e-a2de-425a-a0a2-3dd6fc152d76",
+      "id": "460bca0c-a180-4513-bfa0-d1350bc84691",
       "name": "GET_ATENDIMENTO",
       "credentials": {
         "redis": {
           "id": "L4rUklATrg4beQVM",
           "name": "Redis account"
         }
-      }
+      },
+      "continueOnFail": true,
+      "notes": "Reads Redis key atendimento.{user.number}. When key does not exist, Default Atendimento node uses message.atendimento (e.g. 720) so output is never null."
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "default-atendimento",
+              "name": "atendimento",
+              "type": "string",
+              "value": "={{ $json.atendimento ?? $('SET_VARIAVEIS').item.json.message?.atendimento ?? '720' }}"
+            },
+            {
+              "id": "was-new-session",
+              "name": "wasNewSession",
+              "type": "boolean",
+              "value": "={{ $json.atendimento == null || $json.atendimento === '' }}"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -288,
+        -2912
+      ],
+      "id": "b4ce786b-cf40-4a9e-abf6-97911345c816",
+      "name": "Default Atendimento",
+      "notes": "When Redis returns null for atendimento, uses message.atendimento from SET_VARIAVEIS (e.g. 720) so downstream always has a value. Sets wasNewSession when key was missing so temp buffer can be cleared."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "if-new-session",
+              "leftValue": "={{ $json.wasNewSession }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -112,
+        -2912
+      ],
+      "id": "77a2a4b9-f5f6-428b-9002-e1284fac19b1",
+      "name": "If New Session"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "=temp.{{ $('SET_VARIAVEIS').item.json.user.number }}"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        64,
+        -2976
+      ],
+      "id": "abaed677-3b05-4256-b599-b54a4db37b8e",
+      "name": "Clear Temp Buffer",
+      "credentials": {
+        "redis": {
+          "id": "L4rUklATrg4beQVM",
+          "name": "Redis account"
+        }
+      },
+      "notes": "Clears message buffer when new conversation so SWITCH_BUFFER sees current message (e.g. Hi)."
     },
     {
       "parameters": {
@@ -564,10 +651,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        2592,
-        50304
+        -2016,
+        -2784
       ],
-      "id": "35734a48-b05d-4cd2-8057-ac375395b691",
+      "id": "a5565308-feae-4263-a805-72dc46829f24",
       "name": "Switch"
     },
     {
@@ -575,10 +662,10 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        3584,
-        50304
+        -1024,
+        -2784
       ],
-      "id": "82be0f6c-8826-43db-a3ad-6d111eeecc6b",
+      "id": "d47a8780-549d-4d7d-bb86-1789214091d8",
       "name": "Merge"
     },
     {
@@ -591,10 +678,10 @@
       "type": "n8n-nodes-evolution-api.evolutionApi",
       "typeVersion": 1,
       "position": [
-        2880,
-        50384
+        -1728,
+        -2704
       ],
-      "id": "95c11d72-4165-41c7-a01d-96773faf8758",
+      "id": "5a82bb27-410c-4cb2-be3a-1746e36dd431",
       "name": "Get Image Media",
       "credentials": {
         "evolutionApi": {
@@ -613,10 +700,10 @@
       "type": "n8n-nodes-evolution-api.evolutionApi",
       "typeVersion": 1,
       "position": [
-        2864,
-        50544
+        -1744,
+        -2544
       ],
-      "id": "3553a60a-4f3c-4ca7-bc26-d0dde73ad04a",
+      "id": "f787a606-df48-4792-9895-d38f02bed4fd",
       "name": "Get Document Media",
       "credentials": {
         "evolutionApi": {
@@ -637,10 +724,10 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        3040,
-        50384
+        -1568,
+        -2704
       ],
-      "id": "e71adb42-3cb3-4c29-9941-f1f35f71dfb5",
+      "id": "c90d121a-ade3-4e02-8c32-dd0630bdd0f3",
       "name": "Convert Image to File"
     },
     {
@@ -652,10 +739,10 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        3040,
-        50544
+        -1568,
+        -2544
       ],
-      "id": "4a50eeca-cca7-4d0c-93eb-7d73b6bd743e",
+      "id": "eebd938f-7994-4689-9c64-598d585eadee",
       "name": "Convert Document to File"
     },
     {
@@ -665,10 +752,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        3200,
-        50384
+        -1408,
+        -2704
       ],
-      "id": "852767b5-5797-4ca9-b811-785dbf79a4a4",
+      "id": "f617758e-c32b-4a02-9965-d6623e51ed58",
       "name": "Upload Image to Supabase",
       "credentials": {
         "supabaseApi": {
@@ -684,10 +771,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        3216,
-        50544
+        -1392,
+        -2544
       ],
-      "id": "71f57e79-2857-4913-aca4-637dc9a30721",
+      "id": "a704af14-e802-476a-b1a2-e18da09af40b",
       "name": "Upload Document to Supabase",
       "credentials": {
         "supabaseApi": {
@@ -713,10 +800,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3360,
-        50384
+        -1248,
+        -2704
       ],
-      "id": "e9186dfe-2005-4279-aefd-66d3626d196b",
+      "id": "7b7ee159-d749-4ffd-ad5c-48a0cfa256cf",
       "name": "Set Image Text"
     },
     {
@@ -736,10 +823,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3376,
-        50544
+        -1232,
+        -2544
       ],
-      "id": "014cfc4e-dad7-49c7-b51d-9f45d3d69b5f",
+      "id": "05315f70-0a60-4367-92fc-7ed3a139dd64",
       "name": "Set Document Text"
     },
     {
@@ -752,10 +839,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        4656,
-        50064
+        416,
+        -2944
       ],
-      "id": "30d3d84a-d6b7-45b3-bba9-3fea0807cd1d",
+      "id": "db8ec966-9116-4f47-937f-a43ee1cfd3eb",
       "name": "Sticky Note14"
     },
     {
@@ -775,10 +862,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        6128,
-        50288
+        1888,
+        -2720
       ],
-      "id": "5d4dfe4d-dc32-4084-9a73-d5c6b635f2b8",
+      "id": "37882881-46de-4bfe-a780-4f010f716a59",
       "name": "CONCATENA"
     },
     {
@@ -790,26 +877,26 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        6016,
-        50192
+        1776,
+        -2816
       ],
-      "id": "5930f7ec-9fe5-42da-b74f-dff98c7ade51",
+      "id": "d5c32ba8-ab5e-45d7-9732-931f8bf55bab",
       "name": "Sticky Note17"
     },
     {
       "parameters": {
         "content": "# SPLIT E ENVIO DAS MENSAGENS",
-        "height": 580,
+        "height": 532,
         "width": 2140,
         "color": 5
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        10080,
-        50128
+        5840,
+        -2912
       ],
-      "id": "52f58417-5bb9-435c-b39a-29584842702f",
+      "id": "5e0f4b48-a738-4228-b4eb-0f3e1a397892",
       "name": "Sticky Note23"
     },
     {
@@ -828,10 +915,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        6288,
-        50288
+        2048,
+        -2720
       ],
-      "id": "18214f80-36fe-42ea-80b0-ca48ecac80c9",
+      "id": "9282a815-c378-43a1-98bb-c98f6696bfd2",
       "name": "GET_USER",
       "alwaysOutputData": true,
       "credentials": {
@@ -869,10 +956,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        6480,
-        50288
+        2240,
+        -2720
       ],
-      "id": "af6864ab-512b-4e3a-a033-db8361dec056",
+      "id": "78bb562e-5bc6-4a0e-8d9c-7e45f697c4e0",
       "name": "IF_USER"
     },
     {
@@ -894,17 +981,18 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        6624,
-        50416
+        2384,
+        -2592
       ],
-      "id": "c7b557fa-a964-49a6-8c94-31a55dc4cf6e",
+      "id": "d5d0f3f9-ab30-4c87-89dc-b3ed998577f3",
       "name": "CREATE_USER",
       "credentials": {
         "supabaseApi": {
           "id": "TF0zMnZB4ZmegdXU",
           "name": "Supabase account"
         }
-      }
+      },
+      "notes": "Creates a row in table contatos_agente. 404 = table missing. In Supabase SQL Editor run: CREATE TABLE IF NOT EXISTS contatos_agente ( id BIGSERIAL PRIMARY KEY, user_number TEXT NOT NULL UNIQUE, user_name TEXT, user_profile TEXT, agente TEXT DEFAULT 'recepcionista', role TEXT, status TEXT, email TEXT, interesse_duvida TEXT, created_at TIMESTAMPTZ DEFAULT NOW() ); then enable RLS if needed and grant INSERT/SELECT to your service role."
     },
     {
       "parameters": {
@@ -913,10 +1001,10 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        6784,
-        50416
+        2544,
+        -2592
       ],
-      "id": "681f8da1-6e04-4715-bbb2-1c458a4b71e6",
+      "id": "d02d8556-31f8-4e91-8d4f-323eee6ae9e3",
       "name": "WAIT_USER",
       "webhookId": "5927d937-0386-4938-8684-c41f06b37dff"
     },
@@ -955,10 +1043,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        6960,
-        50272
+        2720,
+        -2736
       ],
-      "id": "e9c3f2c0-269a-43fa-a0da-0808028fe2ec",
+      "id": "ed21e9ea-f00c-4d03-a9e3-36c20542310b",
       "name": "SET_USER"
     },
     {
@@ -968,10 +1056,10 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        11360,
-        50304
+        7104,
+        -2720
       ],
-      "id": "9ee0c123-fd6a-407f-b720-4f85f09e956f",
+      "id": "c730e850-c873-46cf-b62e-00e8dcf9274d",
       "name": "LOOP_SLIT"
     },
     {
@@ -982,27 +1070,27 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        11920,
-        50320
+        7600,
+        -2704
       ],
-      "id": "b627f5d4-7e73-473b-8545-87f3af0b1ff3",
+      "id": "a8364f05-85b3-4f61-9a9d-d05c1e5577fa",
       "name": "WAIT_SPLIT",
       "webhookId": "3cea2837-6c05-4e79-8798-96260c4f8dc6"
     },
     {
       "parameters": {
         "content": "# TOOLS",
-        "height": 304,
+        "height": 320,
         "width": 422,
         "color": 6
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        10224,
-        50752
+        5936,
+        -2352
       ],
-      "id": "d587d492-c515-4c74-85e8-f49d1f025e5e",
+      "id": "f52b9427-b34c-4aae-b9a0-3d49255dc498",
       "name": "Sticky Note38"
     },
     {
@@ -1015,10 +1103,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2256,
-        50784
+        -2352,
+        -2304
       ],
-      "id": "9c47bfd3-c2a9-4788-9c1e-ad9d18c6db84",
+      "id": "16ee65e7-7ac3-4807-9cfc-c698f46eb50b",
       "name": "Sticky Note39"
     },
     {
@@ -1050,10 +1138,10 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.5,
       "position": [
-        2432,
-        50816
+        -2176,
+        -2272
       ],
-      "id": "2a2f28b8-2f1d-408d-be9b-a8a1ba0592e7",
+      "id": "9bac5f80-37a5-4c95-9122-a57fc7641177",
       "name": "DELETA_MEMORIA",
       "credentials": {
         "postgres": {
@@ -1065,16 +1153,16 @@
     {
       "parameters": {
         "operation": "pop",
-        "list": "temp.5521964589974",
+        "list": "=temp.{{ $('SET_VARIAVEIS').item.json.user.number }}",
         "options": {}
       },
       "type": "n8n-nodes-base.redis",
       "typeVersion": 1,
       "position": [
-        2432,
-        51008
+        -2176,
+        -2080
       ],
-      "id": "6522aff5-ee3f-4ce5-be64-0e8647abc149",
+      "id": "7cd92006-2978-408c-9bc6-2269908d7bd2",
       "name": "DELETAR_ATENDIMENTO",
       "credentials": {
         "redis": {
@@ -1092,10 +1180,10 @@
       "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
       "typeVersion": 1.3,
       "position": [
-        10304,
-        50576
+        6032,
+        -2560
       ],
-      "id": "ccf49eb8-91d1-4454-a7fc-8699255ee751",
+      "id": "89e69475-0704-4df8-83f6-93c4a3a0b1cf",
       "name": "Postgres Chat Memory",
       "credentials": {
         "postgres": {
@@ -1108,30 +1196,6 @@
       "parameters": {
         "rules": {
           "values": [
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "leftValue": "={{ $('GET_USER').item.json.agente }}",
-                    "rightValue": "recepcionista",
-                    "operator": {
-                      "type": "string",
-                      "operation": "equals"
-                    },
-                    "id": "625cf350-f501-438e-be54-1e4f67644aba"
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "recepcionista"
-            },
             {
               "conditions": {
                 "options": {
@@ -1156,6 +1220,30 @@
               },
               "renameOutput": true,
               "outputKey": "off"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('GET_USER').item.json.agente }}",
+                    "rightValue": "recepcionista",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "625cf350-f501-438e-be54-1e4f67644aba"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "recepcionista"
             }
           ]
         },
@@ -1167,10 +1255,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        9728,
-        50352
+        5488,
+        -2736
       ],
-      "id": "56349590-22bc-4912-b687-134f1df79a02",
+      "id": "6ad54c12-00a2-494c-9671-ae422401bcb1",
       "name": "Switch8"
     },
     {
@@ -1184,10 +1272,10 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.8,
       "position": [
-        10224,
-        50352
+        5936,
+        -2704
       ],
-      "id": "1138526a-9b8d-4529-9568-632db6a788aa",
+      "id": "a5b951f7-babd-4f0b-92db-7e98a9ebc3c9",
       "name": "RECEPCIONISTA",
       "retryOnFail": true,
       "onError": "continueErrorOutput"
@@ -1209,26 +1297,26 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        10656,
-        50304
+        6400,
+        -2720
       ],
-      "id": "0357795e-19f9-4879-8345-275e8d6e23e8",
+      "id": "079a881a-f4ac-43f1-80df-6b82ef39f888",
       "name": "output"
     },
     {
       "parameters": {
         "content": "# AGENTE\n",
-        "height": 404,
+        "height": 484,
         "width": 2916,
         "color": 4
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        7120,
-        50176
+        2880,
+        -2912
       ],
-      "id": "d1b56da9-7e26-438c-b38b-f2513b253c7c",
+      "id": "b6bfed01-2c82-435f-8438-7a7c771beb39",
       "name": "Sticky Note40"
     },
     {
@@ -1256,10 +1344,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        4416,
-        50512
+        -128,
+        -2672
       ],
-      "id": "f7f147d0-7928-4030-9a41-8e690ccd989c",
+      "id": "8c5533fd-b8fb-464c-b6e0-254207232b70",
       "name": "OFF_AGENT",
       "credentials": {
         "supabaseApi": {
@@ -1293,10 +1381,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        4416,
-        50672
+        -128,
+        -2496
       ],
-      "id": "73c5d652-1b39-4252-bc5e-1e1ae7c26237",
+      "id": "9834ce9c-9d66-459d-84c1-5c18d414441e",
       "name": "ON_AGENT",
       "credentials": {
         "supabaseApi": {
@@ -1306,15 +1394,17 @@
       }
     },
     {
-      "parameters": {},
-      "type": "n8n-nodes-base.noOp",
-      "typeVersion": 1,
+      "parameters": {
+        "jsCode": "// Log: Switch8 'off' branch – agente is off, skipping RECEPCIONISTA\nconst agente = $('IF_USER').first().json?.agente ?? $('GET_USER').first().json?.agente ?? '';\nconst userNumber = $('SET_VARIAVEIS').first().json?.user?.number ?? '';\nconst userName = $('SET_VARIAVEIS').first().json?.user?.name ?? '';\nconsole.log('[AGENTE_OFF] Switch8 off branch: agente is off, not sending to RECEPCIONISTA', { agente, userNumber, userName });\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
       "position": [
-        9920,
-        50224
+        5648,
+        -2832
       ],
-      "id": "417fd65f-4b5f-453d-aec9-b0afaa944099",
-      "name": "AGENTE_OFF"
+      "id": "c459bff6-15c5-427c-b8bc-aefe9d7a8421",
+      "name": "Log AGENTE_OFF"
     },
     {
       "parameters": {
@@ -1375,10 +1465,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        4048,
-        50096
+        -624,
+        -2784
       ],
-      "id": "36151b57-0b62-4a8a-bb35-3f4dabe98185",
+      "id": "ce10cef5-4e40-4190-89d3-61ef6f196dfd",
       "name": "SWITCH_PRINCIPAL"
     },
     {
@@ -1440,10 +1530,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        4144,
-        50592
+        -288,
+        -2576
       ],
-      "id": "83421d0a-b985-41d0-b819-0a9fb9b92ed2",
+      "id": "fdc52d80-46c8-44e0-9a37-0a455a039301",
       "name": "LIGA-DESLIGA"
     },
     {
@@ -1464,10 +1554,10 @@
       "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
       "typeVersion": 1.1,
       "position": [
-        10272,
-        50800
+        6000,
+        -2288
       ],
-      "id": "fbbb2435-c7e2-4f76-94c2-a2a200879d34",
+      "id": "616af606-4ac3-4f26-a8f1-8e3719a0b299",
       "name": "Supabase Vector Store",
       "credentials": {
         "supabaseApi": {
@@ -1485,10 +1575,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolCode",
       "typeVersion": 1.1,
       "position": [
-        10512,
-        50896
+        6240,
+        -2176
       ],
-      "id": "13782aef-1181-4970-9fcf-852df1112a9a",
+      "id": "d4298119-7457-4d3b-8cf9-626b5e5843b4",
       "name": "Medication Safety Check Tool"
     },
     {
@@ -1496,13 +1586,13 @@
         "schemaType": "manual",
         "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"messages\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    }\n  },\n  \"required\": [\"messages\"]\n}"
       },
-      "id": "3e1994d7-0b78-456b-8b61-b1eeee1d2b26",
+      "id": "f99c1bbe-0204-4297-a0b2-a3c5c4703b8d",
       "name": "OutputParser1",
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.2,
       "position": [
-        10992,
-        50496
+        6736,
+        -2544
       ]
     },
     {
@@ -1518,13 +1608,13 @@
           ]
         }
       },
-      "id": "5be45c7e-bea8-4723-86c7-be49e0140c48",
+      "id": "511a4d84-f911-4f96-bc39-4f54c2523396",
       "name": "Parser  Chain",
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.4,
       "position": [
-        10848,
-        50304
+        6592,
+        -2720
       ]
     },
     {
@@ -1534,13 +1624,13 @@
           "destinationFieldName": "output"
         }
       },
-      "id": "510d1ee2-9cf4-48af-a99e-efd88a9f1539",
+      "id": "e0e43e7b-6ae4-4636-925a-47f61e4d74d1",
       "name": "Split de Mensagem",
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        11152,
-        50304
+        6896,
+        -2720
       ]
     },
     {
@@ -1552,10 +1642,10 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.8,
       "position": [
-        3248,
-        50160
+        -1360,
+        -2928
       ],
-      "id": "4b6bd7a2-bb9b-490c-b885-4c314a54567e",
+      "id": "048f821b-7f9e-4254-b473-306eb0f32b73",
       "name": "AUDIO",
       "credentials": {
         "openAiApi": {
@@ -1574,10 +1664,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        3520,
-        50224
+        -1088,
+        -2864
       ],
-      "id": "943b808b-f307-4ccd-9c91-24b3d61879ac",
+      "id": "54d507bc-f418-4fc1-ada2-f5adacf8ecc4",
       "name": "Sticky Note41"
     },
     {
@@ -1587,49 +1677,49 @@
             {
               "id": "b0bb5511-8d02-4d7d-aa8d-c16102e34313",
               "name": "user.name",
-              "value": "={{ $('PARSE').item.json.body.data.pushName }}",
+              "value": "={{ $('PARSE').item.json.body?.data?.pushName ?? '' }}",
               "type": "string"
             },
             {
               "id": "66405e8b-9117-4c83-b2b2-76faf0c2c959",
               "name": "user.number",
-              "value": "={{ $('PARSE').item.json.body.data.key.remoteJid.split('@')[0] }}",
+              "value": "={{ ($('PARSE').item.json.body?.data?.key?.remoteJid ?? '').split('@')[0] }}",
               "type": "string"
             },
             {
               "id": "928f3e20-266b-40fa-8297-8113cc9e718d",
               "name": "message.sender",
-              "value": "={{ $('PARSE').item.json.body.data.key.remoteJid }}",
+              "value": "={{ $('PARSE').item.json.body?.data?.key?.remoteJid ?? '' }}",
               "type": "string"
             },
             {
               "id": "5c6c98bf-595a-4e95-84c3-1d5a73c558fa",
               "name": "message.origem",
-              "value": "={{ $('PARSE').first().json.body.data.key.fromMe  ? 'outgoing' : 'incoming' }}",
+              "value": "={{ $('PARSE').first().json.body?.data?.key?.fromMe ? 'outgoing' : 'incoming' }}",
               "type": "string"
             },
             {
               "id": "6827f62c-8cc0-40c1-b74a-a07c392abafa",
               "name": "message.id",
-              "value": "={{ $('PARSE').item.json.body.data.key.id }}",
+              "value": "={{ $('PARSE').item.json.body?.data?.key?.id ?? '' }}",
               "type": "string"
             },
             {
               "id": "9ca882c3-dfbc-46b1-afe9-a0562d11879a",
               "name": "message.type",
-              "value": "={{ $('PARSE').item.json.body.data.messageType }}",
+              "value": "={{ $('PARSE').item.json.body?.data?.messageType ?? '' }}",
               "type": "string"
             },
             {
               "id": "4036c683-03e1-4e25-b5f8-a0b1caa4abd6",
               "name": "message.timestamp",
-              "value": "={{ $('PARSE').item.json.body.data.messageTimestamp }}",
+              "value": "={{ $('PARSE').item.json.body?.data?.messageTimestamp ?? '' }}",
               "type": "string"
             },
             {
               "id": "6b73391d-ad4f-4969-9e1f-c697285f0b06",
               "name": "message.content",
-              "value": "={{ $json.text }} {{ $('PARSE').item.json.body.data.message.conversation }}",
+              "value": "={{ $('PARSE').item.json.body?.data?.message?.conversation ?? $('PARSE').item.json.body?.data?.message?.text?.body ?? '' }}",
               "type": "string"
             },
             {
@@ -1641,7 +1731,7 @@
             {
               "id": "223e07cd-203d-49a0-942f-6dc9d452610e",
               "name": "body.instance",
-              "value": "={{ $('PARSE').item.json.body.instance }}",
+              "value": "={{ $('PARSE').item.json.body?.instance ?? '' }}",
               "type": "string"
             }
           ]
@@ -1651,10 +1741,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3808,
-        50304
+        -800,
+        -2784
       ],
-      "id": "e0753a0a-afef-469a-b49a-3f23e917cc3d",
+      "id": "3cdcfae1-2ca3-4557-a5f1-ad6f0368273e",
       "name": "SET_VARIAVEIS"
     },
     {
@@ -1662,16 +1752,16 @@
         "resource": "chat-api",
         "operation": "get-media-base64",
         "instanceName": "=DentalWizardBot",
-        "messageId": "={{ $('Webhook').item.json.body.data.key.id }}",
+        "messageId": "={{ $('SET_VARIAVEIS').item.json.message.id }}",
         "convertToMp4": true
       },
       "type": "n8n-nodes-evolution-api.evolutionApi",
       "typeVersion": 1,
       "position": [
-        2944,
-        50160
+        -1664,
+        -2928
       ],
-      "id": "118704bc-38e0-4f7c-b385-f0e9ea466931",
+      "id": "f52cc7c8-2189-4e4f-b596-fbdae65dc232",
       "name": "Obter m dia em base1",
       "credentials": {
         "evolutionApi": {
@@ -1689,10 +1779,10 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        3104,
-        50160
+        -1504,
+        -2928
       ],
-      "id": "e799b2c3-8313-4815-ae6b-0aa47bf25618",
+      "id": "a6550cff-0122-4025-b167-7d6382d9f7a4",
       "name": "Convert to File"
     },
     {
@@ -1705,10 +1795,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1456,
-        50112
+        -3152,
+        -2976
       ],
-      "id": "c7a8cfd5-bb70-4454-9946-bce9cac147f2",
+      "id": "06b4d3bc-4c0f-4b09-9f8a-01c71be546c2",
       "name": "Sticky Note42"
     },
     {
@@ -1722,10 +1812,10 @@
       "type": "n8n-nodes-evolution-api.evolutionApi",
       "typeVersion": 1,
       "position": [
-        9520,
-        50368
+        5280,
+        -2720
       ],
-      "id": "34196585-5404-4b27-bdd4-746bd5b921e1",
+      "id": "c5bf3848-73bf-438f-95a4-44fe117c3155",
       "name": "Marcar mensagens como lidas",
       "credentials": {
         "evolutionApi": {
@@ -1746,7 +1836,7 @@
           "conditions": [
             {
               "id": "87f5c004-1a75-4145-8f21-68d7d43905d5",
-              "leftValue": "={{ $json.body?.entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.from }}",
+              "leftValue": "={{ (() => { const b = $json.body ?? $json; const v = b?.entry?.[0]?.changes?.[0]?.value ?? b?.value ?? $json.value ?? {}; return v?.messages?.[0]?.from || ''; })() }}",
               "rightValue": "",
               "operator": {
                 "type": "string",
@@ -1762,10 +1852,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1744,
-        50320
+        -2864,
+        -2768
       ],
-      "id": "c1d4f01a-d8ff-4b4e-b3f9-ecd7a7f078b3",
+      "id": "a6bf3976-4d39-49c8-8e00-1522ec484188",
       "name": "If"
     },
     {
@@ -1776,49 +1866,79 @@
               "id": "senderPn",
               "name": "body.data.key.senderPn",
               "type": "string",
-              "value": "={ (() => { const v=($json.changes ? $json.changes[0].value : $json.entry[0].changes[0].value); return v?.messages?.[0]?.from || ''; })() }"
+              "value": "={{ ($json.body ?? $json).entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.from ?? '' }}"
             },
             {
               "id": "remoteJid",
               "name": "body.data.key.remoteJid",
               "type": "string",
-              "value": "={ (() => { const v=($json.changes ? $json.changes[0].value : $json.entry[0].changes[0].value); const f=v?.messages?.[0]?.from || ''; return f ? `${f}@s.whatsapp.net` : ''; })() }"
+              "value": "={{ (() => { const from = ($json.body ?? $json).entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.from; return from ? from + '@s.whatsapp.net' : ''; })() }}"
             },
             {
               "id": "pushName",
               "name": "body.data.key.pushName",
               "type": "string",
-              "value": "={ (() => { const v=($json.changes ? $json.changes[0].value : $json.entry[0].changes[0].value); return v?.contacts?.[0]?.profile?.name || ''; })() }"
+              "value": "={{ ($json.body ?? $json).entry?.[0]?.changes?.[0]?.value?.contacts?.[0]?.profile?.name ?? '' }}"
+            },
+            {
+              "id": "pushNameData",
+              "name": "body.data.pushName",
+              "type": "string",
+              "value": "={{ ($json.body ?? $json).entry?.[0]?.changes?.[0]?.value?.contacts?.[0]?.profile?.name ?? '' }}"
+            },
+            {
+              "id": "keyId",
+              "name": "body.data.key.id",
+              "type": "string",
+              "value": "={{ ($json.body ?? $json).entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.id ?? '' }}"
+            },
+            {
+              "id": "fromMe",
+              "name": "body.data.key.fromMe",
+              "type": "boolean",
+              "value": false
+            },
+            {
+              "id": "messageTimestamp",
+              "name": "body.data.messageTimestamp",
+              "type": "string",
+              "value": "={{ ($json.body ?? $json).entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.timestamp ?? '' }}"
             },
             {
               "id": "messageType",
               "name": "body.data.messageType",
               "type": "string",
-              "value": "={ (() => { const v=($json.changes ? $json.changes[0].value : $json.entry[0].changes[0].value); const t=v?.messages?.[0]?.type || ''; return t==='text'?'conversation':t==='audio'?'audioMessage':t==='image'?'imageMessage':t==='document'?'documentMessage':t; })() }"
+              "value": "={{ (() => { const t = ($json.body ?? $json).entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.type ?? ''; return t === 'text' ? 'conversation' : t === 'audio' ? 'audioMessage' : t === 'image' ? 'imageMessage' : t === 'document' ? 'documentMessage' : t; })() }}"
             },
             {
               "id": "conversation",
               "name": "body.data.message.conversation",
               "type": "string",
-              "value": "={ (() => { const v=($json.changes ? $json.changes[0].value : $json.entry[0].changes[0].value); return v?.messages?.[0]?.text?.body || ''; })() }"
+              "value": "={{ ($json.body ?? $json).entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.text?.body ?? '' }}"
             },
             {
               "id": "meta_phone_number_id",
               "name": "body.data.metadata.phone_number_id",
               "type": "string",
-              "value": "={ (() => { const v=($json.changes ? $json.changes[0].value : $json.entry[0].changes[0].value); return v?.metadata?.phone_number_id || ''; })() }"
+              "value": "={{ ($json.body ?? $json).entry?.[0]?.changes?.[0]?.value?.metadata?.phone_number_id ?? '' }}"
             },
             {
               "id": "meta_display_phone_number",
               "name": "body.data.metadata.display_phone_number",
               "type": "string",
-              "value": "={ (() => { const v=($json.changes ? $json.changes[0].value : $json.entry[0].changes[0].value); return v?.metadata?.display_phone_number || ''; })() }"
+              "value": "+55 55 9268-9119"
             },
             {
               "id": "meta_message_id",
               "name": "body.data.meta_message_id",
               "type": "string",
-              "value": "={ (() => { const v=($json.changes ? $json.changes[0].value : $json.entry[0].changes[0].value); return v?.messages?.[0]?.id || ''; })() }"
+              "value": "={{ ($json.body ?? $json).entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.id ?? '' }}"
+            },
+            {
+              "id": "bodyInstance",
+              "name": "body.instance",
+              "type": "string",
+              "value": "+55 55 9268-9119"
             }
           ]
         },
@@ -1829,10 +1949,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1952,
-        50240
+        -2656,
+        -2848
       ],
-      "id": "64037de7-3066-4ce6-8d1f-f3eb264fe30e",
+      "id": "b5b7663b-0f05-4918-9351-f0624378c7f6",
       "name": "Edit Fields"
     },
     {
@@ -1853,10 +1973,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1952,
-        50416
+        -2656,
+        -2672
       ],
-      "id": "a6ed5053-2b29-423e-a162-680ee2864807",
+      "id": "4eae04eb-7865-48e3-a786-d8513e64e945",
       "name": "Edit Fields8"
     },
     {
@@ -1866,7 +1986,7 @@
             {
               "id": "0269ad1d-81cd-41d4-be59-10829ab52f1a",
               "name": "userId",
-              "value": "={{ $json[\"remoteJid\"] }}",
+              "value": "={{ $json.body?.data?.key?.remoteJid ?? '' }}",
               "type": "string"
             }
           ]
@@ -1877,10 +1997,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2240,
-        50336
+        -2368,
+        -2752
       ],
-      "id": "c0f33abd-68fe-4291-80b0-5063eb04e08f",
+      "id": "a368e472-6d1a-4807-9bb1-9113da4e4327",
       "name": "JID"
     },
     {
@@ -1895,10 +2015,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2400,
-        50336
+        -2208,
+        -2752
       ],
-      "id": "993e5b86-6b54-4202-8923-68a83cb286b9",
+      "id": "d2540eb6-8f37-4f4b-b0ff-38858de42fd9",
       "name": "PARSE"
     },
     {
@@ -1929,10 +2049,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        11552,
-        50176
+        7312,
+        -2848
       ],
-      "id": "5d839eb9-b793-4520-97bc-c3d6e8ecc87d",
+      "id": "ddd4667c-2417-4755-ae23-7512719776e6",
       "name": "If14",
       "executeOnce": true
     },
@@ -1958,10 +2078,10 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        12080,
-        50160
+        7840,
+        -2864
       ],
-      "id": "5f3eb4d5-400f-4c6c-b66d-89b1d0f8b833",
+      "id": "8f74712d-755c-4439-9bc0-bc91fa2d7fbe",
       "name": "Execute Workflow",
       "executeOnce": true
     },
@@ -2008,10 +2128,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        12400,
-        50320
+        8160,
+        -2768
       ],
-      "id": "00e21519-bcd3-4fc6-9e23-e8af8b272307",
+      "id": "f29ca6b0-9b02-43ab-9830-568394fb52c3",
       "name": "Create Atendimento Record",
       "credentials": {
         "supabaseApi": {
@@ -2030,10 +2150,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1440,
-        52800
+        -3168,
+        -288
       ],
-      "id": "8be84296-7056-4dd2-8fb0-fc7d9e4b22f2",
+      "id": "a23602ba-4c12-47a4-b875-d80f470e21f3",
       "name": "Satisfaction Survey Trigger Note1"
     },
     {
@@ -2045,10 +2165,10 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        1504,
-        52912
+        -3104,
+        -176
       ],
-      "id": "bcbfd54e-ccc4-4bbf-84f8-322e808dc024",
+      "id": "5cad4ec5-f491-44d4-86a1-5e3be9e73d1f",
       "name": "Consultation Completed Webhook1",
       "webhookId": "consultation-completed-webhook-id"
     },
@@ -2068,10 +2188,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        1696,
-        52912
+        -2912,
+        -176
       ],
-      "id": "501a21e5-2d9a-49d6-8e70-5a905096e740",
+      "id": "5c56b95e-040f-48ad-b028-146a54bcf63f",
       "name": "Get Atendimento for Survey1",
       "alwaysOutputData": true,
       "credentials": {
@@ -2097,10 +2217,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        1888,
-        52912
+        -2720,
+        -176
       ],
-      "id": "2e02819d-2950-45b5-944e-5c89349c7cf7",
+      "id": "81393e74-00c6-444d-bc28-2ba35920fa05",
       "name": "Get Patient for Survey1",
       "alwaysOutputData": true,
       "credentials": {
@@ -2126,10 +2246,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        2080,
-        52912
+        -2528,
+        -176
       ],
-      "id": "63715b0f-6346-4930-94cf-e126a2843973",
+      "id": "5f6471df-e715-412a-9516-e38efcdd6753",
       "name": "Get Profile for Survey1",
       "alwaysOutputData": true,
       "credentials": {
@@ -2168,10 +2288,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2272,
-        52912
+        -2336,
+        -176
       ],
-      "id": "6deb3fc3-e9ad-4b4f-821e-69aee0fa4c66",
+      "id": "592a75da-c153-45f3-a1c9-990abab2f99b",
       "name": "Prepare Survey Data1"
     },
     {
@@ -2187,10 +2307,10 @@
       "type": "n8n-nodes-evolution-api.evolutionApi",
       "typeVersion": 1,
       "position": [
-        2464,
-        52912
+        -2144,
+        -176
       ],
-      "id": "5783c615-b3e5-40a7-bd33-ba2006be38a8",
+      "id": "0c77b276-60fd-4b6f-a026-930892c2c6ec",
       "name": "Send Satisfaction Survey1",
       "credentials": {
         "evolutionApi": {
@@ -2330,24 +2450,24 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        11920,
-        50160
+        7680,
+        -2864
       ],
-      "id": "5898f8ed-37c1-4c8b-b849-17ae1f8b3f15",
+      "id": "d94ca2ed-172f-4b18-9f27-32dddc5df410",
       "name": "Preparar Workflow"
     },
     {
       "parameters": {
         "operation": "delete",
-        "key": "=temp.5521964589974"
+        "key": "=temp.{{ $('SET_VARIAVEIS').item.json.user.number }}"
       },
       "type": "n8n-nodes-base.redis",
       "typeVersion": 1,
       "position": [
-        2432,
-        51216
+        -2176,
+        -1872
       ],
-      "id": "bd00967e-121e-4837-872e-fcdef968a4a1",
+      "id": "9d0988cc-7422-448a-9732-5782e07f6d95",
       "name": "DELETAR_ATENDIMENTO14",
       "credentials": {
         "redis": {
@@ -2360,16 +2480,16 @@
       "parameters": {
         "operation": "push",
         "list": "=temp.{{ $('SET_VARIAVEIS').item.json.user.number }}",
-        "messageData": "={{ JSON.stringify($('SET_VARIAVEIS').item.json.message.content) }}",
+        "messageData": "={{ $json.message?.content ?? $('SET_VARIAVEIS').item.json.message?.content ?? '' }}",
         "tail": true
       },
       "type": "n8n-nodes-base.redis",
       "typeVersion": 1,
       "position": [
-        4496,
-        49952
+        240,
+        -2896
       ],
-      "id": "3854eb88-0422-4b06-a977-867bad785e69",
+      "id": "05687042-76d3-40c9-b261-4f182a8a16c6",
       "name": "PUSH",
       "executeOnce": true,
       "credentials": {
@@ -2386,10 +2506,10 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        5296,
-        50384
+        1056,
+        -2624
       ],
-      "id": "07ea4693-76d3-47ec-afac-bd0a90db8fb4",
+      "id": "576324c2-918c-4d75-9550-d3095abda6f6",
       "name": "Wait",
       "webhookId": "d1e38aad-57ac-45e5-b64a-08e2f1ce1a6f",
       "disabled": true
@@ -2404,10 +2524,10 @@
       "type": "n8n-nodes-base.redis",
       "typeVersion": 1,
       "position": [
-        4928,
-        50272
+        688,
+        -2736
       ],
-      "id": "bae29701-9972-4707-adf8-83921f947baf",
+      "id": "410c0fff-e6e3-438e-9b9b-08a215d21e43",
       "name": "GET",
       "credentials": {
         "redis": {
@@ -2424,10 +2544,10 @@
       "type": "n8n-nodes-base.redis",
       "typeVersion": 1,
       "position": [
-        5472,
-        50272
+        1232,
+        -2736
       ],
-      "id": "252b8721-8c72-4a67-9817-aeef415b90d1",
+      "id": "649a4c92-5c88-47cb-bb8c-afaadd7a26e8",
       "name": "DELETE",
       "credentials": {
         "redis": {
@@ -2437,15 +2557,17 @@
       }
     },
     {
-      "parameters": {},
-      "type": "n8n-nodes-base.noOp",
-      "typeVersion": 1,
+      "parameters": {
+        "jsCode": "// Log: SWITCH_BUFFER 'nada' branch – message id mismatch, skipping this buffer item\nconst item = $input.first().json;\nconst parseId = $('PARSE').first().json?.body?.data?.key?.id ?? '';\nconst setVarId = $('SET_VARIAVEIS').first().json?.message?.id ?? '';\nconst user = $('SET_VARIAVEIS').first().json?.user?.number ?? '';\nconsole.log('[NADA] SWITCH_BUFFER nada branch: message id mismatch, skipping', { parseId, setVarId, user });\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
       "position": [
-        5472,
-        50128
+        1232,
+        -2880
       ],
-      "id": "22c1669f-f030-4dcc-8360-60cfa5d91f62",
-      "name": "NADA"
+      "id": "dffab52e-9082-4c5e-9cd9-70b6dd12cd7c",
+      "name": "Log NADA (buffer skip)"
     },
     {
       "parameters": {
@@ -2461,8 +2583,8 @@
                 },
                 "conditions": [
                   {
-                    "leftValue": "={{ $('PARSE').item.json.id }}",
-                    "rightValue": "={{ $('SET_VARIAVEIS').item.json.message.id }}",
+                    "leftValue": "={{ $('PARSE').item.json.body?.data?.key?.id ?? '' }}",
+                    "rightValue": "={{ $('SET_VARIAVEIS').item.json.message?.id ?? '' }}",
                     "operator": {
                       "type": "string",
                       "operation": "notEquals"
@@ -2510,10 +2632,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        5136,
-        50256
+        896,
+        -2752
       ],
-      "id": "11bde4d4-57ca-41fa-b945-eb3fbe0ec816",
+      "id": "5f91c27f-46fd-4e93-9a77-ed5e1adbc24d",
       "name": "SWITCH_BUFFER"
     },
     {
@@ -2545,22 +2667,24 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        5696,
-        50272
+        1456,
+        -2736
       ],
-      "id": "2a28d442-459e-4d6f-abbc-c32effcc1df7",
+      "id": "0c47eb95-36b7-4cbe-b687-3b7944c46b1b",
       "name": "If15"
     },
     {
-      "parameters": {},
-      "type": "n8n-nodes-base.noOp",
-      "typeVersion": 1,
+      "parameters": {
+        "jsCode": "// Log: If15 true – messages empty/missing after DELETE, skipping CONCATENA\nconst item = $input.first().json;\nconst user = $('SET_VARIAVEIS').first().json?.user?.number ?? '';\nconsole.log('[NADA8] If15 true: messages empty or missing, skipping CONCATENA', { user });\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
       "position": [
-        5856,
-        50112
+        1616,
+        -2896
       ],
-      "id": "ee3dad83-407f-41e0-8651-fdfa8742c4d7",
-      "name": "NADA8"
+      "id": "f8e94589-104d-4eac-a059-5b5c41714eaa",
+      "name": "Log NADA8 (no messages)"
     },
     {
       "parameters": {
@@ -2573,10 +2697,10 @@
       "type": "n8n-nodes-evolution-api.evolutionApi",
       "typeVersion": 1,
       "position": [
-        4704,
-        50272
+        464,
+        -2736
       ],
-      "id": "453acd88-0a7a-4ed0-908f-a3ec5b052f8b",
+      "id": "149bdb08-e0ac-4c52-8244-32e4106b1585",
       "name": "Marcar mensagens como lidas8",
       "credentials": {
         "evolutionApi": {
@@ -2588,16 +2712,16 @@
     {
       "parameters": {
         "operation": "get",
-        "key": "atendimento.5521964589974",
+        "key": "=atendimento.{{ $('SET_VARIAVEIS').item.json.user.number }}",
         "options": {}
       },
       "type": "n8n-nodes-base.redis",
       "typeVersion": 1,
       "position": [
-        2432,
-        51408
+        -2176,
+        -1680
       ],
-      "id": "48a7c4d1-d706-4766-a6e6-b35a160b54c8",
+      "id": "5ada9237-31b2-4c9a-a094-e22e17af2a5b",
       "name": "DELETAR_ATENDIMENTO15",
       "credentials": {
         "redis": {
@@ -2619,10 +2743,10 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        10160,
-        50528
+        5920,
+        -2528
       ],
-      "id": "01c417a9-7517-49ec-857d-4afc75824723",
+      "id": "b8d1c37d-5c3f-4516-bb9c-2678ea0c5e0b",
       "name": "OpenAI Chat Model",
       "credentials": {
         "openAiApi": {
@@ -2638,10 +2762,10 @@
       "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
       "typeVersion": 1.2,
       "position": [
-        10272,
-        50944
+        6000,
+        -2144
       ],
-      "id": "e3874dd6-1733-490c-8dcb-3fde5c95cdc4",
+      "id": "59dcdb8c-9713-4e07-9088-ebb2b72d6e52",
       "name": "Embeddings OpenAI",
       "credentials": {
         "openAiApi": {
@@ -2662,10 +2786,10 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        10848,
-        50496
+        6592,
+        -2544
       ],
-      "id": "848832a3-beb2-4948-b890-29e79c76c51c",
+      "id": "7c99e22d-910f-4194-a145-8c6ef3aa58e1",
       "name": "OpenAI Chat Model8",
       "credentials": {
         "openAiApi": {
@@ -2683,10 +2807,10 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        1504,
-        50320
+        -3104,
+        -2768
       ],
-      "id": "a5e2bbc0-8430-458e-8358-e699a0c9c96a",
+      "id": "8e905d53-e75c-45ed-a328-d018647fec87",
       "name": "Webhook",
       "webhookId": "a4dea525-3241-4848-a3c1-e112b18f3a31"
     },
@@ -2706,10 +2830,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        7168,
-        50352
+        2928,
+        -2736
       ],
-      "id": "481e8907-4af1-45f0-a09d-108999961543",
+      "id": "8b3ef44b-bc62-4eb7-a679-7429e5244681",
       "name": "Identify Partner Clinic",
       "alwaysOutputData": true,
       "credentials": {
@@ -2735,10 +2859,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        7344,
-        50352
+        3104,
+        -2736
       ],
-      "id": "07b6d836-569f-499b-8d44-4a69924d5747",
+      "id": "36cbce8c-b4c5-4162-a488-af7690586f19",
       "name": "Check Patient Status1",
       "alwaysOutputData": true,
       "credentials": {
@@ -2764,10 +2888,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        7520,
-        50352
+        3280,
+        -2736
       ],
-      "id": "a1b887b2-48fd-4062-8c89-737b135b00c6",
+      "id": "3c538ea6-085d-47dd-b630-fc41dd532cf9",
       "name": "Check Paciente by Profile1",
       "alwaysOutputData": true,
       "credentials": {
@@ -2793,10 +2917,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        7696,
-        50352
+        3456,
+        -2736
       ],
-      "id": "0e401298-ac50-4dbc-9313-10d9d70b3484",
+      "id": "aa46b89b-5354-44eb-a11f-99e46ad4e68b",
       "name": "Check Dependent Status1",
       "alwaysOutputData": true,
       "credentials": {
@@ -2826,10 +2950,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        7856,
-        50352
+        3616,
+        -2736
       ],
-      "id": "e09798a4-91b6-48db-a82a-10488905b667",
+      "id": "79abf535-a58b-4b28-9cc1-d1434d5ec466",
       "name": "Check Subscription Members1",
       "alwaysOutputData": true,
       "credentials": {
@@ -2859,10 +2983,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        8032,
-        50352
+        3792,
+        -2736
       ],
-      "id": "72b60730-2f98-4acd-8f49-7cb3472c086e",
+      "id": "cf21dc77-dca1-4b21-9025-462dc3595391",
       "name": "Get Subscription Details1",
       "alwaysOutputData": true,
       "credentials": {
@@ -2943,10 +3067,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8224,
-        50352
+        3984,
+        -2736
       ],
-      "id": "febf6043-de8b-4317-bd3e-634d6f04dc78",
+      "id": "bd6c342a-adbc-4b7e-aac0-145dbe5cc04b",
       "name": "Set Patient Context1"
     },
     {
@@ -2976,18 +3100,16 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        8400,
-        50352
+        4160,
+        -2736
       ],
-      "id": "dde18d61-4381-4f45-aeb6-25a300fd6892",
+      "id": "5e08b181-bd68-45cc-b3ff-017202abe304",
       "name": "Check Payment Required"
     },
     {
       "parameters": {
         "method": "POST",
         "url": "=https://api.pagseguro.com/orders",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -2997,7 +3119,7 @@
             },
             {
               "name": "Authorization",
-              "value": "={{ $env.PAGBANK_ACCESS_TOKEN || 'Bearer YOUR_PAGBANK_ACCESS_TOKEN' }}"
+              "value": "={{ $env.PAGBANK_ACCESS_TOKEN ? ($env.PAGBANK_ACCESS_TOKEN.startsWith('Bearer ') ? $env.PAGBANK_ACCESS_TOKEN : 'Bearer ' + $env.PAGBANK_ACCESS_TOKEN) : '' }}"
             },
             {
               "name": "x-idempotency-key",
@@ -3019,18 +3141,12 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        8544,
-        50208
+        4304,
+        -2880
       ],
-      "id": "983a615a-a31e-4893-a1c9-7389eb0db619",
+      "id": "fbf55b88-e6d2-4918-a490-740bbf60e71f",
       "name": "Create Payment Charge",
-      "credentials": {
-        "httpHeaderAuth": {
-          "id": "rGtGgIcL9iMh8j0c",
-          "name": "Header Auth account"
-        }
-      },
-      "notes": "Creates PIX payment via PagBank/PagSeguro API. Amount: R$ 49,90 (4990 cents). Set PAGBANK_ACCESS_TOKEN environment variable in n8n. The API returns QR code for PIX payment."
+      "notes": "Creates PIX payment via PagBank/PagSeguro API. Amount: R$ 49,90 (4990 cents). REQUIRED: In n8n set variable PAGBANK_ACCESS_TOKEN to your PagBank API token (with or without 'Bearer ' prefix). Get token from PagBank/PagSeguro developer dashboard. 401 = token missing, wrong, or expired."
     },
     {
       "parameters": {
@@ -3109,10 +3225,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8720,
-        50208
+        4480,
+        -2880
       ],
-      "id": "f00aa9e6-3f50-42ed-8bc8-91c63857add4",
+      "id": "ad77c240-1c7d-4cfe-818d-417a671cd4fb",
       "name": "Store Payment Info"
     },
     {
@@ -3126,10 +3242,10 @@
       "type": "n8n-nodes-base.redis",
       "typeVersion": 1,
       "position": [
-        8896,
-        50208
+        4656,
+        -2880
       ],
-      "id": "58d7fd3a-087a-4ed1-bfaa-095e9d923af2",
+      "id": "e53ba9f5-10c7-47e3-82bc-d23ab3a0b437",
       "name": "Store Payment in Redis",
       "credentials": {
         "redis": {
@@ -3151,10 +3267,10 @@
       "type": "n8n-nodes-evolution-api.evolutionApi",
       "typeVersion": 1,
       "position": [
-        9072,
-        50208
+        4832,
+        -2880
       ],
-      "id": "f9e9b505-565b-4bd2-a78d-093a91e0fe1a",
+      "id": "923b883d-dd1f-4bee-9d9c-2dfa698a7a98",
       "name": "Send Payment Link",
       "credentials": {
         "evolutionApi": {
@@ -3170,10 +3286,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        9216,
-        50208
+        4976,
+        -2880
       ],
-      "id": "73c1a536-d814-48c3-8646-70073b022aea",
+      "id": "6cf2db65-c043-4e9b-ad3a-001dd31965e4",
       "name": "Store Payment in Database",
       "credentials": {
         "supabaseApi": {
@@ -3188,38 +3304,45 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        9376,
-        50208
+        5136,
+        -2880
       ],
-      "id": "ef8dd58d-4cd6-44d0-9163-98726eed23d4",
+      "id": "0d3a6013-4721-4043-a3d5-76c4a58dde66",
       "name": "Payment Sent - Wait for Confirmation"
     },
     {
       "parameters": {
-        "resource": "messages-api",
-        "instanceName": "=DentalWizardBot",
-        "remoteJid": "={{ $('SET_VARIAVEIS').item.json.message.sender }}",
-        "messageText": "={{ $json.output || $json.text || '' }}",
-        "options_message": {
-          "delay": 1000
-        }
+        "method": "POST",
+        "url": "={{ ($env.WHATSAPP_BACKEND_URL || 'https://api.healthwizard.com.br').replace(/\\/$/, '') }}/send",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ $env.WHATSAPP_BACKEND_BEARER ? 'Bearer ' + $env.WHATSAPP_BACKEND_BEARER : '' }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ to: ($('SET_VARIAVEIS').item.json.message.sender || '').replace(/@s\\.whatsapp\\.net$/i, ''), text: $json.output || $json.text || '' }) }}",
+        "options": {}
       },
-      "type": "n8n-nodes-evolution-api.evolutionApi",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
-        11648,
-        50320
+        7376,
+        -2704
       ],
-      "id": "40a0c09e-3659-497c-99c6-f824a44d42a0",
+      "id": "c2a06ac7-455f-4107-a18c-1ce694a31ece",
       "name": "Enviar texto",
       "notesInFlow": true,
-      "credentials": {
-        "evolutionApi": {
-          "id": "OXftMyJV7PZEXZ8j",
-          "name": "Evolution account"
-        }
-      },
-      "continueOnFail": true
+      "continueOnFail": true,
+      "notes": "Sends WhatsApp text via whatsapp-backend-fixed POST /send. Set WHATSAPP_BACKEND_URL (e.g. https://api.healthwizard.com.br) and optionally WHATSAPP_BACKEND_BEARER if backend uses ADMIN_BEARER."
     },
     {
       "parameters": {
@@ -3231,10 +3354,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        12240,
-        50192
+        8000,
+        -2896
       ],
-      "id": "524830ec-a4b5-43e1-a4ef-4defb7e421d2",
+      "id": "c537e475-ade0-4acf-b9e1-0fc11609dc1a",
       "name": "Satisfaction Survey Note1"
     },
     {
@@ -3244,10 +3367,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        11760,
-        50160
+        7520,
+        -2864
       ],
-      "id": "00c85e58-a4e9-4ff3-bab4-fe9372b76e09",
+      "id": "50d4e226-c9a3-4d02-b3e6-724e5a3cf4d5",
       "name": "Parse AI Output1"
     },
     {
@@ -3260,10 +3383,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1440,
-        51744
+        -3168,
+        -1344
       ],
-      "id": "1da2d966-e06f-4bad-ad4e-be084c65ba14",
+      "id": "4738a681-c08b-4498-b7c5-ead7e8b68f13",
       "name": "Send Prescription Note1"
     },
     {
@@ -3275,10 +3398,10 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        1504,
-        51952
+        -3104,
+        -1136
       ],
-      "id": "8edb742c-595c-4bf4-b3c7-f49ce6d328c0",
+      "id": "9c31c5e6-48e3-49a5-8cdf-7c91e195172c",
       "name": "Prescription Webhook1",
       "webhookId": "send-prescription-webhook-id",
       "notes": "Receives Supabase database webhooks when prescricoes table is created/updated. Configure Supabase Database Webhook to POST to this URL on INSERT/UPDATE events for prescricoes table where enviado_whatsapp is false or null."
@@ -3299,10 +3422,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        2656,
-        51760
+        -1952,
+        -1328
       ],
-      "id": "0b0097b7-9295-4121-8812-da8c036f0bf8",
+      "id": "ad9099cf-2726-474a-828d-44bd947dcdc0",
       "name": "Get Prescription1",
       "alwaysOutputData": true,
       "credentials": {
@@ -3328,10 +3451,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        2848,
-        51952
+        -1760,
+        -1136
       ],
-      "id": "56f8bf60-1a09-43d7-b7b2-51f1f89dfebc",
+      "id": "5e0305d9-0c57-4110-91c6-a104eb05f6d5",
       "name": "Get Patient for Prescription1",
       "alwaysOutputData": true,
       "credentials": {
@@ -3357,10 +3480,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        3280,
-        51856
+        -1328,
+        -1232
       ],
-      "id": "78c2cc20-9f03-4c31-9a8e-f6a1fe5db4b7",
+      "id": "596ed68d-9432-4d2a-85e6-05c39908ef8b",
       "name": "Get Profile for Prescription1",
       "alwaysOutputData": true,
       "credentials": {
@@ -3377,10 +3500,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3744,
-        51952
+        -864,
+        -1136
       ],
-      "id": "b587ef33-5d2e-4b7a-9bae-d1763c347f2c",
+      "id": "8f737fbc-1ff4-41e7-8d7d-7f1738d9f888",
       "name": "Format Prescription Message1"
     },
     {
@@ -3396,10 +3519,10 @@
       "type": "n8n-nodes-evolution-api.evolutionApi",
       "typeVersion": 1,
       "position": [
-        3920,
-        51952
+        -688,
+        -1136
       ],
-      "id": "d4039bec-a75c-4519-8b25-67e23ab1a31d",
+      "id": "ec30429b-060b-48a1-becd-c7d8dbc4aef5",
       "name": "Send Prescription via WhatsApp1",
       "credentials": {
         "evolutionApi": {
@@ -3436,10 +3559,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        4112,
-        51952
+        -496,
+        -1136
       ],
-      "id": "ac042410-9337-489c-b636-f657756ba75e",
+      "id": "8eb994b6-f16b-4062-98c2-5a3704a90c63",
       "name": "Update Prescription Sent Status1",
       "credentials": {
         "supabaseApi": {
@@ -3457,10 +3580,10 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        1488,
-        52432
+        -3120,
+        -656
       ],
-      "id": "35898c2e-c2c2-481b-96b7-2c9652cdf263",
+      "id": "d845bfd3-236b-4baa-b0c0-498b5b31f988",
       "name": "ML Comparison Webhook",
       "webhookId": "ml-comparison-webhook-id",
       "notes": "Receives Supabase database webhooks when atendimentos table is updated. Configure Supabase Database Webhook to POST to this URL on UPDATE events for atendimentos table where diagnostico_final and tratamento_realizado are filled."
@@ -3472,10 +3595,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1696,
-        52432
+        -2912,
+        -656
       ],
-      "id": "bf9be65b-eb3b-4460-9b42-34f48169ad0e",
+      "id": "1e18ca8c-57f9-4c69-a978-ad68f6a50fe8",
       "name": "Parse Supabase Webhook ML1"
     },
     {
@@ -3505,10 +3628,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1872,
-        52432
+        -2736,
+        -656
       ],
-      "id": "f143a13d-4ed6-49a4-af43-8b335d15b132",
+      "id": "9f5ffdbe-c851-4ba8-8d2c-e1dc8d198d5f",
       "name": "Check Should Process ML1",
       "disabled": true
     },
@@ -3539,10 +3662,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2112,
-        52416
+        -2496,
+        -672
       ],
-      "id": "111d847a-16c0-4200-88f5-fce2a626156f",
+      "id": "ac3a1980-99b8-4053-904e-60363a6c0f82",
       "name": "Check Use Cached Data1"
     },
     {
@@ -3592,10 +3715,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2288,
-        52336
+        -2320,
+        -752
       ],
-      "id": "276e43ac-039a-4e66-8bd3-1630b69f1496",
+      "id": "1b7eeadc-5b5d-4003-9eb3-c955b60a7484",
       "name": "Use Cached Atendimento Data1"
     },
     {
@@ -3614,10 +3737,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        2288,
-        52512
+        -2320,
+        -576
       ],
-      "id": "7cb6fe51-dbed-4353-8f82-a7d7e0e20b7d",
+      "id": "7a6f52a4-4f58-47bb-ad11-9552bc03683d",
       "name": "Fetch Atendimento for ML1",
       "alwaysOutputData": true,
       "credentials": {
@@ -3632,10 +3755,10 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        2496,
-        52432
+        -2112,
+        -656
       ],
-      "id": "0c591641-cccd-45ee-b587-2fb864d00fb2",
+      "id": "18af15d4-c4a2-4293-8c25-31244ba56910",
       "name": "Merge Atendimento Data ML1"
     },
     {
@@ -3645,10 +3768,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2688,
-        52432
+        -1920,
+        -656
       ],
-      "id": "1dc844df-1413-4e73-8e20-826b6b6bf222",
+      "id": "29df4275-b0ab-4a5e-8c61-ed0aafda871e",
       "name": "Calculate ML Metrics"
     },
     {
@@ -3702,10 +3825,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        2848,
-        52432
+        -1760,
+        -656
       ],
-      "id": "6b5c5d66-f01b-4c91-97e4-733ed1aaba80",
+      "id": "89a2fbc7-25ad-4f27-90d5-38127e655bfd",
       "name": "Store ML Comparison",
       "credentials": {
         "supabaseApi": {
@@ -3724,10 +3847,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1440,
-        52304
+        -3168,
+        -784
       ],
-      "id": "a567809e-cc48-468c-b3ec-e3c50d69aef2",
+      "id": "ae9cb41a-541f-4762-8b9c-54c4dbc79045",
       "name": "ML Comparison Note1"
     },
     {
@@ -3757,10 +3880,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3040,
-        51952
+        -1568,
+        -1136
       ],
-      "id": "7d0ea845-1987-4644-8967-95c8eb6fa5a6",
+      "id": "2f9da4c7-4219-4695-b839-c86420af1424",
       "name": "Check Has Profile ID for Prescription"
     },
     {
@@ -3792,10 +3915,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3280,
-        52048
+        -1328,
+        -1040
       ],
-      "id": "b6fe082e-689c-402e-bb3a-89701d7fd603",
+      "id": "d70437bd-2152-4b20-89f2-04e0bf2da218",
       "name": "Set Empty Profile for Prescription"
     },
     {
@@ -3803,10 +3926,10 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        3552,
-        51952
+        -1056,
+        -1136
       ],
-      "id": "4802e948-a957-4f19-a6cd-994c4741d891",
+      "id": "79aa7914-b587-4b87-8e4a-787cf4f66798",
       "name": "Merge Profile Data for Prescription"
     }
   ],
@@ -3818,18 +3941,11 @@
         }
       }
     ],
-    "CONCATENA": [
-      {
-        "json": {
-          "message": "[\"\\\" Dipirona\\\"\"]"
-        }
-      }
-    ],
     "GET_USER": [
       {
         "json": {
           "id": 1,
-          "user_number": "5521964589974",
+          "user_number": "555592689119",
           "user_name": "Y🕷",
           "user_profile": null,
           "agente": "recepcionista",
@@ -3876,28 +3992,6 @@
         }
       }
     ],
-    "SET_VARIAVEIS": [
-      {
-        "json": {
-          "user": {
-            "name": "Y🕷",
-            "number": "5521964589974"
-          },
-          "message": {
-            "sender": "5521964589974@s.whatsapp.net",
-            "origem": "incoming",
-            "id": "3EB0466AEE3EB5F8E895B7",
-            "type": "conversation",
-            "timestamp": "1754058394",
-            "content": " Dipirona",
-            "atendimento": "720"
-          },
-          "body": {
-            "instance": "DevTest"
-          }
-        }
-      }
-    ],
     "Marcar mensagens como lidas": [
       {
         "json": {
@@ -3906,237 +4000,6 @@
             "message": "Read messages",
             "read": "success"
           }
-        }
-      }
-    ],
-    "Edit Fields8": [
-      {
-        "json": {
-          "headers": {
-            "host": "n8n.healthwizard.com.br",
-            "user-agent": "axios/1.10.0",
-            "content-length": "1062",
-            "accept": "application/json, text/plain, */*",
-            "accept-encoding": "gzip, compress, deflate, br",
-            "content-type": "application/json",
-            "x-forwarded-for": "172.18.0.1",
-            "x-forwarded-host": "n8n.healthwizard.com.br",
-            "x-forwarded-port": "443",
-            "x-forwarded-proto": "https",
-            "x-forwarded-server": "3b3770bebe4b",
-            "x-real-ip": "172.18.0.1"
-          },
-          "params": {},
-          "query": {},
-          "body": {
-            "event": "messages.upsert",
-            "instance": "DevTest",
-            "data": {
-              "key": {
-                "remoteJid": "5521964589974@s.whatsapp.net",
-                "fromMe": false,
-                "id": "3EB0466AEE3EB5F8E895B7",
-                "senderLid": "92552350986390@lid"
-              },
-              "pushName": "Y🕷",
-              "status": "DELIVERY_ACK",
-              "message": {
-                "conversation": "Dipirona",
-                "messageContextInfo": {
-                  "deviceListMetadata": {
-                    "senderKeyHash": "sii+XnmWYJ17AA==",
-                    "senderTimestamp": "1753802536",
-                    "senderAccountType": "E2EE",
-                    "receiverAccountType": "E2EE",
-                    "recipientKeyHash": "ftlSp1Lbb2mEaQ==",
-                    "recipientTimestamp": "1753732276"
-                  },
-                  "deviceListMetadataVersion": 2,
-                  "messageSecret": "G46P8SYFojng11jCBRCOZWlst2Q8Q8P/PrtsqvGhzlA=",
-                  "limitSharingV2": {
-                    "trigger": "UNKNOWN",
-                    "initiatedByMe": false
-                  }
-                }
-              },
-              "messageType": "conversation",
-              "messageTimestamp": 1754058394,
-              "instanceId": "03ff70ea-be30-4706-9b0d-4c1b544669ea",
-              "source": "web"
-            },
-            "destination": "https://n8n.healthwizard.com.br/webhook/31878488-be1e-4582-8831-55e51dd0e317",
-            "date_time": "2025-08-01T11:26:35.136Z",
-            "sender": "5521959189348@s.whatsapp.net",
-            "server_url": "https://evolutionapi.healthwizard.com.br",
-            "apikey": "B7A862A93F8E-4DCD-B928-EA7A1B189EB3"
-          },
-          "webhookUrl": "https://n8n.healthwizard.com.br/webhook/31878488-be1e-4582-8831-55e51dd0e317",
-          "executionMode": "production",
-          "remoteJid": "5521964589974@s.whatsapp.net"
-        }
-      }
-    ],
-    "JID": [
-      {
-        "json": {
-          "headers": {
-            "host": "n8n.healthwizard.com.br",
-            "user-agent": "axios/1.10.0",
-            "content-length": "1062",
-            "accept": "application/json, text/plain, */*",
-            "accept-encoding": "gzip, compress, deflate, br",
-            "content-type": "application/json",
-            "x-forwarded-for": "172.18.0.1",
-            "x-forwarded-host": "n8n.healthwizard.com.br",
-            "x-forwarded-port": "443",
-            "x-forwarded-proto": "https",
-            "x-forwarded-server": "3b3770bebe4b",
-            "x-real-ip": "172.18.0.1"
-          },
-          "params": {},
-          "query": {},
-          "body": {
-            "event": "messages.upsert",
-            "instance": "DevTest",
-            "data": {
-              "key": {
-                "remoteJid": "5521964589974@s.whatsapp.net",
-                "fromMe": false,
-                "id": "3EB0466AEE3EB5F8E895B7",
-                "senderLid": "92552350986390@lid"
-              },
-              "pushName": "Y🕷",
-              "status": "DELIVERY_ACK",
-              "message": {
-                "conversation": "Dipirona",
-                "messageContextInfo": {
-                  "deviceListMetadata": {
-                    "senderKeyHash": "sii+XnmWYJ17AA==",
-                    "senderTimestamp": "1753802536",
-                    "senderAccountType": "E2EE",
-                    "receiverAccountType": "E2EE",
-                    "recipientKeyHash": "ftlSp1Lbb2mEaQ==",
-                    "recipientTimestamp": "1753732276"
-                  },
-                  "deviceListMetadataVersion": 2,
-                  "messageSecret": "G46P8SYFojng11jCBRCOZWlst2Q8Q8P/PrtsqvGhzlA=",
-                  "limitSharingV2": {
-                    "trigger": "UNKNOWN",
-                    "initiatedByMe": false
-                  }
-                }
-              },
-              "messageType": "conversation",
-              "messageTimestamp": 1754058394,
-              "instanceId": "03ff70ea-be30-4706-9b0d-4c1b544669ea",
-              "source": "web"
-            },
-            "destination": "https://n8n.healthwizard.com.br/webhook/31878488-be1e-4582-8831-55e51dd0e317",
-            "date_time": "2025-08-01T11:26:35.136Z",
-            "sender": "5521959189348@s.whatsapp.net",
-            "server_url": "https://evolutionapi.healthwizard.com.br",
-            "apikey": "B7A862A93F8E-4DCD-B928-EA7A1B189EB3"
-          },
-          "webhookUrl": "https://n8n.healthwizard.com.br/webhook/31878488-be1e-4582-8831-55e51dd0e317",
-          "executionMode": "production",
-          "remoteJid": "5521964589974@s.whatsapp.net",
-          "userId": "5521964589974@s.whatsapp.net"
-        }
-      }
-    ],
-    "PARSE": [
-      {
-        "json": {
-          "headers": {
-            "host": "n8n.healthwizard.com.br",
-            "user-agent": "axios/1.10.0",
-            "content-length": "1062",
-            "accept": "application/json, text/plain, */*",
-            "accept-encoding": "gzip, compress, deflate, br",
-            "content-type": "application/json",
-            "x-forwarded-for": "172.18.0.1",
-            "x-forwarded-host": "n8n.healthwizard.com.br",
-            "x-forwarded-port": "443",
-            "x-forwarded-proto": "https",
-            "x-forwarded-server": "3b3770bebe4b",
-            "x-real-ip": "172.18.0.1"
-          },
-          "params": {},
-          "query": {},
-          "body": {
-            "event": "messages.upsert",
-            "instance": "DevTest",
-            "data": {
-              "key": {
-                "remoteJid": "5521964589974@s.whatsapp.net",
-                "fromMe": false,
-                "id": "3EB0466AEE3EB5F8E895B7",
-                "senderLid": "92552350986390@lid"
-              },
-              "pushName": "Y🕷",
-              "status": "DELIVERY_ACK",
-              "message": {
-                "conversation": "Dipirona",
-                "messageContextInfo": {
-                  "deviceListMetadata": {
-                    "senderKeyHash": "sii+XnmWYJ17AA==",
-                    "senderTimestamp": "1753802536",
-                    "senderAccountType": "E2EE",
-                    "receiverAccountType": "E2EE",
-                    "recipientKeyHash": "ftlSp1Lbb2mEaQ==",
-                    "recipientTimestamp": "1753732276"
-                  },
-                  "deviceListMetadataVersion": 2,
-                  "messageSecret": "G46P8SYFojng11jCBRCOZWlst2Q8Q8P/PrtsqvGhzlA=",
-                  "limitSharingV2": {
-                    "trigger": "UNKNOWN",
-                    "initiatedByMe": false
-                  }
-                }
-              },
-              "messageType": "conversation",
-              "messageTimestamp": 1754058394,
-              "instanceId": "03ff70ea-be30-4706-9b0d-4c1b544669ea",
-              "source": "web"
-            },
-            "destination": "https://n8n.healthwizard.com.br/webhook/31878488-be1e-4582-8831-55e51dd0e317",
-            "date_time": "2025-08-01T11:26:35.136Z",
-            "sender": "5521959189348@s.whatsapp.net",
-            "server_url": "https://evolutionapi.healthwizard.com.br",
-            "apikey": "B7A862A93F8E-4DCD-B928-EA7A1B189EB3"
-          },
-          "webhookUrl": "https://n8n.healthwizard.com.br/webhook/31878488-be1e-4582-8831-55e51dd0e317",
-          "executionMode": "production",
-          "remoteJid": "5521964589974@s.whatsapp.net",
-          "userId": "5521964589974@s.whatsapp.net",
-          "fromMe": false,
-          "id": "3EB0466AEE3EB5F8E895B7",
-          "senderLid": "92552350986390@lid"
-        }
-      }
-    ],
-    "PUSH": [
-      {
-        "json": {
-          "atendimento": null
-        }
-      }
-    ],
-    "GET": [
-      {
-        "json": {
-          "messages": [
-            "\" Dipirona\""
-          ]
-        }
-      }
-    ],
-    "DELETE": [
-      {
-        "json": {
-          "messages": [
-            "\" Dipirona\""
-          ]
         }
       }
     ],
@@ -4304,6 +4167,46 @@
       ]
     },
     "GET_ATENDIMENTO": {
+      "main": [
+        [
+          {
+            "node": "Default Atendimento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Atendimento": {
+      "main": [
+        [
+          {
+            "node": "If New Session",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If New Session": {
+      "main": [
+        [
+          {
+            "node": "Clear Temp Buffer",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "PUSH",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear Temp Buffer": {
       "main": [
         [
           {
@@ -4562,14 +4465,14 @@
       "main": [
         [
           {
-            "node": "RECEPCIONISTA",
+            "node": "Log AGENTE_OFF",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "AGENTE_OFF",
+            "node": "RECEPCIONISTA",
             "type": "main",
             "index": 0
           }
@@ -4949,7 +4852,7 @@
       "main": [
         [
           {
-            "node": "NADA",
+            "node": "Log NADA (buffer skip)",
             "type": "main",
             "index": 0
           }
@@ -4974,7 +4877,7 @@
       "main": [
         [
           {
-            "node": "NADA8",
+            "node": "Log NADA8 (no messages)",
             "type": "main",
             "index": 0
           }
@@ -5428,12 +5331,12 @@
       ]
     }
   },
-  "active": true,
+  "active": false,
   "settings": {
     "executionOrder": "v1",
     "callerPolicy": "workflowsFromSameOwner"
   },
-  "versionId": "265f28ec-fd3c-47d0-a445-1416f0971f51",
+  "versionId": "1db97036-c2c5-4a7a-a7c8-c725122e7156",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8a5856b7f177672124d26a3d8e95d9b43c40393ee3aa73f2bb89f467979edf8e"
