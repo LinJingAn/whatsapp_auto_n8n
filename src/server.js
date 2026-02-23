@@ -61,9 +61,9 @@ app.post("/read", async (req, res) => {
 
     const result = await markAsRead(message_id);
     return res.status(200).json(result);
-  } catch (e) {
-    error("Mark read failed", e?.payload || e?.message || e);
-    return res.status(500).json({ error: "mark_read_failed", details: e?.payload || e?.message || String(e) });
+  } catch (err) {
+    error("Mark read failed", err?.payload || err?.message || err);
+    return res.status(500).json({ error: "mark_read_failed", details: err?.payload || err?.message || String(err) });
   }
 });
 
