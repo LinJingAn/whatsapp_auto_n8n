@@ -42,9 +42,9 @@ app.post("/send", async (req, res) => {
 
     const result = await sendTextMessage({ toE164: to, text });
     return res.status(200).json(result);
-  } catch (e) {
-    error("Send failed", e?.payload || e?.message || e);
-    return res.status(500).json({ error: "send_failed", details: e?.payload || e?.message || String(e) });
+  } catch (err) {
+    error("Send failed", err?.payload || err?.message || err);
+    return res.status(500).json({ error: "send_failed", details: err?.payload || err?.message || String(err) });
   }
 });
 
