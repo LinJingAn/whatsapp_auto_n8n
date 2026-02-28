@@ -10,10 +10,10 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        -2768,
-        -2784
+        -11232,
+        -1936
       ],
-      "id": "869b3694-bd02-4124-9c98-7386cd27815f",
+      "id": "91e69174-e312-4d4f-8dd8-f5ef4cf52d36",
       "name": "Webhook1",
       "webhookId": "a4dea525-3241-4848-a3c1-e112b18f3a31"
     },
@@ -27,10 +27,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -2832,
+        -11456,
         160
       ],
-      "id": "185d3e57-46d4-409c-b5c6-3de31c04171e",
+      "id": "740ad792-82ba-4f57-a596-d807fa9ab133",
       "name": "Payment Confirmation Note1"
     },
     {
@@ -42,10 +42,10 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        -2784,
+        -11408,
         320
       ],
-      "id": "b71e436a-72a0-4639-b565-7a0455eff02b",
+      "id": "bfe74697-d57d-4021-bde7-5ceb9d555bf5",
       "name": "Payment Confirmation Webhook1",
       "webhookId": "payment-confirmation-webhook-id",
       "notes": "Receives payment notifications from PagBank. Configure this URL in PagBank notification settings."
@@ -57,10 +57,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -2592,
+        -11216,
         320
       ],
-      "id": "59eee3a6-082c-4be8-8b3d-92c8ab992eb3",
+      "id": "22b23004-195b-482d-8f50-b53fd5c832cf",
       "name": "Parse Payment Notification1"
     },
     {
@@ -90,10 +90,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -2416,
+        -11040,
         320
       ],
-      "id": "948d2d77-31ce-4ae9-b87a-7db61743ca19",
+      "id": "32a3c059-854f-49a8-aa94-937a94a64178",
       "name": "Check Payment Confirmed1"
     },
     {
@@ -129,10 +129,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -2208,
+        -10832,
         240
       ],
-      "id": "99c3b4d8-cd1d-4c09-b6fe-0a510ac142e4",
+      "id": "71e35a36-d6da-4780-a5ff-2107b9a5cb26",
       "name": "Update Payment Status1",
       "credentials": {
         "supabaseApi": {
@@ -149,10 +149,10 @@
       "type": "n8n-nodes-base.redis",
       "typeVersion": 1,
       "position": [
-        -2016,
+        -10640,
         240
       ],
-      "id": "29fcfbfd-8725-4a5b-90e8-cd2b3a36a4dc",
+      "id": "b3de2c00-3237-4887-a3ff-0af7afc6fece",
       "name": "Clear Payment from Redis1",
       "credentials": {
         "redis": {
@@ -189,10 +189,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -1824,
+        -10448,
         240
       ],
-      "id": "be3744ea-2beb-47a6-ada3-fb81fbd1aaa0",
+      "id": "16d3a686-9812-4c1c-ac13-35476a69c78e",
       "name": "Reactivate Agent1",
       "credentials": {
         "supabaseApi": {
@@ -226,10 +226,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -1632,
+        -10256,
         240
       ],
-      "id": "22757df4-0b20-457a-82e9-16c8f0b47b78",
+      "id": "6837abeb-7c6d-40f3-a0f0-72b2f1f2b1d0",
       "name": "Send Payment Confirmation Message1",
       "notes": "Meta Cloud API: send via whatsapp-backend POST /send. No Evolution API."
     },
@@ -240,10 +240,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -2576,
-        -1152
+        -11200,
+        -976
       ],
-      "id": "76234204-aac2-4820-8984-d54f9dec2ba5",
+      "id": "b02f2185-c14c-4a11-9334-4c8af77b1c3a",
       "name": "Parse Supabase Webhook Prescription"
     },
     {
@@ -273,10 +273,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -2368,
-        -1152
+        -10992,
+        -976
       ],
-      "id": "940c4876-852c-417e-8532-dc8575868f93",
+      "id": "1c3c1530-6b60-424b-8ec9-5ed425f3b9a9",
       "name": "Check Should Process Prescription"
     },
     {
@@ -306,10 +306,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -2096,
-        -1168
+        -10720,
+        -992
       ],
-      "id": "e84f9281-8fac-4f2f-8c9a-361c60fc9128",
+      "id": "83458b14-8895-4bbb-b0db-c73cc19a813d",
       "name": "Check Use Cached Prescription"
     },
     {
@@ -371,10 +371,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -1888,
-        -1248
+        -10512,
+        -1072
       ],
-      "id": "6204880c-6525-429d-a73a-4afb469c78ce",
+      "id": "f75dce50-d086-4b7a-907d-bf76e1e553fb",
       "name": "Use Cached Prescription Data"
     },
     {
@@ -393,10 +393,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -1888,
-        -1088
+        -10512,
+        -912
       ],
-      "id": "0b6f0e56-380c-4dd0-b457-d4e0aef5b452",
+      "id": "180454f1-791b-44bb-8666-fc9426958a02",
       "name": "Fetch Prescription",
       "alwaysOutputData": true,
       "credentials": {
@@ -411,27 +411,11 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        -1696,
-        -1152
+        -10320,
+        -976
       ],
-      "id": "c91e0bde-a039-4952-833d-ae0de32f7216",
+      "id": "afc76452-8e04-4525-ae68-8d27a6b78ea5",
       "name": "Merge Prescription Data"
-    },
-    {
-      "parameters": {
-        "content": "## ATENDIMENTO\n",
-        "height": 664,
-        "width": 1220,
-        "color": 4
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        -512,
-        -3008
-      ],
-      "id": "4a056b90-94bc-4e87-b02b-f133449b1928",
-      "name": "Sticky Note"
     },
     {
       "parameters": {
@@ -444,10 +428,10 @@
       "type": "n8n-nodes-base.redis",
       "typeVersion": 1,
       "position": [
-        -112,
-        -2592
+        -8528,
+        -1840
       ],
-      "id": "66adf120-775c-4539-8034-4736b8f2ebf7",
+      "id": "82bacd1a-f45c-4f0e-8c90-a8a711c4e742",
       "name": "SET_ATENDIMENTO",
       "credentials": {
         "redis": {
@@ -466,10 +450,10 @@
       "type": "n8n-nodes-base.redis",
       "typeVersion": 1,
       "position": [
-        -112,
-        -2928
+        -8528,
+        -2080
       ],
-      "id": "e579744c-ae33-486e-bee8-3d36225804c9",
+      "id": "a8879f0f-e954-47b6-b857-b6754b62f703",
       "name": "GET_ATENDIMENTO",
       "credentials": {
         "redis": {
@@ -504,10 +488,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        48,
-        -2928
+        -8368,
+        -2080
       ],
-      "id": "252779fe-42d0-4c76-83b4-8cf987def81f",
+      "id": "2643e608-1492-431d-aa4a-13c45b54edbe",
       "name": "Default Atendimento",
       "notes": "When Redis returns null for atendimento, uses message.atendimento from SET_VARIAVEIS (e.g. 720) so downstream always has a value. Sets wasNewSession when key was missing so temp buffer can be cleared."
     },
@@ -538,10 +522,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        224,
-        -2928
+        -8192,
+        -2080
       ],
-      "id": "8c0d3676-2640-44dd-bff9-aba8c2082e5e",
+      "id": "3943ccf3-91d7-4c15-bb3c-e4570456bcc0",
       "name": "If New Session"
     },
     {
@@ -552,10 +536,10 @@
       "type": "n8n-nodes-base.redis",
       "typeVersion": 1,
       "position": [
-        400,
-        -2992
+        -8000,
+        -2144
       ],
-      "id": "2b713724-f2d8-426f-a36e-46f9cca12658",
+      "id": "53cf7f93-f6d5-4d3c-96c2-f6979c0089a2",
       "name": "Clear Temp Buffer",
       "credentials": {
         "redis": {
@@ -674,26 +658,14 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        -1680,
-        -2800
+        -10224,
+        -1968
       ],
-      "id": "f03a10f3-7190-41c8-97df-f4a9c39bda98",
+      "id": "42ce9f02-9942-4bd7-8251-8ace0aa9fd6a",
       "name": "Switch"
     },
     {
-      "parameters": {},
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3,
-      "position": [
-        -688,
-        -2800
-      ],
-      "id": "6ec5dffb-df76-4a6e-9224-13e264a9ff64",
-      "name": "Merge"
-    },
-    {
       "parameters": {
-        "method": "GET",
         "url": "={{ ($env.WHATSAPP_BACKEND_URL || 'https://api.healthwizard.com.br').replace(/\\/$/, '') + '/media/' + ($json.body?.entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.image?.id || $json.body?.data?.key?.id || $json.body?.data?.message?.imageMessage?.id || '') }}",
         "sendHeaders": true,
         "headerParameters": {
@@ -709,10 +681,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -1392,
-        -2720
+        -9936,
+        -1888
       ],
-      "id": "e098680d-984e-4478-bdf6-c04b64516cb9",
+      "id": "ec28fc4e-f7b0-44b0-aa07-41706e51a9b1",
       "name": "Get Image Media",
       "continueOnFail": true,
       "notes": "Meta Cloud API: fetch image via whatsapp-backend GET /media/:id. No Evolution API."
@@ -740,15 +712,14 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -1200,
-        -2720
+        -9744,
+        -1888
       ],
-      "id": "a1b2c3d4-image-media-set",
+      "id": "c221b4dd-5636-44fa-a547-4f7a009b0f4d",
       "name": "Set Image Media Data"
     },
     {
       "parameters": {
-        "method": "GET",
         "url": "={{ ($env.WHATSAPP_BACKEND_URL || 'https://api.healthwizard.com.br').replace(/\\/$/, '') + '/media/' + ($json.body?.entry?.[0]?.changes?.[0]?.value?.messages?.[0]?.document?.id || $json.body?.data?.key?.id || $json.body?.data?.message?.documentMessage?.id || '') }}",
         "sendHeaders": true,
         "headerParameters": {
@@ -764,10 +735,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -1408,
-        -2560
+        -9952,
+        -1728
       ],
-      "id": "fa42720e-0edf-460c-9caa-c88028e3ede0",
+      "id": "55837470-6323-4137-bd3d-4ab7604b3e6f",
       "name": "Get Document Media",
       "continueOnFail": true,
       "notes": "Meta Cloud API: fetch document via whatsapp-backend GET /media/:id. No Evolution API."
@@ -795,10 +766,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -1216,
-        -2560
+        -9760,
+        -1728
       ],
-      "id": "a1b2c3d4-doc-media-set",
+      "id": "8dcdde1c-8edc-4f2f-b8d9-460a728c03b0",
       "name": "Set Document Media Data"
     },
     {
@@ -813,10 +784,10 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        -1232,
-        -2720
+        -9552,
+        -1888
       ],
-      "id": "0bca006d-a25c-4a8f-891f-180e9e0e4f71",
+      "id": "4b320fc6-1547-476c-8595-391d0ba5462b",
       "name": "Convert Image to File"
     },
     {
@@ -828,10 +799,10 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        -1232,
-        -2560
+        -9568,
+        -1728
       ],
-      "id": "bb0d7a1a-86c4-4875-818d-7a6f59d2e26b",
+      "id": "8f287bb3-91e9-4a2a-b3d5-29cc812adbde",
       "name": "Convert Document to File"
     },
     {
@@ -841,10 +812,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -1072,
-        -2720
+        -9376,
+        -1888
       ],
-      "id": "fdb54873-e3aa-47d4-9668-830d4ee69f8f",
+      "id": "659b187a-3d9e-4080-9663-0579b6604848",
       "name": "Upload Image to Supabase",
       "credentials": {
         "supabaseApi": {
@@ -860,10 +831,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -1056,
-        -2560
+        -9376,
+        -1728
       ],
-      "id": "dc8bcf8b-1c67-4557-84f2-f0af41d7f92a",
+      "id": "f18fa201-fff6-4966-b378-a7ad61c57cce",
       "name": "Upload Document to Supabase",
       "credentials": {
         "supabaseApi": {
@@ -889,10 +860,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -912,
-        -2720
+        -9216,
+        -1888
       ],
-      "id": "79bfa845-ac44-4093-807b-13c4b110972f",
+      "id": "5fce9c98-1a80-4db0-83f8-62c3f8422e0f",
       "name": "Set Image Text"
     },
     {
@@ -912,27 +883,11 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -896,
-        -2560
+        -9200,
+        -1728
       ],
-      "id": "cb4141f3-33c1-4687-8c61-6d067a592bf2",
+      "id": "4a247758-1dc3-4623-b69b-43351e5aed91",
       "name": "Set Document Text"
-    },
-    {
-      "parameters": {
-        "content": "# ESPERA MENSAGENS\n",
-        "height": 544,
-        "width": 1312,
-        "color": 5
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        752,
-        -2960
-      ],
-      "id": "04577732-bcc1-4ffd-ae73-2442a24c0cb7",
-      "name": "Sticky Note14"
     },
     {
       "parameters": {
@@ -951,42 +906,11 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2224,
-        -2736
+        -6528,
+        -2048
       ],
-      "id": "1266b15a-62be-4d82-9657-b6c775cf1559",
+      "id": "6617a8be-7c3e-411d-8f4b-a52026653fbc",
       "name": "CONCATENA"
-    },
-    {
-      "parameters": {
-        "content": " # VERIFICA USER",
-        "height": 372,
-        "width": 1060
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        2112,
-        -2832
-      ],
-      "id": "9fb0cb24-57f5-423c-9627-39b09ca08118",
-      "name": "Sticky Note17"
-    },
-    {
-      "parameters": {
-        "content": "# SPLIT E ENVIO DAS MENSAGENS",
-        "height": 532,
-        "width": 2140,
-        "color": 5
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        6176,
-        -2928
-      ],
-      "id": "8253a9fa-a74e-45ec-8111-87f8faf56b35",
-      "name": "Sticky Note23"
     },
     {
       "parameters": {
@@ -1004,10 +928,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        2384,
-        -2736
+        -6368,
+        -2048
       ],
-      "id": "7446e7ee-1f8d-439b-9e13-cb32794e2837",
+      "id": "fb081ce7-86ed-4ef8-988b-7f79947e0a94",
       "name": "GET_USER",
       "alwaysOutputData": true,
       "credentials": {
@@ -1045,10 +969,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2576,
-        -2736
+        -6176,
+        -2048
       ],
-      "id": "f52023db-91ae-414d-8932-ae2cd2c48c23",
+      "id": "6fb199ff-b079-4b2e-91b3-8126c9426978",
       "name": "IF_USER"
     },
     {
@@ -1070,10 +994,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        2720,
-        -2608
+        -6032,
+        -1920
       ],
-      "id": "ed7fcb3a-232b-4c37-b572-5ae6474292b2",
+      "id": "3bcb0585-0013-4e16-a8a7-b2250e0fa2c8",
       "name": "CREATE_USER",
       "credentials": {
         "supabaseApi": {
@@ -1091,10 +1015,10 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        2880,
-        -2608
+        -5872,
+        -1920
       ],
-      "id": "32bbc145-f6e3-4e63-9836-b0a842fcacaf",
+      "id": "ad8232a0-2528-4dcc-a11f-ffd63654e63b",
       "name": "WAIT_USER",
       "webhookId": "5927d937-0386-4938-8684-c41f06b37dff"
     },
@@ -1133,10 +1057,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3056,
-        -2752
+        -5696,
+        -2064
       ],
-      "id": "6d4ecfbc-10fa-416f-853d-91ed0844467c",
+      "id": "45a7c5d0-f275-4582-83d1-b9c89d7da890",
       "name": "SET_USER"
     },
     {
@@ -1146,10 +1070,10 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        7440,
-        -2736
+        -336,
+        -2048
       ],
-      "id": "24a1eb18-f143-4f34-abef-7c9b74e274a0",
+      "id": "23e74586-2d6e-4ff5-bc27-aec6e82683ec",
       "name": "LOOP_SLIT"
     },
     {
@@ -1160,43 +1084,27 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        7936,
-        -2720
+        176,
+        -2032
       ],
-      "id": "11648277-4649-4216-a8e3-70188025eea0",
+      "id": "f102280a-3938-4ced-8734-46e37cab2269",
       "name": "WAIT_SPLIT",
       "webhookId": "3cea2837-6c05-4e79-8798-96260c4f8dc6"
     },
     {
       "parameters": {
-        "content": "# TOOLS",
-        "height": 320,
-        "width": 422,
-        "color": 6
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        6272,
-        -2368
-      ],
-      "id": "140628e4-25a2-4c33-985d-12120b9bc732",
-      "name": "Sticky Note38"
-    },
-    {
-      "parameters": {
         "content": "# ADMIN\n",
-        "height": 800,
+        "height": 960,
         "width": 440,
         "color": 6
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -2016,
-        -2320
+        -8512,
+        -1200
       ],
-      "id": "e2cdac68-a53e-4987-a5c2-d86717e368a6",
+      "id": "7dcdad03-7d33-4674-ad5f-9b801c52acd6",
       "name": "Sticky Note39"
     },
     {
@@ -1228,10 +1136,10 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.5,
       "position": [
-        -1840,
-        -2288
+        -8336,
+        -1168
       ],
-      "id": "4066748c-8d63-46f9-9dda-b227039c30b0",
+      "id": "c1269645-6ddd-4071-85bf-c3e6302d073d",
       "name": "DELETA_MEMORIA",
       "credentials": {
         "postgres": {
@@ -1249,10 +1157,10 @@
       "type": "n8n-nodes-base.redis",
       "typeVersion": 1,
       "position": [
-        -1840,
-        -2096
+        -8336,
+        -976
       ],
-      "id": "0a653353-e874-492a-a4db-8521ad3c38dc",
+      "id": "e96face9-5542-450a-b5cd-6e6c3ae2ccbe",
       "name": "DELETAR_ATENDIMENTO",
       "credentials": {
         "redis": {
@@ -1270,10 +1178,10 @@
       "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
       "typeVersion": 1.3,
       "position": [
-        6368,
-        -2576
+        -1280,
+        -1840
       ],
-      "id": "3a3fdb46-53fd-4620-b069-79b91e5db9ca",
+      "id": "057ef99e-894f-4516-a1e0-17f34bd01642",
       "name": "Postgres Chat Memory",
       "credentials": {
         "postgres": {
@@ -1345,10 +1253,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        5824,
-        -2752
+        -1888,
+        -2064
       ],
-      "id": "0b26e9c1-d85a-43bf-8a41-67bc0e3bd9bb",
+      "id": "985ef292-27e4-4948-bbaf-6a7c8437cf70",
       "name": "Switch8"
     },
     {
@@ -1362,10 +1270,10 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.8,
       "position": [
-        6272,
-        -2720
+        -1392,
+        -2032
       ],
-      "id": "c7203016-e71f-40fe-b32b-acea0e6867b0",
+      "id": "5a4b825c-eeca-4cbe-83d8-0399b6002803",
       "name": "RECEPCIONISTA",
       "retryOnFail": true,
       "onError": "continueErrorOutput"
@@ -1387,27 +1295,11 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        6736,
-        -2736
+        -1008,
+        -2048
       ],
-      "id": "23641096-327b-4d42-8017-b91f89325c6e",
+      "id": "df3cf308-0676-4fb8-b2c4-a4aa83efc83a",
       "name": "output"
-    },
-    {
-      "parameters": {
-        "content": "# AGENTE\n",
-        "height": 484,
-        "width": 2916,
-        "color": 4
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        3216,
-        -2928
-      ],
-      "id": "8cc50121-1e86-4598-bb3b-938426279675",
-      "name": "Sticky Note40"
     },
     {
       "parameters": {
@@ -1434,10 +1326,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        208,
-        -2688
+        -8208,
+        -1936
       ],
-      "id": "bc503cfa-8255-4123-894c-0aca75425e4e",
+      "id": "400da1fe-35bb-4ef2-a785-99f5cb907151",
       "name": "OFF_AGENT",
       "credentials": {
         "supabaseApi": {
@@ -1471,10 +1363,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        208,
-        -2512
+        -8208,
+        -1760
       ],
-      "id": "85c1da6b-d501-409f-8204-f24c20069de1",
+      "id": "23dcd49e-ca19-40a2-98b4-0eadff303fc4",
       "name": "ON_AGENT",
       "credentials": {
         "supabaseApi": {
@@ -1490,10 +1382,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5984,
-        -2848
+        -1648,
+        -2160
       ],
-      "id": "682889c9-ab4f-484b-a04b-190d518bb6ea",
+      "id": "362e0c50-f48b-4151-b130-d73bcbd1e9c9",
       "name": "Log AGENTE_OFF"
     },
     {
@@ -1555,10 +1447,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        -288,
-        -2800
+        -8704,
+        -1968
       ],
-      "id": "0c0f38a6-9b97-4c31-9ea1-0bb824df8322",
+      "id": "4f30d0a5-2c2a-4f21-a9e2-06419b42bef9",
       "name": "SWITCH_PRINCIPAL"
     },
     {
@@ -1620,41 +1512,11 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        48,
-        -2592
+        -8368,
+        -1840
       ],
-      "id": "3a1797a8-22f3-40a4-8844-8008ecfec67c",
+      "id": "2d5a084b-fa87-499c-aa19-584434c31aa0",
       "name": "LIGA-DESLIGA"
-    },
-    {
-      "parameters": {
-        "mode": "retrieve-as-tool",
-        "toolName": "database",
-        "toolDescription": "'database': SEMPRE use essa tool para pegar conhecimento e contexto.",
-        "tableName": {
-          "__rl": true,
-          "value": "documents",
-          "mode": "list",
-          "cachedResultName": "documents"
-        },
-        "topK": 10,
-        "includeDocumentMetadata": false,
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
-      "typeVersion": 1.1,
-      "position": [
-        6336,
-        -2304
-      ],
-      "id": "507dfe0c-20f8-4a24-8f06-6c23adbb14a8",
-      "name": "Supabase Vector Store",
-      "credentials": {
-        "supabaseApi": {
-          "id": "TF0zMnZB4ZmegdXU",
-          "name": "Supabase account"
-        }
-      }
     },
     {
       "parameters": {
@@ -1665,10 +1527,10 @@
       "type": "@n8n/n8n-nodes-langchain.toolCode",
       "typeVersion": 1.1,
       "position": [
-        6576,
-        -2192
+        -928,
+        -1712
       ],
-      "id": "ce0a6690-30a3-4d9f-8b8b-8e182d243f3b",
+      "id": "f2b90284-5d7b-4ea6-a791-dcf06b11324e",
       "name": "Medication Safety Check Tool"
     },
     {
@@ -1676,13 +1538,13 @@
         "schemaType": "manual",
         "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"messages\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    }\n  },\n  \"required\": [\"messages\"]\n}"
       },
-      "id": "7197a9c6-b4f5-4747-9864-7ee35af88606",
+      "id": "93ae7f79-f30c-49b0-8fe4-28aca9bd114e",
       "name": "OutputParser1",
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.2,
       "position": [
-        7072,
-        -2560
+        -704,
+        -1872
       ]
     },
     {
@@ -1698,13 +1560,13 @@
           ]
         }
       },
-      "id": "ebad5d92-4581-48b8-8046-853f529e339f",
+      "id": "6aadde18-16e7-4292-802f-1046ab292e9f",
       "name": "Parser  Chain",
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.4,
       "position": [
-        6928,
-        -2736
+        -848,
+        -2048
       ]
     },
     {
@@ -1714,13 +1576,13 @@
           "destinationFieldName": "output"
         }
       },
-      "id": "4bfa022b-92fe-4c36-b7a4-58249a9cfce4",
+      "id": "7a9db434-daf8-4208-982b-9747f05b7605",
       "name": "Split de Mensagem",
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        7232,
-        -2736
+        -544,
+        -2048
       ]
     },
     {
@@ -1732,10 +1594,10 @@
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.8,
       "position": [
-        -1024,
-        -2944
+        -9328,
+        -2080
       ],
-      "id": "545d81d2-e0d6-47b0-80da-cebb99338393",
+      "id": "c95d3927-d22d-41a2-8eaa-64042b12a5d3",
       "name": "AUDIO",
       "credentials": {
         "openAiApi": {
@@ -1743,22 +1605,6 @@
           "name": "OpenAi account"
         }
       }
-    },
-    {
-      "parameters": {
-        "content": "## Variaveis\n",
-        "height": 260,
-        "width": 180,
-        "color": 3
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        -752,
-        -2880
-      ],
-      "id": "6f37440b-ddb6-4397-aa87-c9b59b3eaf06",
-      "name": "Sticky Note41"
     },
     {
       "parameters": {
@@ -1831,15 +1677,14 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -464,
-        -2800
+        -8848,
+        -1968
       ],
-      "id": "2204bd4e-d6ed-4fd8-ab96-cb1432989f17",
+      "id": "b08a79da-813d-4b90-a2be-395439e6d51b",
       "name": "SET_VARIAVEIS"
     },
     {
       "parameters": {
-        "method": "GET",
         "url": "={{ ($env.WHATSAPP_BACKEND_URL || 'https://api.healthwizard.com.br').replace(/\\/$/, '') + '/media/' + ($('SET_VARIAVEIS').item.json.message?.audio?.id || $('SET_VARIAVEIS').item.json.message?.voice?.id || $('SET_VARIAVEIS').item.json.message?.id || '') }}",
         "sendHeaders": true,
         "headerParameters": {
@@ -1855,10 +1700,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -1328,
-        -2944
+        -9872,
+        -2080
       ],
-      "id": "012fbc68-cd90-4038-a3cf-4f8bd0f14bee",
+      "id": "e7a1e35f-c3e2-4ee7-b44f-214cfc06fe12",
       "name": "Obter m dia em base1",
       "continueOnFail": true,
       "notes": "Meta Cloud API: fetch audio via whatsapp-backend GET /media/:id. No Evolution API."
@@ -1886,10 +1731,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -1168,
-        -2944
+        -9680,
+        -2080
       ],
-      "id": "a1b2c3d4-audio-media-set",
+      "id": "847531c2-cc94-4a1e-9112-5655b0e2d9d4",
       "name": "Set Audio Media Data"
     },
     {
@@ -1901,27 +1746,11 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        -1168,
-        -2944
+        -9520,
+        -2080
       ],
-      "id": "af6f66f2-0763-4ac0-845e-306c7d3a4e2c",
+      "id": "2e59e437-c8a1-4096-ae08-d7abe0769fad",
       "name": "Convert to File"
-    },
-    {
-      "parameters": {
-        "content": "## SETAR VARIAVEIS\n",
-        "height": 624,
-        "width": 2256,
-        "color": 5
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        -2816,
-        -2992
-      ],
-      "id": "fa25104d-306d-448c-a4af-09445417a1b9",
-      "name": "Sticky Note42"
     },
     {
       "parameters": {
@@ -1948,10 +1777,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5616,
-        -2736
+        -2080,
+        -2048
       ],
-      "id": "5cfca94c-d264-455b-b45e-88101de6c123",
+      "id": "044143c3-44fa-4b7b-996e-ced133c58be7",
       "name": "Marcar mensagens como lidas",
       "continueOnFail": true,
       "notes": "Meta Cloud API: mark message as read via whatsapp-backend POST /read. No Evolution API."
@@ -1984,10 +1813,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -2528,
-        -2784
+        -11024,
+        -1936
       ],
-      "id": "a9cb1a8e-8ab9-416e-b4dd-cb0f30807640",
+      "id": "85b03846-df6e-47c5-8f4a-6649f22dcad3",
       "name": "If"
     },
     {
@@ -2081,10 +1910,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -2320,
-        -2864
+        -10816,
+        -2016
       ],
-      "id": "8491b6ee-eae7-41f8-a03e-c80138069c82",
+      "id": "105c4e1e-6153-401d-a6dc-ba0842a2bf7b",
       "name": "Edit Fields"
     },
     {
@@ -2105,10 +1934,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -2320,
-        -2688
+        -10816,
+        -1840
       ],
-      "id": "d205e620-8e70-4b68-ade0-cb231d2d0c1e",
+      "id": "19dbc731-eda6-4877-bc25-51f74f876887",
       "name": "Edit Fields8"
     },
     {
@@ -2129,10 +1958,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -2032,
-        -2768
+        -10576,
+        -1936
       ],
-      "id": "88f9a138-2b2f-4c75-be61-0801cb174b86",
+      "id": "2208ef8f-d5ae-4664-8e2c-d33058871cc4",
       "name": "JID"
     },
     {
@@ -2147,10 +1976,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -1872,
-        -2768
+        -10416,
+        -1936
       ],
-      "id": "e668f116-7336-49b7-9834-821a4ca85d92",
+      "id": "b5e08df6-985e-4465-aea4-ddd138e81967",
       "name": "PARSE"
     },
     {
@@ -2181,10 +2010,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        7648,
-        -2864
+        -128,
+        -2176
       ],
-      "id": "e75f3369-33a8-4a3a-a5b7-ff7e1539cce8",
+      "id": "8a51780f-86e2-4cc1-81e1-b9edc530b9f3",
       "name": "If14",
       "executeOnce": true
     },
@@ -2210,10 +2039,10 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        8176,
-        -2880
+        416,
+        -2192
       ],
-      "id": "1db85260-efa3-40b3-b1b4-a5e3c9a802d8",
+      "id": "d4890b37-2aaa-4470-92c9-1657c235c1e5",
       "name": "Execute Workflow",
       "executeOnce": true
     },
@@ -2260,10 +2089,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        8496,
-        -2784
+        608,
+        -2192
       ],
-      "id": "1ce2a8f4-59af-4091-b8ef-35fbaf36fb4c",
+      "id": "41ba9208-ac5d-4527-b7d9-50724c0cf949",
       "name": "Create Atendimento Record",
       "credentials": {
         "supabaseApi": {
@@ -2282,10 +2111,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -2832,
-        -304
+        -11456,
+        -208
       ],
-      "id": "4310536c-5251-4748-a53a-e31c83c0429d",
+      "id": "873180c7-bffa-4be2-9aa3-f5f13118871c",
       "name": "Satisfaction Survey Trigger Note1"
     },
     {
@@ -2297,10 +2126,10 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        -2768,
-        -192
+        -11392,
+        -96
       ],
-      "id": "db1ebe1b-ca64-46a8-8da9-6b539b9fc4a6",
+      "id": "f50bafa1-af73-4508-a9b4-2157a7f7a414",
       "name": "Consultation Completed Webhook1",
       "webhookId": "consultation-completed-webhook-id"
     },
@@ -2320,10 +2149,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -2576,
-        -192
+        -11200,
+        -96
       ],
-      "id": "861d33ca-b12c-4955-96b5-42da85257ffd",
+      "id": "3444eb17-627d-4b33-811d-633978969474",
       "name": "Get Atendimento for Survey1",
       "alwaysOutputData": true,
       "credentials": {
@@ -2349,10 +2178,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -2384,
-        -192
+        -11008,
+        -96
       ],
-      "id": "6ac729ba-7303-4f7a-8bfc-451fd84e537a",
+      "id": "3edfc05e-d42d-47c9-b1c5-bda5e780419b",
       "name": "Get Patient for Survey1",
       "alwaysOutputData": true,
       "credentials": {
@@ -2378,10 +2207,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -2192,
-        -192
+        -10816,
+        -96
       ],
-      "id": "4b3c4a99-c840-4574-bc5d-9ab15520d47b",
+      "id": "c5e10844-4ebf-435b-8c6f-550cb10c07bf",
       "name": "Get Profile for Survey1",
       "alwaysOutputData": true,
       "credentials": {
@@ -2420,10 +2249,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -2000,
-        -192
+        -10624,
+        -96
       ],
-      "id": "fd927446-b405-4aa6-afa4-9c6330d7b064",
+      "id": "88262f74-cd53-465c-9f75-851132251151",
       "name": "Prepare Survey Data1"
     },
     {
@@ -2451,10 +2280,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -1808,
-        -192
+        -10432,
+        -96
       ],
-      "id": "75aca68f-5880-4cc8-b1f3-34e537915ca0",
+      "id": "66d18322-58c6-42fc-9da5-349c4ac567b3",
       "name": "Send Satisfaction Survey1",
       "notes": "Meta Cloud API: send via whatsapp-backend POST /send. No Evolution API."
     },
@@ -2589,10 +2418,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8016,
-        -2880
+        256,
+        -2192
       ],
-      "id": "2c845544-2323-4a07-8280-27e154612c11",
+      "id": "57b83b61-0562-403c-9f71-328d0aa3d3e3",
       "name": "Preparar Workflow"
     },
     {
@@ -2603,10 +2432,10 @@
       "type": "n8n-nodes-base.redis",
       "typeVersion": 1,
       "position": [
-        -1840,
-        -1888
+        -8336,
+        -768
       ],
-      "id": "a6c0592b-a23c-4ed4-90d8-7c15052298ad",
+      "id": "7b7fa5bf-5431-4c9d-8973-a48dd55273b1",
       "name": "DELETAR_ATENDIMENTO14",
       "credentials": {
         "redis": {
@@ -2625,10 +2454,10 @@
       "type": "n8n-nodes-base.redis",
       "typeVersion": 1,
       "position": [
-        576,
-        -2912
+        -7824,
+        -2064
       ],
-      "id": "1ab21947-9928-42cf-9973-d9d0e2bd9dc7",
+      "id": "87543fcd-bbef-4786-b2ab-cb4ae67f20cb",
       "name": "PUSH",
       "executeOnce": true,
       "credentials": {
@@ -2645,10 +2474,10 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        1392,
-        -2640
+        -7104,
+        -1952
       ],
-      "id": "ff577972-5833-4f98-bb83-502ce1a02c19",
+      "id": "2ea1367c-7835-48fd-af0b-d4ace0a8e420",
       "name": "Wait",
       "webhookId": "d1e38aad-57ac-45e5-b64a-08e2f1ce1a6f",
       "disabled": true
@@ -2663,10 +2492,10 @@
       "type": "n8n-nodes-base.redis",
       "typeVersion": 1,
       "position": [
-        1024,
-        -2752
+        -7472,
+        -2064
       ],
-      "id": "a40b8c9d-2ca2-4166-969e-8035b428212f",
+      "id": "4de76a91-0d9e-4c20-9344-14fbb1cc5c10",
       "name": "GET",
       "credentials": {
         "redis": {
@@ -2683,10 +2512,10 @@
       "type": "n8n-nodes-base.redis",
       "typeVersion": 1,
       "position": [
-        1568,
-        -2752
+        -6976,
+        -2064
       ],
-      "id": "6bdf9765-0fa1-4da8-91d3-69f080b37f19",
+      "id": "1e551005-377a-4e23-9cda-3209b058f2be",
       "name": "DELETE",
       "credentials": {
         "redis": {
@@ -2702,10 +2531,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1568,
-        -2896
+        -7104,
+        -2208
       ],
-      "id": "02789cea-9a41-4bda-9331-8a9769a19655",
+      "id": "c77b224c-d64d-43fa-b7b8-5aad2a7801e2",
       "name": "Log NADA (buffer skip)"
     },
     {
@@ -2771,10 +2600,10 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        1232,
-        -2768
+        -7264,
+        -2080
       ],
-      "id": "b34a47ed-9941-4f64-8979-9162fe4c6bbe",
+      "id": "94d93174-77a2-433c-80c5-31f15cc2a60e",
       "name": "SWITCH_BUFFER"
     },
     {
@@ -2806,10 +2635,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1792,
-        -2752
+        -6800,
+        -2064
       ],
-      "id": "48297817-cc4f-47c8-997f-4e128e4eb34d",
+      "id": "5fd8436a-ab32-4349-a014-775aaf08a7c0",
       "name": "If15"
     },
     {
@@ -2819,10 +2648,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1952,
-        -2912
+        -6656,
+        -2192
       ],
-      "id": "2f05c830-5a7e-42ad-a02b-f68c2e08cac2",
+      "id": "dd68e323-f0e1-446f-9c43-2ff447cd0b6c",
       "name": "Log NADA8 (no messages)"
     },
     {
@@ -2850,10 +2679,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        800,
-        -2752
+        -7664,
+        -2064
       ],
-      "id": "ba0688c1-5e1a-4a5c-8bdd-a99fc90951ac",
+      "id": "8c1f75e4-8e78-4fa5-930e-c90c0160af08",
       "name": "Marcar mensagens como lidas8",
       "continueOnFail": true,
       "notes": "Meta Cloud API: mark as read via whatsapp-backend POST /read. No Evolution API."
@@ -2867,10 +2696,10 @@
       "type": "n8n-nodes-base.redis",
       "typeVersion": 1,
       "position": [
-        -1840,
-        -1696
+        -8336,
+        -576
       ],
-      "id": "02c68a08-ea49-41a8-9960-06b85821cf41",
+      "id": "1f01bc6e-64f8-4879-8a14-27dd199b1bf5",
       "name": "DELETAR_ATENDIMENTO15",
       "credentials": {
         "redis": {
@@ -2892,10 +2721,10 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        6256,
-        -2544
+        -1424,
+        -1840
       ],
-      "id": "eac4d83b-aeab-4a2d-a94a-1a836a839e8d",
+      "id": "3aff2664-cce2-426e-ae91-d7ddbf62b738",
       "name": "OpenAI Chat Model",
       "credentials": {
         "openAiApi": {
@@ -2911,10 +2740,10 @@
       "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
       "typeVersion": 1.2,
       "position": [
-        6336,
-        -2160
+        -1216,
+        -1536
       ],
-      "id": "9888bff3-93c4-4935-8063-9c283595eeb2",
+      "id": "791beb50-8570-41b5-8440-9596dc65f4b1",
       "name": "Embeddings OpenAI",
       "credentials": {
         "openAiApi": {
@@ -2935,10 +2764,10 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.2,
       "position": [
-        6928,
-        -2560
+        -848,
+        -1872
       ],
-      "id": "dd28010f-78db-4ec9-9ddb-116e47609135",
+      "id": "fa471a73-eb9f-45ba-bb42-d0c4b29d4902",
       "name": "OpenAI Chat Model8",
       "credentials": {
         "openAiApi": {
@@ -2963,10 +2792,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        3264,
-        -2752
+        -5536,
+        -2064
       ],
-      "id": "9c78ca3e-0530-41df-bd03-f1f02eb63bd3",
+      "id": "3aa14d37-b508-4a53-9b7b-bae8c17f1cd7",
       "name": "Identify Partner Clinic",
       "alwaysOutputData": true,
       "credentials": {
@@ -2992,10 +2821,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        3440,
-        -2752
+        -5360,
+        -2064
       ],
-      "id": "0ed88e08-51b5-4675-84d1-e84996e96479",
+      "id": "704a671e-edec-4037-a7fc-dbaaf33d53d7",
       "name": "Check Patient Status1",
       "alwaysOutputData": true,
       "credentials": {
@@ -3021,10 +2850,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        3616,
-        -2752
+        -5184,
+        -2064
       ],
-      "id": "7059d3cc-a685-4750-b803-d867c4e82ad4",
+      "id": "a433a958-a4fe-4f60-a35b-444693b5ab5a",
       "name": "Check Paciente by Profile1",
       "alwaysOutputData": true,
       "credentials": {
@@ -3050,10 +2879,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        3792,
-        -2752
+        -5008,
+        -2064
       ],
-      "id": "6d9463dc-9824-47ed-8056-5a4dccf811ee",
+      "id": "560fc7f9-54ad-4e91-9a9d-f1a441fcee99",
       "name": "Check Dependent Status1",
       "alwaysOutputData": true,
       "credentials": {
@@ -3083,10 +2912,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        3952,
-        -2752
+        -4848,
+        -2064
       ],
-      "id": "e04f13e1-52d4-401d-a4f1-d64d16784cc9",
+      "id": "fa55242f-5b3a-479a-9736-69b04bad4211",
       "name": "Check Subscription Members1",
       "alwaysOutputData": true,
       "credentials": {
@@ -3116,10 +2945,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        4128,
-        -2752
+        -4672,
+        -2064
       ],
-      "id": "fca56982-a457-4915-a2d9-3faea263dc1e",
+      "id": "8bce5974-b653-4762-b9a3-ac1638b80f8a",
       "name": "Get Subscription Details1",
       "alwaysOutputData": true,
       "credentials": {
@@ -3200,11 +3029,60 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        4320,
-        -2752
+        -4480,
+        -2064
       ],
-      "id": "dcbbcc2b-8e9d-4910-a442-c0849e74c35f",
+      "id": "345b9c63-f2b3-441e-a5b9-9ae8f1612ac4",
       "name": "Set Patient Context1"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "pagamentos",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "user_number",
+              "condition": "eq",
+              "keyValue": "={{ $('SET_VARIAVEIS').item.json.user.number }}"
+            },
+            {
+              "keyName": "status",
+              "condition": "eq",
+              "keyValue": "PAID"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -4304,
+        -2064
+      ],
+      "id": "05cdd869-2fd4-4d49-8a65-f4a76ec896e7",
+      "name": "Check Payment Completed",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      },
+      "notes": "Check if this user has any completed payment (status=PAID). If no row → send payment. If row exists → skip payment."
+    },
+    {
+      "parameters": {
+        "jsCode": "// Normalize: ensure one item for IF. Payment required when no completed (PAID) payment found.\nconst items = $input.all();\nconst paid = items.find(i => (i.json.status || '').toUpperCase() === 'PAID' || i.json.paid_at);\nreturn { json: { payment_id: paid?.json?.payment_id || paid?.json?.id || '' } };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -4144,
+        -2064
+      ],
+      "id": "6ce41b0c-acf2-4c16-a065-62bcf0f072b3",
+      "name": "Normalize Payment Check"
     },
     {
       "parameters": {
@@ -3218,8 +3096,8 @@
           "conditions": [
             {
               "id": "payment-check-001",
-              "leftValue": "={{ $('Set Patient Context1').item.json.patient_type }}",
-              "rightValue": "new",
+              "leftValue": "={{ $json.payment_id }}",
+              "rightValue": "",
               "operator": {
                 "type": "string",
                 "operation": "equals"
@@ -3233,10 +3111,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4496,
-        -2752
+        -3952,
+        -2064
       ],
-      "id": "dfe02807-5eed-4b75-a67b-0b599a54d29e",
+      "id": "8fa7c0a9-260b-4c90-9775-1757e2b29d01",
       "name": "Check Payment Required"
     },
     {
@@ -3262,7 +3140,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"reference_id\": \"DW_{{ $('SET_VARIAVEIS').first().json.user.number }}_{{ $now.toMillis() }}\",\n  \"customer\": {\n    \"name\": \"{{ $('SET_VARIAVEIS').first().json.user.name || 'Cliente Dental Wizard' }}\",\n    \"email\": \"{{ $('Check Patient Status1').first().json?.email || 'paciente@dentalwizard.com.br' }}\",\n    \"tax_id\": \"{{ $('Check Patient Status1').first().json?.cpf || '' }}\",\n    \"phones\": [\n      {\n        \"country\": \"55\",\n        \"area\": \"{{ $('SET_VARIAVEIS').first().json.user.number.substring(2, 4) }}\",\n        \"number\": \"{{ $('SET_VARIAVEIS').first().json.user.number.substring(4) }}\",\n        \"type\": \"MOBILE\"\n      }\n    ]\n  },\n  \"items\": [\n    {\n      \"reference_id\": \"consulta_online\",\n      \"name\": \"Consulta Odontológica Online - Dental Wizard\",\n      \"quantity\": 1,\n      \"unit_amount\": 4990\n    }\n  ],\n  \"qr_codes\": [\n    {\n      \"amount\": {\n        \"value\": 4990\n      },\n      \"expiration_date\": \"{{ $now.plus({ hours: 24 }).toISO() }}\"\n    }\n  ],\n  \"notification_urls\": [\n    \"https://n8n.healthwizard.com.br/webhook/payment-confirmation\"\n  ]\n}",
+        "jsonBody": "={\n  \"reference_id\": \"DW_{{ $('SET_VARIAVEIS').first().json.user.number }}_{{ $now.toMillis() }}\",\n  \"customer\": {\n    \"name\": \"{{ $('SET_VARIAVEIS').first().json.user.name || 'Cliente Dental Wizard' }}\",\n    \"email\": \"{{ $('Check Patient Status1').first().json?.email || 'paciente@dentalwizard.com.br' }}\",\n    \"tax_id\": \"{{ $('Check Patient Status1').first().json?.cpf || '' }}\",\n    \"phones\": [\n      {\n        \"country\": \"55\",\n        \"area\": \"{{ $('SET_VARIAVEIS').first().json.user.number.substring(2, 4) }}\",\n        \"number\": \"{{ $('SET_VARIAVEIS').first().json.user.number.substring(4) }}\",\n        \"type\": \"MOBILE\"\n      }\n    ]\n  },\n  \"items\": [\n    {\n      \"reference_id\": \"consulta_online\",\n      \"name\": \"Consulta Odontológica Online - Dental Wizard (teste)\",\n      \"quantity\": 1,\n      \"unit_amount\": 10\n    }\n  ],\n  \"qr_codes\": [\n    {\n      \"amount\": {\n        \"value\": 10\n      },\n      \"expiration_date\": \"{{ $now.plus({ hours: 24 }).toISO() }}\"\n    }\n  ],\n  \"notification_urls\": [\n    \"https://n8n.healthwizard.com.br/webhook/payment-confirmation\"\n  ]\n}",
         "options": {
           "response": {
             "response": {
@@ -3274,13 +3152,13 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4640,
-        -2896
+        -3776,
+        -2192
       ],
-      "id": "4956e493-e8a9-4ad5-b5e3-a4c24d5cbe76",
+      "id": "d37bcf5d-fe7e-474a-aadf-4b76d09dc747",
       "name": "Create Payment Charge",
       "continueOnFail": true,
-      "notes": "Creates PIX via PagBank. 401 = bad/missing token – workflow continues so you can set up DB first. When ready, set PAGBANK_ACCESS_TOKEN in n8n."
+      "notes": "Creates PIX via PagBank. Set PAGBANK_ACCESS_TOKEN in n8n Variables (your PagBank token). Price set to 10 centavos (R$ 0,10) for testing."
     },
     {
       "parameters": {
@@ -3325,13 +3203,13 @@
             {
               "id": "payment-store-007",
               "name": "amount",
-              "value": "4990",
+              "value": "10",
               "type": "number"
             },
             {
               "id": "payment-store-008",
               "name": "amount_formatted",
-              "value": "R$ 49,90",
+              "value": "R$ 0,10",
               "type": "string"
             },
             {
@@ -3359,10 +3237,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        4816,
-        -2896
+        -3584,
+        -2192
       ],
-      "id": "c57ae693-0478-4b84-bec8-00434a640c01",
+      "id": "d32fbd2f-2245-4568-97bc-bf4d3c7a0f80",
       "name": "Store Payment Info"
     },
     {
@@ -3376,10 +3254,10 @@
       "type": "n8n-nodes-base.redis",
       "typeVersion": 1,
       "position": [
-        4992,
-        -2896
+        -3392,
+        -2192
       ],
-      "id": "51eae0d5-8105-415d-bc49-6ee20c0e9475",
+      "id": "f2010214-6643-4e07-b39b-b5966646a999",
       "name": "Store Payment in Redis",
       "credentials": {
         "redis": {
@@ -3392,6 +3270,8 @@
       "parameters": {
         "method": "POST",
         "url": "={{ ($env.WHATSAPP_BACKEND_URL || 'https://api.healthwizard.com.br').replace(/\\/$/, '') }}/send",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -3407,48 +3287,198 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ to: ($('SET_VARIAVEIS').item.json.message.sender || '').replace(/@s.whatsapp.net$/i, ''), text: '💰 *Pagamento da Consulta*\\n\\nO valor da consulta online é *' + ($('Store Payment Info').item.json.amount_formatted || '') + '*.\\n\\n📱 *Pague via PIX:*\\n\\n1️⃣ Abra o app do seu banco\\n2️⃣ Escolha pagar com PIX\\n3️⃣ Escaneie o QR Code ou copie o código abaixo:\\n\\n```\\n' + ($('Store Payment Info').item.json.pix_qr_code || '') + '\\n```\\n\\n⏰ *Validade:* 24 horas\\n\\n✅ Após o pagamento ser confirmado, retornarei automaticamente para continuar com seu atendimento.\\n\\n🦷 *Dental Wizard*' }) }}",
+        "jsonBody": "={{ JSON.stringify({ to: ($('SET_VARIAVEIS').item.json.message.sender || '').replace(/@s.whatsapp.net$/i, ''), text: '💰 *Pagamento da Consulta*\\n\\nO valor da consulta online é *' + ($('Store Payment Info').item.json.amount_formatted || '') + '*.\\n\\n📱 *Pague via PIX:*\\n\\n1️⃣ Abra o app do seu banco\\n2️⃣ Escolha pagar com PIX\\n3️⃣ O código PIX será enviado na próxima mensagem – copie e cole no app do seu banco.\\n\\n' + (($('Store Payment Info').item.json.payment_link || '').toString().trim() ? '🔗 *Ou pague pelo link (clique para abrir):*\\n' + ($('Store Payment Info').item.json.payment_link || '') + '\\n\\n' : '') + '⏰ *Validade:* 24 horas\\n\\n✅ Após o pagamento ser confirmado, retornarei automaticamente para continuar com seu atendimento.\\n\\n🦷 *Dental Wizard*' }) }}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5168,
-        -2896
+        -3200,
+        -2192
       ],
-      "id": "09cfc4f3-7ac1-4e4a-bd9f-82a8308f8d38",
+      "id": "a8ab81c2-bbdd-4198-8519-e61da23379ce",
       "name": "Send Payment Link",
-      "notes": "Meta Cloud API: send PIX link via whatsapp-backend POST /send. No Evolution API."
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "5KlUuOrgtVjyuVtI",
+          "name": "Bearer Auth account"
+        }
+      },
+      "notes": "First message: amount + instructions. PIX code is sent separately so users can copy it directly."
     },
     {
       "parameters": {
-        "operation": "insert"
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "has-pix-code",
+              "leftValue": "={{ (($('Store Payment Info').item.json.pix_qr_code || '').toString().trim()).length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
       },
-      "type": "n8n-nodes-base.supabase",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
       "position": [
-        5312,
-        -2896
+        -3024,
+        -2192
       ],
-      "id": "b2d174a8-7b12-4a18-8db6-a7e0926a5605",
-      "name": "Store Payment in Database",
+      "id": "f46ccb18-5442-4ce1-96f1-3f1017e518d1",
+      "name": "Has PIX Code?"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ ($env.WHATSAPP_BACKEND_URL || 'https://api.healthwizard.com.br').replace(/\\/$/, '') }}/send",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ $env.WHATSAPP_BACKEND_BEARER ? 'Bearer ' + $env.WHATSAPP_BACKEND_BEARER : '' }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ to: ($('SET_VARIAVEIS').item.json.message.sender || '').replace(/@s.whatsapp.net$/i, ''), text: $('Store Payment Info').item.json.pix_qr_code || '' }) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2832,
+        -2304
+      ],
+      "id": "00f88ebf-cb06-4738-92ca-3fc2264c8ee8",
+      "name": "Send PIX Code",
       "credentials": {
-        "supabaseApi": {
-          "id": "TF0zMnZB4ZmegdXU",
-          "name": "Supabase account"
+        "httpBearerAuth": {
+          "id": "5KlUuOrgtVjyuVtI",
+          "name": "Bearer Auth account"
         }
       },
-      "notes": "Stores payment record in pagamentos table. Create this table in Supabase if it doesn't exist."
+      "notes": "Second message: PIX code only, so the user can copy it directly from WhatsApp."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ ($env.WHATSAPP_BACKEND_URL || 'https://api.healthwizard.com.br').replace(/\\/$/, '') }}/send",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ $env.WHATSAPP_BACKEND_BEARER ? 'Bearer ' + $env.WHATSAPP_BACKEND_BEARER : '' }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ to: ($('SET_VARIAVEIS').item.json.message.sender || '').replace(/@s.whatsapp.net$/i, ''), text: '⚠️ Não foi possível gerar o código PIX no momento. Verifique a configuração do pagamento (PagBank) ou envie uma nova mensagem para tentar novamente.\\n\\n🦷 Dental Wizard' }) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2832,
+        -2144
+      ],
+      "id": "75db3bf6-bf26-4445-8c7f-46ee3ddd7b20",
+      "name": "Send PIX Error Message",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "5KlUuOrgtVjyuVtI",
+          "name": "Bearer Auth account"
+        }
+      },
+      "notes": "Sent when Create Payment Charge failed and PIX code is empty. User sees a clear message instead of nothing."
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -2640,
+        -2192
+      ],
+      "id": "c1bcf03b-95fd-4edc-a6cc-49e303a89292",
+      "name": "Merge After PIX Send"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ ($env.SUPABASE_URL || 'https://your-project.supabase.co').replace(/\\/$/, '') }}/rest/v1/pagamentos",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "apikey",
+              "value": "={{ $env.SUPABASE_ANON_KEY || $env.SUPABASE_SERVICE_ROLE_KEY || '' }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ 'Bearer ' + ($env.SUPABASE_SERVICE_ROLE_KEY || $env.SUPABASE_ANON_KEY || '') }}"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ payment_id: $('Store Payment Info').item.json.payment_id || '', reference_id: $('Store Payment Info').item.json.reference_id || '', user_number: $('Store Payment Info').item.json.user_number || $('SET_VARIAVEIS').item.json.user.number || '', profile_id: $('Store Payment Info').item.json.profile_id || null, amount: $('Store Payment Info').item.json.amount ?? 10, status: $('Store Payment Info').item.json.payment_status || 'WAITING', expiration_date: $('Store Payment Info').item.json.expiration_date || null, pix_qr_code: $('Store Payment Info').item.json.pix_qr_code || '' }) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2464,
+        -2192
+      ],
+      "id": "b256ee58-a731-4510-878e-e66eca40668d",
+      "name": "Store Payment in Database",
+      "notes": "Inserts payment into Supabase via REST API. REQUIRED: In n8n set env vars SUPABASE_URL (e.g. https://xxxx.supabase.co) and SUPABASE_SERVICE_ROLE_KEY. Else you get ENOTFOUND your-project.supabase.co."
     },
     {
       "parameters": {},
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        5472,
-        -2896
+        -2288,
+        -2192
       ],
-      "id": "a34b743c-b232-4c01-a8d8-56c3cbccb010",
+      "id": "6ec476f7-c0db-4d5b-801d-61fedcd8a1d2",
       "name": "Payment Sent - Wait for Confirmation"
     },
     {
@@ -3478,10 +3508,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        7712,
-        -2720
+        -48,
+        -2032
       ],
-      "id": "704ac580-98ed-4699-a10a-f8b4580c1457",
+      "id": "c952291c-d2cb-4bb5-b5e0-d556e95f159f",
       "name": "Enviar texto",
       "notesInFlow": true,
       "credentials": {
@@ -3495,31 +3525,15 @@
     },
     {
       "parameters": {
-        "content": "# SATISFACTION SURVEY",
-        "height": 320,
-        "width": 436,
-        "color": 7
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        8336,
-        -2912
-      ],
-      "id": "bb64e860-e730-41cc-b72e-c7652794c5fa",
-      "name": "Satisfaction Survey Note1"
-    },
-    {
-      "parameters": {
         "jsCode": "// Parse Structured AI Output\n// Extracts structured fields from AI agent output according to gerar_resumo_diagnostico format\n\nconst aiOutput = $('RECEPCIONISTA').item.json.output || '';\n\n// Initialize parsed structure\nconst parsed = {\n  resumo_sintomas: '',\n  diagnostico_sugerido: '',\n  tratamento_sugerido: '',\n  urgencia: 'Média',\n  alertas: '',\n  raw_output: aiOutput\n};\n\n// Try to parse JSON if the output is structured JSON\nlet structuredData = null;\ntry {\n  // Check if output contains JSON structure\n  const jsonMatch = aiOutput.match(/\\{[\\s\\S]*\\}/);\n  if (jsonMatch) {\n    structuredData = JSON.parse(jsonMatch[0]);\n  }\n} catch (e) {\n  // Not JSON, will parse as text\n}\n\nif (structuredData) {\n  // Direct JSON structure\n  parsed.resumo_sintomas = structuredData.resumo_sintomas || structuredData.sintomas || '';\n  parsed.diagnostico_sugerido = structuredData.diagnostico_sugerido || structuredData.diagnostico || '';\n  parsed.tratamento_sugerido = structuredData.tratamento_sugerido || structuredData.tratamento || '';\n  parsed.urgencia = structuredData.urgencia || structuredData.urgency || 'Média';\n  parsed.alertas = structuredData.alertas || structuredData.alerts || '';\n} else {\n  // Parse from text format (common patterns)\n  const text = aiOutput;\n  \n  // Extract symptoms summary (look for keywords)\n  const symptomsPatterns = [\n    /sintomas[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i,\n    /resumo[\\s]*dos[\\s]*sintomas[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i,\n    /paciente[\\s]*relata[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i\n  ];\n  \n  for (const pattern of symptomsPatterns) {\n    const match = text.match(pattern);\n    if (match && match[1]) {\n      parsed.resumo_sintomas = match[1].trim();\n      break;\n    }\n  }\n  \n  // Extract diagnosis (look for diagnostic keywords)\n  const diagnosisPatterns = [\n    /diagnóstico[\\s]*sugerido[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i,\n    /possível[\\s]*diagnóstico[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i,\n    /hipótese[\\s]*diagnóstica[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i,\n    /diagnóstico[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i\n  ];\n  \n  for (const pattern of diagnosisPatterns) {\n    const match = text.match(pattern);\n    if (match && match[1]) {\n      parsed.diagnostico_sugerido = match[1].trim();\n      break;\n    }\n  }\n  \n  // Extract treatment suggestion\n  const treatmentPatterns = [\n    /tratamento[\\s]*sugerido[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i,\n    /sugestão[\\s]*de[\\s]*tratamento[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i,\n    /recomendação[\\s]*inicial[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i,\n    /tratamento[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i\n  ];\n  \n  for (const pattern of treatmentPatterns) {\n    const match = text.match(pattern);\n    if (match && match[1]) {\n      parsed.tratamento_sugerido = match[1].trim();\n      break;\n    }\n  }\n  \n  // Extract urgency level\n  const urgencyPatterns = [\n    /urgência[\\s:]*([^\\n]+)/i,\n    /nível[\\s]*de[\\s]*urgência[\\s:]*([^\\n]+)/i\n  ];\n  \n  for (const pattern of urgencyPatterns) {\n    const match = text.match(pattern);\n    if (match && match[1]) {\n      const urgencyText = match[1].trim().toLowerCase();\n      if (urgencyText.includes('crítica') || urgencyText.includes('critica')) {\n        parsed.urgencia = 'Crítica';\n      } else if (urgencyText.includes('alta')) {\n        parsed.urgencia = 'Alta';\n      } else if (urgencyText.includes('baixa')) {\n        parsed.urgencia = 'Baixa';\n      } else if (urgencyText.includes('média') || urgencyText.includes('media')) {\n        parsed.urgencia = 'Média';\n      }\n      break;\n    }\n  }\n  \n  // Check for urgency keywords in text\n  const urgencyKeywords = {\n    'Crítica': ['crítica', 'critica', 'emergência', 'emergencia', 'urgente', 'imediato'],\n    'Alta': ['alta', 'importante', 'prioridade'],\n    'Baixa': ['baixa', 'rotina', 'não urgente']\n  };\n  \n  const lowerText = text.toLowerCase();\n  for (const [level, keywords] of Object.entries(urgencyKeywords)) {\n    if (keywords.some(kw => lowerText.includes(kw))) {\n      parsed.urgencia = level;\n      break;\n    }\n  }\n  \n  // Extract alerts/warnings\n  const alertPatterns = [\n    /alertas?[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i,\n    /avisos?[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i,\n    /atenção[\\s:]*([^\\n]+(?:\\.\\s*[^\\n]+)*)/i\n  ];\n  \n  for (const pattern of alertPatterns) {\n    const match = text.match(pattern);\n    if (match && match[1]) {\n      parsed.alertas = match[1].trim();\n      break;\n    }\n  }\n  \n  // If no structured data found, use the entire output as symptoms summary\n  if (!parsed.resumo_sintomas && !parsed.diagnostico_sugerido) {\n    parsed.resumo_sintomas = aiOutput.substring(0, 500); // Limit length\n  }\n}\n\n// Return parsed structure\nreturn {\n  ...parsed,\n  parse_success: !!(parsed.diagnostico_sugerido || parsed.tratamento_sugerido || parsed.resumo_sintomas)\n};"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7856,
-        -2880
+        96,
+        -2192
       ],
-      "id": "16bf3ae0-1c87-4f16-854e-4bf3924b2a3d",
+      "id": "2e4a38a9-4f5c-4abc-b933-83d68fa499cc",
       "name": "Parse AI Output1"
     },
     {
@@ -3532,10 +3546,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -2832,
-        -1360
+        -11456,
+        -1184
       ],
-      "id": "cc4363f7-e746-43c8-a32f-e39802b2668d",
+      "id": "1afcc9bd-1790-43cb-916e-d62a42ebc833",
       "name": "Send Prescription Note1"
     },
     {
@@ -3547,10 +3561,10 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        -2768,
-        -1152
+        -11392,
+        -976
       ],
-      "id": "ac98c4a3-aa8b-4a1a-9071-b27062173186",
+      "id": "e1eea171-22a7-43d4-8e0e-595c5b13350c",
       "name": "Prescription Webhook1",
       "webhookId": "send-prescription-webhook-id",
       "notes": "Receives Supabase database webhooks when prescricoes table is created/updated. Configure Supabase Database Webhook to POST to this URL on INSERT/UPDATE events for prescricoes table where enviado_whatsapp is false or null."
@@ -3571,10 +3585,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -1616,
-        -1344
+        -10240,
+        -1168
       ],
-      "id": "bc94ae84-9681-4b8a-a4cb-a1946e60c8cc",
+      "id": "168e41c7-b0fe-4887-b5dd-250c53705185",
       "name": "Get Prescription1",
       "alwaysOutputData": true,
       "credentials": {
@@ -3600,10 +3614,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -1424,
-        -1152
+        -10048,
+        -976
       ],
-      "id": "f6187f37-0e5e-4693-8b83-c54bde3a739c",
+      "id": "b201193e-5433-4d90-afa1-8de3e5a06707",
       "name": "Get Patient for Prescription1",
       "alwaysOutputData": true,
       "credentials": {
@@ -3629,10 +3643,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -992,
-        -1248
+        -9616,
+        -1072
       ],
-      "id": "2d6f3d3c-d870-4b84-b457-347e46138ea2",
+      "id": "cdfb3eae-aa43-4bab-b5f1-6149b04cdb8d",
       "name": "Get Profile for Prescription1",
       "alwaysOutputData": true,
       "credentials": {
@@ -3649,10 +3663,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -528,
-        -1152
+        -9152,
+        -976
       ],
-      "id": "55ced507-89f0-4142-bdaa-b6acfd29b40e",
+      "id": "b956725e-f4e5-4488-9ca2-25dbf8d1e492",
       "name": "Format Prescription Message1"
     },
     {
@@ -3680,10 +3694,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -352,
-        -1152
+        -8976,
+        -976
       ],
-      "id": "dadb8d8d-da6f-4531-82ac-6cddf519c10c",
+      "id": "a00e607e-23a1-44fa-b9c5-f980f994e64d",
       "name": "Send Prescription via WhatsApp1",
       "notes": "Meta Cloud API: send prescription via whatsapp-backend POST /send. No Evolution API."
     },
@@ -3715,10 +3729,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -160,
-        -1152
+        -8784,
+        -976
       ],
-      "id": "9a760d12-6023-45d8-b509-e7139e96d839",
+      "id": "a9cc6b6e-bc96-493e-b965-ff3c0f432ea8",
       "name": "Update Prescription Sent Status1",
       "credentials": {
         "supabaseApi": {
@@ -3736,10 +3750,10 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
-        -2784,
-        -672
+        -11408,
+        -528
       ],
-      "id": "994c7787-1bb4-444f-8b43-312b94c7c61a",
+      "id": "50f4ed85-65a2-4641-8326-c0435f1147cb",
       "name": "ML Comparison Webhook",
       "webhookId": "ml-comparison-webhook-id",
       "notes": "Receives Supabase database webhooks when atendimentos table is updated. Configure Supabase Database Webhook to POST to this URL on UPDATE events for atendimentos table where diagnostico_final and tratamento_realizado are filled."
@@ -3751,10 +3765,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -2576,
-        -672
+        -11200,
+        -528
       ],
-      "id": "ab312f98-28d4-40ef-80e7-196d6e334576",
+      "id": "31f2beb7-5189-4d35-bd9e-bcaa59caea80",
       "name": "Parse Supabase Webhook ML1"
     },
     {
@@ -3784,10 +3798,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -2400,
-        -672
+        -11024,
+        -528
       ],
-      "id": "67cea952-ee5a-4882-974b-7d953a4d41b2",
+      "id": "669b47b0-87ca-41c0-a7fa-1f02e8932107",
       "name": "Check Should Process ML1",
       "disabled": true
     },
@@ -3818,10 +3832,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -2160,
-        -688
+        -10784,
+        -544
       ],
-      "id": "d6412540-6392-4ed5-826a-cf582d94bc82",
+      "id": "a00d2196-6768-4ff6-b518-a30e60f75098",
       "name": "Check Use Cached Data1"
     },
     {
@@ -3871,10 +3885,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -1984,
-        -768
+        -10608,
+        -624
       ],
-      "id": "93c87bd1-c3e8-4f0b-bd82-c5459c75a546",
+      "id": "d84ff448-767d-4422-b47b-40da0074b244",
       "name": "Use Cached Atendimento Data1"
     },
     {
@@ -3893,10 +3907,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -1984,
-        -592
+        -10608,
+        -448
       ],
-      "id": "417a6e3b-2e33-4a08-a4d0-7a9ae0d45b8a",
+      "id": "e9649906-fa1b-4235-9e01-8113114abc56",
       "name": "Fetch Atendimento for ML1",
       "alwaysOutputData": true,
       "credentials": {
@@ -3911,10 +3925,10 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        -1776,
-        -672
+        -10400,
+        -528
       ],
-      "id": "519d41d2-7c79-4b20-8867-d41ab9cb1a05",
+      "id": "3a0bd340-f752-4967-a799-c98a038a77f0",
       "name": "Merge Atendimento Data ML1"
     },
     {
@@ -3924,10 +3938,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1584,
-        -672
+        -10208,
+        -528
       ],
-      "id": "d85d2de9-27a6-436d-bdb3-dcadb29c2c06",
+      "id": "8cf007c5-254d-4fbb-afdc-b1c13016a773",
       "name": "Calculate ML Metrics"
     },
     {
@@ -3981,10 +3995,10 @@
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
       "position": [
-        -1424,
-        -672
+        -10048,
+        -528
       ],
-      "id": "50399291-0cdc-4a07-9a2f-dfbffb7ec73f",
+      "id": "02bc9eda-dad1-4454-9a93-b5ae39f9350f",
       "name": "Store ML Comparison",
       "credentials": {
         "supabaseApi": {
@@ -4003,10 +4017,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -2832,
-        -800
+        -11456,
+        -656
       ],
-      "id": "8c1b9389-d6cb-49f3-a189-da579b6748b7",
+      "id": "26da853a-b0a2-4e20-b244-09733edd2937",
       "name": "ML Comparison Note1"
     },
     {
@@ -4036,10 +4050,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -1232,
-        -1152
+        -9856,
+        -976
       ],
-      "id": "a51dfbfd-20fb-4a5f-a19e-a1b243267bfd",
+      "id": "300affb2-c606-4673-9a6b-592338bb9ece",
       "name": "Check Has Profile ID for Prescription"
     },
     {
@@ -4071,10 +4085,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -992,
-        -1056
+        -9616,
+        -880
       ],
-      "id": "b38b46d3-e847-484e-b30b-1dc9e1a4b4f2",
+      "id": "c31b14c0-e753-4556-bc82-aa0b57d560ff",
       "name": "Set Empty Profile for Prescription"
     },
     {
@@ -4082,11 +4096,75 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        -720,
-        -1152
+        -9344,
+        -976
       ],
-      "id": "214a22bd-efdf-4ae5-8007-154169ba11ee",
+      "id": "7ea80e39-53ff-4fc8-a014-1528ff5ec5f0",
       "name": "Merge Profile Data for Prescription"
+    },
+    {
+      "parameters": {
+        "operation": "set",
+        "key": "=payment.{{ $('SET_VARIAVEIS').item.json.user.number }}",
+        "value": "={{ JSON.stringify({ payment_id: $json.payment_id, status: $json.payment_status, link: $json.payment_link, amount: $json.amount, reference_id: $json.reference_id, created_at: $now.toISO() }) }}",
+        "expire": true,
+        "ttl": "3600"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -8336,
+        -400
+      ],
+      "id": "4bff84f1-f0fc-40af-912c-e716a2622547",
+      "name": "Store Payment in Redis1",
+      "credentials": {
+        "redis": {
+          "id": "L4rUklATrg4beQVM",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "database",
+        "toolDescription": "'database': SEMPRE use essa tool para pegar conhecimento e contexto.",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "topK": 10,
+        "includeDocumentMetadata": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.1,
+      "position": [
+        -1216,
+        -1696
+      ],
+      "id": "eed6e36a-ebf5-4360-8d5e-784e4dc08dcf",
+      "name": "Supabase Vector Store",
+      "credentials": {
+        "supabaseApi": {
+          "id": "TF0zMnZB4ZmegdXU",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [
+        -8992,
+        -1968
+      ],
+      "id": "57520a0a-7d21-45e7-a1f8-b95b89f101cc",
+      "name": "Merge"
     }
   ],
   "pinData": {
@@ -4405,17 +4483,6 @@
         ]
       ]
     },
-    "Merge": {
-      "main": [
-        [
-          {
-            "node": "SET_VARIAVEIS",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Get Image Media": {
       "main": [
         [
@@ -4728,17 +4795,6 @@
           {
             "node": "ON_AGENT",
             "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Supabase Vector Store": {
-      "ai_tool": [
-        [
-          {
-            "node": "RECEPCIONISTA",
-            "type": "ai_tool",
             "index": 0
           }
         ]
@@ -5216,6 +5272,28 @@
       "main": [
         [
           {
+            "node": "Check Payment Completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Payment Completed": {
+      "main": [
+        [
+          {
+            "node": "Normalize Payment Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Payment Check": {
+      "main": [
+        [
+          {
             "node": "Check Payment Required",
             "type": "main",
             "index": 0
@@ -5275,6 +5353,57 @@
       ]
     },
     "Send Payment Link": {
+      "main": [
+        [
+          {
+            "node": "Has PIX Code?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has PIX Code?": {
+      "main": [
+        [
+          {
+            "node": "Send PIX Code",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send PIX Error Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send PIX Code": {
+      "main": [
+        [
+          {
+            "node": "Merge After PIX Send",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send PIX Error Message": {
+      "main": [
+        [
+          {
+            "node": "Merge After PIX Send",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge After PIX Send": {
       "main": [
         [
           {
@@ -5529,6 +5658,28 @@
           }
         ]
       ]
+    },
+    "Supabase Vector Store": {
+      "ai_tool": [
+        [
+          {
+            "node": "RECEPCIONISTA",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "SET_VARIAVEIS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -5536,7 +5687,7 @@
     "executionOrder": "v1",
     "callerPolicy": "workflowsFromSameOwner"
   },
-  "versionId": "a35b962c-92c1-4d56-90d0-f9e7ddae96a4",
+  "versionId": "2254c9d4-a484-4f07-9ea3-7b4e951077a9",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8a5856b7f177672124d26a3d8e95d9b43c40393ee3aa73f2bb89f467979edf8e"
